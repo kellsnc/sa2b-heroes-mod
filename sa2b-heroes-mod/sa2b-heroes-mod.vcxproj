@@ -157,6 +157,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\sa2-mod-loader\libmodutils\LandTableInfo.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="sa2b-heroes-mod.cpp" />
     <ClCompile Include="stdafx.cpp">

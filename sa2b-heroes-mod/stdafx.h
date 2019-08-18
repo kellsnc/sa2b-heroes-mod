@@ -6,3 +6,4 @@
 #include <windows.h>
 
 #include "SA2ModLoader.h"
+#include "LandTableInfo.h"
