@@ -7,3 +7,4 @@
 
 #include "SA2ModLoader.h"
 #include "LandTableInfo.h"
+#include "level.h"
