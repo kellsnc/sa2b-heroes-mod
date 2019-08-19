@@ -20,8 +20,17 @@ void LandManagerHook(int a1, LandTable *a2)
 }
 
 void FixColFlags(LandTable *land) {
-	for (int i = 0; i < land->COLCount; ++i) {
-		land->COLList[i].Flags = 0x80000001;
+	for (int i = 0; i < land->COLCount; ++i) {		
+		switch (land->COLList[i].Flags) {
+		case 0x80000000:
+			break;
+		case 0x2:
+			land->COLList[i].Flags = 0x40000002;
+			break;
+		default:
+			land->COLList[i].Flags = 0x1;
+			break;
+		}
 	}
 }
 
@@ -127,7 +136,7 @@ extern "C"
 			break;
 		}
 
-		if (CurrentMenu == Menus_StageSelect)
+		if (GameState == 0)
 			CurrentChunk = 0;
 	}
 
