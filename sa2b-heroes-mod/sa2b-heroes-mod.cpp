@@ -130,6 +130,25 @@ extern "C"
 	}
 
 	__declspec(dllexport) void OnFrame() {
+		switch (CheckModelLoaded()) {
+		case 1:
+			switch (CurrentLevel) {
+			case HeroesLevelID_SeasideHill:
+				SeasideHill_LoadModels();
+				break;
+			}
+			break;
+		case 2:
+			switch (CurrentLevel) {
+			case HeroesLevelID_SeasideHill:
+				SeasideHill_FreeModels();
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+
 		switch (CurrentLevel) {
 		case HeroesLevelID_SeasideHill:
 			SeasideHill_OnFrame();

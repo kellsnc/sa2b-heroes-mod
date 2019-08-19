@@ -1,6 +1,167 @@
 #include "stdafx.h"
 #include "seaside-hill.h"
 
+ModelInfo * SH_PLATFOR;
+ModelInfo * SH_MORUINS;
+ModelInfo * SH_POLFLAG;
+ModelInfo * SH_WATERFS;
+ModelInfo * SH_FLOWERS;
+
+float ruin = 0;
+static int flagtimer = 0;
+
+void SHFlowers(ObjectMaster *a1) {
+	EntityData1 *Data1 = a1->Data1.Entity;
+		
+	if (Data1->Action == 0) {
+		a1->DisplaySub = a1->MainSub;
+		Data1->Action = 1;
+	}
+
+	for (int i = 0; i < LengthOfArray(SeasideHill_Flowers); ++i) {
+		if (CheckModelDisplay2(SeasideHill_Flowers[i])) {
+			SOI_LIST2 item = SeasideHill_Flowers[i];
+
+			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+			njPushMatrix(0);
+			njTranslate(_nj_current_matrix_ptr_, item.Position.x, item.Position.y, item.Position.z);
+			njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
+			njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
+			njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
+			njScale(item.Scale.x, item.Scale.y, item.Scale.z);
+
+			switch (item.Model) {
+			case 0: DrawModel(SH_FLOWERS->getmodel()); break;
+			case 1: DrawModel(SH_FLOWERS->getmodel()->child); break;
+			case 2: DrawModel(SH_FLOWERS->getmodel()->child->child); break;
+			case 3: DrawModel(SH_FLOWERS->getmodel()->child->child->child); break;
+			case 4: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child); break;
+			case 5: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child); break;
+			case 6: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->child); break;
+			case 7: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->child->child); break;
+			case 8: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->child->child->child); break;
+			}
+
+			njPopMatrix(1u);
+		}
+	}
+}
+
+void SHWaterfalls(ObjectMaster *a1) {
+	EntityData1 *Data1 = a1->Data1.Entity;
+
+	if (Data1->Action == 0) {
+		a1->DisplaySub = a1->MainSub;
+		Data1->Action = 1;
+	}
+
+	for (int i = 0; i < LengthOfArray(SeasideHill_Waterfalls); ++i) {
+		if (CheckModelDisplay2(SeasideHill_Waterfalls[i])) {
+			SOI_LIST2 item = SeasideHill_Waterfalls[i];
+
+			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+			njPushMatrix(0);
+			njTranslate(_nj_current_matrix_ptr_, item.Position.x, item.Position.y, item.Position.z);
+			njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
+			njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
+			njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
+			njScale(item.Scale.x, item.Scale.y, item.Scale.z);
+
+			switch (item.Model) {
+			case 0: DrawModel(SH_WATERFS->getmodel()); break;
+			case 1: DrawModel(SH_WATERFS->getmodel()->child); break;
+			case 2: DrawModel(SH_WATERFS->getmodel()->child->child); break;
+			case 3: DrawModel(SH_WATERFS->getmodel()->child->child->child); break;
+			}
+
+			njPopMatrix(1u);
+		}
+	}
+}
+
+void Flags_Reset() {
+	flagtimer = 0;
+	SH_Flag.points[5].z = 0;
+	SH_Flag.points[7].z = 0;
+	SH_Flag.points[18].z = 0;
+	SH_Flag.points[19].z = 0;
+	SH_Flag.points[0].z = 0;
+	SH_Flag.points[2].z = 0;
+	SH_Flag.points[12].z = 0;
+	SH_Flag.points[13].z = 0;
+	SH_Flag.points[1].z = 0;
+	SH_Flag.points[3].z = 0;
+	SH_Flag.points[14].z = 0;
+	SH_Flag.points[15].z = 0;
+}
+
+void Flags_Animate() {
+	flagtimer++;
+	if (flagtimer > 100) flagtimer = 1;
+	if (flagtimer < 51) {
+		SH_Flag.points[5].z -= 0.1f;
+		SH_Flag.points[7].z -= 0.1f;
+		SH_Flag.points[18].z -= 0.1f;
+		SH_Flag.points[19].z -= 0.1f;
+		SH_Flag.points[0].z += 0.05f;
+		SH_Flag.points[2].z += 0.05f;
+		SH_Flag.points[12].z += 0.05f;
+		SH_Flag.points[13].z += 0.05f;
+		SH_Flag.points[1].z -= 0.02f;
+		SH_Flag.points[3].z -= 0.02f;
+		SH_Flag.points[14].z -= 0.02f;
+		SH_Flag.points[15].z -= 0.02f;
+	}
+	else {
+		SH_Flag.points[5].z += 0.1f;
+		SH_Flag.points[7].z += 0.1f;
+		SH_Flag.points[18].z += 0.1f;
+		SH_Flag.points[19].z += 0.1f;
+		SH_Flag.points[0].z -= 0.05f;
+		SH_Flag.points[2].z -= 0.05f;
+		SH_Flag.points[12].z -= 0.05f;
+		SH_Flag.points[13].z -= 0.05f;
+		SH_Flag.points[1].z += 0.02f;
+		SH_Flag.points[3].z += 0.02f;
+		SH_Flag.points[14].z += 0.02f;
+		SH_Flag.points[15].z += 0.02f;
+	}
+}
+
+void __cdecl SHSpikes_Display(ObjectMaster *a1)
+{
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslate(_nj_current_matrix_ptr_, a1->Data1.Entity->Position.x, a1->Data1.Entity->Position.y, a1->Data1.Entity->Position.z);
+	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y);
+	DrawModel(SH_POLFLAG->getmodel());
+	njRotateY(_nj_current_matrix_ptr_, -a1->Data1.Entity->Rotation.y + a1->Data1.Entity->Scale.z);
+	njScale(0.8f, 1, 1);
+	DrawModel(&SHFlag);
+	njPopMatrix(1u);
+}
+
+void __cdecl SHSpikes_Main(ObjectMaster *a1)
+{
+	if (!ClipSetObject(a1)) {
+		if (a1->Data1.Entity->Scale.z > 4000) a1->Data1.Entity->Scale.y = 1;
+		if (a1->Data1.Entity->Scale.z == 0) a1->Data1.Entity->Scale.y = 0;
+
+		if (a1->Data1.Entity->Scale.y == 0) a1->Data1.Entity->Scale.z += 10;
+		if (a1->Data1.Entity->Scale.y == 1) a1->Data1.Entity->Scale.z -= 10;
+
+		SHSpikes_Display(a1);
+	}
+}
+
+void __cdecl SHSpikes(ObjectMaster *a1)
+{
+	a1->Data1.Entity->Scale.y = 0;
+
+	a1->MainSub = &SHSpikes_Main;
+	a1->DisplaySub = &SHSpikes_Display;
+}
+
 ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain, (char*)"aRing1" },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)SpringA_Main },
@@ -91,10 +252,27 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Main },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
-	{ (LoadObj)0 },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2400000, SHSpikes },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
 };
+
+void SeasideHill_LoadModels() {
+	SH_FLOWERS = LoadMDL("SH_FLOWERS");
+	SH_WATERFS = LoadMDL("SH_WATERFS");
+	SH_POLFLAG = LoadMDL("SH_POLFLAG");
+
+	LoadObject(LoadObj_Data1, "SHFlowers", SHFlowers, 3);
+	LoadObject(LoadObj_Data1, "SHWaterfalls", SHWaterfalls, 3);
+
+	Flags_Reset();
+}
+
+void SeasideHill_FreeModels() {
+	FreeMDL(SH_FLOWERS);
+	FreeMDL(SH_WATERFS);
+	FreeMDL(SH_POLFLAG);
+}
 
 void __cdecl SeasideHill_SkyBox(ObjectMaster *a1) {
 
@@ -116,4 +294,6 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 
 void SeasideHill_OnFrame() {
 	ChunkHandler("SH", SeasideHillChunks, LengthOfArray(SeasideHillChunks));
+
+	Flags_Animate();
 }

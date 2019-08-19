@@ -12,6 +12,23 @@ typedef struct {
 	int			duration[40];
 } SH_ANIMTEXS;
 
+typedef struct {
+	NJS_VECTOR		Position;
+	Angle			Rotation[3];
+	uint8_t			Chunk;
+	Float			DrawDistance;
+} SOI_LIST;
+
+typedef struct {
+	uint8_t			Model;
+	NJS_VECTOR		Position;
+	Angle			Rotation[3];
+	NJS_VECTOR		Scale;
+	Float			Bias;
+	uint8_t			Chunk;
+	Float			DrawDistance;
+} SOI_LIST2;
+
 enum IndexObj : Sint8
 {
 	ObjIndex_NoDisplay = 0,
@@ -36,9 +53,40 @@ enum DistObj : Sint16
 
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size);
 
+ModelInfo* LoadMDL(const char *name);
+void FreeMDL(ModelInfo * pointer);
+int CheckModelLoaded();
+bool CheckModelDisplay(SOI_LIST item);
+bool CheckModelDisplay2(SOI_LIST2 item);
+int ClipSetObject(ObjectMaster *a1);
+
+void SeasideHill_LoadModels();
+void SeasideHill_FreeModels();
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
 void SeasideHill_OnFrame();
 
 ObjectFunc(AutoLoop, 0x497B50);
 ObjectFunc(RailPath, 0x4980C0);
 ObjectFunc(CamPath, nullptr);
+
+struct RenderInfoThing
+{
+	char gap0[8];
+	int texparplus4;
+	int Thing;
+	int unknown2;
+	int texparbuf;
+	int unknown3;
+	int unknown4;
+	NJS_TEXLIST *CurrentTexlist;
+	int unknown;
+	int CurrentTexid;
+};
+
+DataPointer(RenderInfoThing *, RenderInfo, 0x2670544);
+FunctionPointer(void, DrawModel, (NJS_OBJECT*), 0x42E730);
+FunctionPointer(signed int, ClipObject, (ObjectMaster *a1, float dist), 0x488C80);
+
+extern uint8_t CurrentChunk;
+extern std::string modpath;
+extern bool ModelLoaded;
