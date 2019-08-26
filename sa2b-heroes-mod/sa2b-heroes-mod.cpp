@@ -149,10 +149,12 @@ extern "C"
 			break;
 		}
 
-		switch (CurrentLevel) {
-		case HeroesLevelID_SeasideHill:
-			SeasideHill_OnFrame();
-			break;
+		if (GameState != GameStates_Pause) {
+			switch (CurrentLevel) {
+			case HeroesLevelID_SeasideHill:
+				SeasideHill_OnFrame();
+				break;
+			}
 		}
 
 		if (GameState == 0)

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "seaside-hill-deathzones.h"
 #include "seaside-hill.h"
 
 ModelInfo * SH_PLATFOR;
@@ -31,15 +32,15 @@ void SHFlowers(ObjectMaster *a1) {
 			njScale(item.Scale.x, item.Scale.y, item.Scale.z);
 
 			switch (item.Model) {
-			case 0: DrawModel(SH_FLOWERS->getmodel()); break;
-			case 1: DrawModel(SH_FLOWERS->getmodel()->child); break;
-			case 2: DrawModel(SH_FLOWERS->getmodel()->child->child); break;
-			case 3: DrawModel(SH_FLOWERS->getmodel()->child->child->child); break;
-			case 4: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child); break;
-			case 5: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child); break;
-			case 6: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->child); break;
-			case 7: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->child->child); break;
-			case 8: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->child->child->child); break;
+			case 0: DrawModel(SH_FLOWERS->getmodel()->basicmodel); break;
+			case 1: DrawModel(SH_FLOWERS->getmodel()->child->basicmodel); break;
+			case 2: DrawModel(SH_FLOWERS->getmodel()->child->child->basicmodel); break;
+			case 3: DrawModel(SH_FLOWERS->getmodel()->child->child->child->basicmodel); break;
+			case 4: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->basicmodel); break;
+			case 5: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->basicmodel); break;
+			case 6: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->child->basicmodel); break;
+			case 7: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->child->child->basicmodel); break;
+			case 8: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->child->child->child->basicmodel); break;
 			}
 
 			njPopMatrix(1u);
@@ -68,10 +69,10 @@ void SHWaterfalls(ObjectMaster *a1) {
 			njScale(item.Scale.x, item.Scale.y, item.Scale.z);
 
 			switch (item.Model) {
-			case 0: DrawModel(SH_WATERFS->getmodel()); break;
-			case 1: DrawModel(SH_WATERFS->getmodel()->child); break;
-			case 2: DrawModel(SH_WATERFS->getmodel()->child->child); break;
-			case 3: DrawModel(SH_WATERFS->getmodel()->child->child->child); break;
+			case 0: DrawModel(SH_WATERFS->getmodel()->basicmodel); break;
+			case 1: DrawModel(SH_WATERFS->getmodel()->child->basicmodel); break;
+			case 2: DrawModel(SH_WATERFS->getmodel()->child->child->basicmodel); break;
+			case 3: DrawModel(SH_WATERFS->getmodel()->child->child->child->basicmodel); break;
 			}
 
 			njPopMatrix(1u);
@@ -79,71 +80,24 @@ void SHWaterfalls(ObjectMaster *a1) {
 	}
 }
 
-void Flags_Reset() {
-	flagtimer = 0;
-	SH_Flag.points[5].z = 0;
-	SH_Flag.points[7].z = 0;
-	SH_Flag.points[18].z = 0;
-	SH_Flag.points[19].z = 0;
-	SH_Flag.points[0].z = 0;
-	SH_Flag.points[2].z = 0;
-	SH_Flag.points[12].z = 0;
-	SH_Flag.points[13].z = 0;
-	SH_Flag.points[1].z = 0;
-	SH_Flag.points[3].z = 0;
-	SH_Flag.points[14].z = 0;
-	SH_Flag.points[15].z = 0;
-}
-
-void Flags_Animate() {
-	flagtimer++;
-	if (flagtimer > 100) flagtimer = 1;
-	if (flagtimer < 51) {
-		SH_Flag.points[5].z -= 0.1f;
-		SH_Flag.points[7].z -= 0.1f;
-		SH_Flag.points[18].z -= 0.1f;
-		SH_Flag.points[19].z -= 0.1f;
-		SH_Flag.points[0].z += 0.05f;
-		SH_Flag.points[2].z += 0.05f;
-		SH_Flag.points[12].z += 0.05f;
-		SH_Flag.points[13].z += 0.05f;
-		SH_Flag.points[1].z -= 0.02f;
-		SH_Flag.points[3].z -= 0.02f;
-		SH_Flag.points[14].z -= 0.02f;
-		SH_Flag.points[15].z -= 0.02f;
-	}
-	else {
-		SH_Flag.points[5].z += 0.1f;
-		SH_Flag.points[7].z += 0.1f;
-		SH_Flag.points[18].z += 0.1f;
-		SH_Flag.points[19].z += 0.1f;
-		SH_Flag.points[0].z -= 0.05f;
-		SH_Flag.points[2].z -= 0.05f;
-		SH_Flag.points[12].z -= 0.05f;
-		SH_Flag.points[13].z -= 0.05f;
-		SH_Flag.points[1].z += 0.02f;
-		SH_Flag.points[3].z += 0.02f;
-		SH_Flag.points[14].z += 0.02f;
-		SH_Flag.points[15].z += 0.02f;
-	}
-}
-
-void __cdecl SHSpikes_Display(ObjectMaster *a1)
+void SHSpikes_Display(ObjectMaster *a1)
 {
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
 	njTranslate(_nj_current_matrix_ptr_, a1->Data1.Entity->Position.x, a1->Data1.Entity->Position.y, a1->Data1.Entity->Position.z);
 	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y);
-	DrawModel(SH_POLFLAG->getmodel());
+	DrawModel(SH_POLFLAG->getmodel()->basicmodel);
 	njRotateY(_nj_current_matrix_ptr_, -a1->Data1.Entity->Rotation.y + a1->Data1.Entity->Scale.z);
 	njScale(0.8f, 1, 1);
-	DrawModel(&SHFlag);
+	DrawModel(SH_POLFLAG->getmodel()->child->basicmodel);
 	njPopMatrix(1u);
 }
 
-void __cdecl SHSpikes_Main(ObjectMaster *a1)
+void SHSpikes_Main(ObjectMaster *a1)
 {
-	if (!ClipSetObject(a1)) {
+	if (ClipSetObject(a1)) {
+		AddToCollisionList(a1);
+
 		if (a1->Data1.Entity->Scale.z > 4000) a1->Data1.Entity->Scale.y = 1;
 		if (a1->Data1.Entity->Scale.z == 0) a1->Data1.Entity->Scale.y = 0;
 
@@ -154,8 +108,9 @@ void __cdecl SHSpikes_Main(ObjectMaster *a1)
 	}
 }
 
-void __cdecl SHSpikes(ObjectMaster *a1)
+void SHSpikes(ObjectMaster *a1)
 {
+	InitCollision(a1, &Col_Pole, 1, 4);
 	a1->Data1.Entity->Scale.y = 0;
 
 	a1->MainSub = &SHSpikes_Main;
@@ -264,8 +219,6 @@ void SeasideHill_LoadModels() {
 
 	LoadObject(LoadObj_Data1, "SHFlowers", SHFlowers, 3);
 	LoadObject(LoadObj_Data1, "SHWaterfalls", SHWaterfalls, 3);
-
-	Flags_Reset();
 }
 
 void SeasideHill_FreeModels() {
@@ -281,6 +234,7 @@ void __cdecl SeasideHill_SkyBox(ObjectMaster *a1) {
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) {
 	WriteData((ObjectFuncPtr*)0x5DD213, SeasideHill_SkyBox);
 	WriteData((LoopHead***)0x5DD124, SeasideHillPathList);
+	WriteData((DeathZone**)0x5DD226, SeasideHillDeathZones);
 
 	for (uint8_t i = 0; i < 92; ++i) {
 		CityEscape_ObjectArray[i] = SeasideHillObjectList_list[i];
@@ -294,6 +248,5 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 
 void SeasideHill_OnFrame() {
 	ChunkHandler("SH", SeasideHillChunks, LengthOfArray(SeasideHillChunks));
-
-	Flags_Animate();
+	AnimateTextures(SeasideHillAnimTexs, 2);
 }

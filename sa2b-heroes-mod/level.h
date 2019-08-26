@@ -10,6 +10,8 @@ typedef struct {
 	int			texid;
 	int			count;
 	int			duration[40];
+	int			cache;
+	Uint32		address;
 } SH_ANIMTEXS;
 
 typedef struct {
@@ -56,14 +58,18 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size);
 ModelInfo* LoadMDL(const char *name);
 void FreeMDL(ModelInfo * pointer);
 int CheckModelLoaded();
+void DrawModel(NJS_MODEL * model);
 bool CheckModelDisplay(SOI_LIST item);
 bool CheckModelDisplay2(SOI_LIST2 item);
-int ClipSetObject(ObjectMaster *a1);
+bool ClipSetObject(ObjectMaster *a1);
+void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 
 void SeasideHill_LoadModels();
 void SeasideHill_FreeModels();
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
 void SeasideHill_OnFrame();
+
+extern NJS_MATERIAL matlist_col[1];
 
 ObjectFunc(AutoLoop, 0x497B50);
 ObjectFunc(RailPath, 0x4980C0);
@@ -84,8 +90,19 @@ struct RenderInfoThing
 };
 
 DataPointer(RenderInfoThing *, RenderInfo, 0x2670544);
-FunctionPointer(void, DrawModel, (NJS_OBJECT*), 0x42E730);
 FunctionPointer(signed int, ClipObject, (ObjectMaster *a1, float dist), 0x488C80);
+FunctionPointer(void, Collision_InitThings, (ObjectMaster *a1), 0x47E6C0);
+VoidFunc(ResetRenderSpace, 0x42D340);
+
+static const void *const AddToCollisionListPtr = (void*)0x47E750;
+static inline void AddToCollisionList(ObjectMaster *a1)
+{
+	__asm
+	{
+		mov esi, [a1]
+		call AddToCollisionListPtr
+	}
+}
 
 extern uint8_t CurrentChunk;
 extern std::string modpath;
