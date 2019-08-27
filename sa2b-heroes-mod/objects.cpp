@@ -131,10 +131,10 @@ Rotation fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point) {
 	float len = dist.z * dist.z + dist.y * dist.y;
 	result.y = atan2(dist.x, sqrt(len)) * 65536.0 * 0.1591549762031479;
 
-	/*if (dist.x < 0 && dist.z < 0) { result.y = result.y; result.x = result.x; }
+	if (dist.x < 0 && dist.z < 0) { result.y = result.y; result.x = result.x; }
 	if (dist.z < 0 && dist.x > 0) { result.y = result.y; result.x = result.x; }
 	if (dist.x < 0 || dist.z < 0) { result.y += 0x8000; result.x += 0x8000; }
-	if (dist.x < 0 && dist.z > 0) { result.y += 0x8000; result.x += 0x8000; }*/
+	if (dist.x < 0 && dist.z > 0) { result.y += 0x8000; result.x += 0x8000; }
 
 	result.y = -result.y - 0x4000;
 	return result;

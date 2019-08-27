@@ -77,6 +77,8 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
 void SeasideHill_OnFrame();
 
 void DashHoop(ObjectMaster* a1);
+void Boxes(ObjectMaster* a1);
+void RingGroup(ObjectMaster* a1);
 
 extern NJS_MATERIAL matlist_col[1];
 

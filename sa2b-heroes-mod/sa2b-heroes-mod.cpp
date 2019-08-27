@@ -90,23 +90,21 @@ void LoadLevelFile(const char *shortname, int chunknb) {
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 	if (!MainCharObj1[0]) return;
 	
-	if (TimerFrames % 4 == 0) {
-		for (Int i = 0; i < size; ++i) {
-			if (chunklist[i].Chunk != CurrentChunk) {
-				EntityData1 *entity = MainCharObj1[0];
-				if (entity != nullptr) {
-					NJS_VECTOR pos = MainCharObj1[0]->Position;
+	for (Int i = 0; i < size; ++i) {
+		if (chunklist[i].Chunk != CurrentChunk) {
+			EntityData1 *entity = MainCharObj1[0];
+			if (entity != nullptr) {
+				NJS_VECTOR pos = MainCharObj1[0]->Position;
 
-					if (((chunklist[i].Position1.x == 0 || pos.x < chunklist[i].Position1.x)) &&
-						((chunklist[i].Position1.y == 0 || pos.y < chunklist[i].Position1.y)) &&
-						((chunklist[i].Position1.z == 0 || pos.z < chunklist[i].Position1.z)) &&
-						((chunklist[i].Position2.x == 0 || pos.x > chunklist[i].Position2.x)) &&
-						((chunklist[i].Position2.y == 0 || pos.y > chunklist[i].Position2.y)) &&
-						((chunklist[i].Position2.z == 0 || pos.z > chunklist[i].Position2.z))) {
+				if (((chunklist[i].Position1.x == 0 || pos.x < chunklist[i].Position1.x)) &&
+					((chunklist[i].Position1.y == 0 || pos.y < chunklist[i].Position1.y)) &&
+					((chunklist[i].Position1.z == 0 || pos.z < chunklist[i].Position1.z)) &&
+					((chunklist[i].Position2.x == 0 || pos.x > chunklist[i].Position2.x)) &&
+					((chunklist[i].Position2.y == 0 || pos.y > chunklist[i].Position2.y)) &&
+					((chunklist[i].Position2.z == 0 || pos.z > chunklist[i].Position2.z))) {
 
-						LoadLevelFile(level, chunklist[i].Chunk);
-						break;
-					}
+					LoadLevelFile(level, chunklist[i].Chunk);
+					break;
 				}
 			}
 		}
