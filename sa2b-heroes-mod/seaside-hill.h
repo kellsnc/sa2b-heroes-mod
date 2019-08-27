@@ -1,8 +1,16 @@
 #pragma once
 
-StartPosition startpos = { LevelIDs_CityEscape, 0x6000, 0x6000, 0x6000, { -0.9652862, 108.7996, -5698.243 }, { -14, 233, -7458 }, { -14, 233, -7466 } };
+StartPosition startpos = { LevelIDs_CityEscape, 0x6000, 0x6000, 0x6000, { 1296.758, 687.8859, -19692.11 }, { -14, 233, -7458 }, { -14, 233, -7466 } };
 
 CollisionData Col_Pole = { 0x100, 0xE077, 0, { 0, 0, 0 }, 10, 80, 10, 0, 0, 0, 0 };
+CollisionData Col_Platform = { 0x300, 0xE077, 0, { 0, 0, 0 }, 25, 15, 25, 0, 0, 0, 0 };
+CollisionData Col_MvPltfrm3 = { 0x300, 0xE077, 0, { 0, 0, 0 }, 24, 200, 24, 0, 0, 0, 0 };
+CollisionData Col_MvPltfrm2[] = { 0x300, 0xE077, 0, { 0, 0, 0 }, 75, 200, 75, 0, 0, 0, 0 };
+CollisionData Col_MvPltfrm1[] = {
+	{ 0x300, 0xE077, 0, { 0, 0, 0 }, 150, 300, 250, 0, 0, 0, 0 },
+	{ 0x300, 0xE077, 0, { 133, 300, 0 }, 15, 80, 250, 0, 0, 0, 0 },
+	{ 0x300, 0xE077, 0, { -133, 300, 0 }, 15, 80, 250, 0, 0, 0, 0 }
+};
 
 SH_ANIMTEXS SeasideHillAnimTexs[]{
 	{ 21, 19,{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4 } },

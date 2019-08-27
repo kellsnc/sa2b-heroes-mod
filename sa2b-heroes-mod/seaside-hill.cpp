@@ -117,6 +117,122 @@ void SHSpikes(ObjectMaster *a1)
 	a1->DisplaySub = &SHSpikes_Display;
 }
 
+void SHMovingPltfrms_Display(ObjectMaster *a1) {
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslate(_nj_current_matrix_ptr_, a1->Data1.Entity->Position.x, a1->Data1.Entity->Position.y, a1->Data1.Entity->Position.z);
+	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y);
+
+	switch (a1->Data1.Entity->Action) {
+	case 0:
+		DrawModel(SH_MORUINS->getmodel()->basicmodel);
+		break;
+	case 1:
+		DrawModel(SH_MORUINS->getmodel()->child->basicmodel);
+		break;
+	case 2:
+		DrawModel(SH_MORUINS->getmodel()->child->child->basicmodel);
+		break;
+	}
+
+	njPopMatrix(1u);
+}
+
+void SHMovingPltfrms_Main(ObjectMaster *a1) {
+	if (ClipSetObject(a1)) {
+		EntityData1* entity = a1->Data1.Entity;
+
+		if (ruin != 0 && ruin == entity->Scale.y) {
+			if (entity->Position.y != entity->Scale.z) {
+				if (entity->Scale.x >= entity->Scale.z) {
+					if (entity->Position.y <= entity->Scale.z) {
+						entity->Position.y = entity->Scale.z;
+					}
+					else if (entity->Position.y > entity->Scale.z) entity->Position.y -= 2;
+
+					if (entity->Position.y == entity->Scale.x - 2) PlaySoundProbably(41, 0, 0, 0);
+				}
+				else if (entity->Scale.x <= entity->Scale.z) {
+					if (entity->Position.y >= entity->Scale.z) {
+						entity->Position.y = entity->Scale.z;
+					}
+					else if (entity->Position.y < entity->Scale.z) entity->Position.y += 2;
+
+					if (entity->Position.y == entity->Scale.x + 2) PlaySoundProbably(41, 0, 0, 0);
+					if (entity->Position.y <= entity->Scale.z - 1 && entity->Position.y >= entity->Scale.z - 3) PlaySoundProbably(42, 0, 0, 0);
+				}
+			}
+		}
+
+		//TODO: update collision position
+		AddToCollisionList(a1);
+
+		a1->DisplaySub(a1);
+	}
+}
+
+void SHMovingPltfrms(ObjectMaster *a1)
+{
+	EntityData1* entity = a1->Data1.Entity;
+
+	if (entity->Scale.z == 0) entity->NextAction = 0;
+	else entity->NextAction = 1;
+
+	entity->Action = (char)entity->Scale.x;
+	entity->Scale.x = entity->Position.y;
+
+	switch (entity->Action) {
+	case 0:
+		InitCollision(a1, Col_MvPltfrm1, 3, 4);
+		break;
+	case 1:
+		InitCollision(a1, Col_MvPltfrm2, 1, 4);
+		break;
+	case 2:
+		InitCollision(a1, &Col_MvPltfrm3, 1, 4);
+		break;
+	}
+
+	a1->MainSub = &SHMovingPltfrms_Main;
+	a1->DisplaySub = &SHMovingPltfrms_Display;
+}
+
+void SHRuinTrigger(ObjectMaster *a1)
+{
+	if (ClipSetObject(a1)) {
+		if (ruin != a1->Data1.Entity->Scale.x) {
+			if (IsPlayerInsideSphere(&a1->Data1.Entity->Position, a1->Data1.Entity->Scale.y)) {
+				ruin = a1->Data1.Entity->Scale.x;
+			}
+		}
+	}
+}
+
+void SHPlatforms_Display(ObjectMaster *a1) {
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslate(_nj_current_matrix_ptr_, a1->Data1.Entity->Position.x, a1->Data1.Entity->Position.y, a1->Data1.Entity->Position.z);
+	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y);
+	DrawModel(SH_PLATFOR->getmodel()->basicmodel);
+	njPopMatrix(1u);
+}
+
+void SHPlatforms_Main(ObjectMaster *a1)
+{
+	if (ClipSetObject(a1)) {
+		a1->DisplaySub(a1);
+		AddToCollisionList(a1);
+	}
+}
+
+void SHPlatforms(ObjectMaster *a1)
+{
+	InitCollision(a1, &Col_Platform, 1, 4);
+
+	a1->MainSub = &SHPlatforms_Main;
+	a1->DisplaySub = &SHPlatforms_Display;
+}
+
 ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain, (char*)"aRing1" },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1360000, (ObjectFuncPtr)SpringA_Main },
@@ -150,9 +266,9 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)E_AI },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, (ObjectFuncPtr)E_AI },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)E_GOLD },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, SHMovingPltfrms },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, SHRuinTrigger },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, SHPlatforms },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
@@ -216,15 +332,19 @@ void SeasideHill_LoadModels() {
 	SH_FLOWERS = LoadMDL("SH_FLOWERS");
 	SH_WATERFS = LoadMDL("SH_WATERFS");
 	SH_POLFLAG = LoadMDL("SH_POLFLAG");
+	SH_MORUINS = LoadMDL("SH_MORUINS");
+	SH_PLATFOR = LoadMDL("SH_PLATFOR");
 
 	LoadObject(LoadObj_Data1, "SHFlowers", SHFlowers, 3);
 	LoadObject(LoadObj_Data1, "SHWaterfalls", SHWaterfalls, 3);
 }
 
 void SeasideHill_FreeModels() {
+	FreeMDL(SH_MORUINS);
 	FreeMDL(SH_FLOWERS);
 	FreeMDL(SH_WATERFS);
 	FreeMDL(SH_POLFLAG);
+	FreeMDL(SH_PLATFOR);
 }
 
 void __cdecl SeasideHill_SkyBox(ObjectMaster *a1) {
