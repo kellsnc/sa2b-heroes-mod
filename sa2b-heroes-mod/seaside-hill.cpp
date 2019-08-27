@@ -18,7 +18,7 @@ void SHFlowers(ObjectMaster *a1) {
 		a1->DisplaySub = a1->MainSub;
 		Data1->Action = 1;
 	}
-
+	
 	for (int i = 0; i < LengthOfArray(SeasideHill_Flowers); ++i) {
 		if (CheckModelDisplay2(SeasideHill_Flowers[i])) {
 			SOI_LIST2 item = SeasideHill_Flowers[i];
@@ -119,17 +119,17 @@ void SHSpikes(ObjectMaster *a1)
 
 ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain, (char*)"aRing1" },
-	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)SpringA_Main },
-	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, SpringB_Main },
-	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1), ObjIndex_Stage, DistObj_UseDist, 360000, DashPanel_Main },
-	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)LongSpring_Main },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1360000, (ObjectFuncPtr)SpringA_Main },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1360000, SpringB_Main },
+	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1), ObjIndex_Stage, DistObj_UseDist, 1360000, DashPanel_Main },
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Stage, DistObj_UseDist, 1360000, (ObjectFuncPtr)LongSpring_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, Omochao_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)SKULL },
 	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1), ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)EmeraldPiece_Load },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, GoalRing_Main },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, GoalRing_Main },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)ORI },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownB), ObjIndex_Stage, DistObj_UseDist, 160000, (ObjectFuncPtr)PSKULL },
-	{ (LoadObj)0 },
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Stage, DistObj_UseDist, 1360000, DashHoop },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, ItemBoxBalloon },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, ItemBox_Main },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKET },

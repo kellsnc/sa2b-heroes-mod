@@ -1,6 +1,6 @@
 #pragma once
 
-StartPosition startpos = { LevelIDs_CityEscape, 0x6000, 0x6000, 0x6000, { 785, 643, -20508 }, { -14, 233, -7458 }, { -14, 233, -7466 } };
+StartPosition startpos = { LevelIDs_CityEscape, 0x6000, 0x6000, 0x6000, { -0.9652862, 108.7996, -5698.243 }, { -14, 233, -7458 }, { -14, 233, -7466 } };
 
 CollisionData Col_Pole = { 0x100, 0xE077, 0, { 0, 0, 0 }, 10, 80, 10, 0, 0, 0, 0 };
 

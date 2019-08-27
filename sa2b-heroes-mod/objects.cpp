@@ -118,3 +118,34 @@ void AnimateTextures(SH_ANIMTEXS *list, Int listcount) {
 		}
 	}
 }
+
+Rotation fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point) {
+	NJS_VECTOR dist;
+	Rotation result;
+
+	dist.x = orig.x - point.x;
+	dist.y = orig.y - point.y;
+	dist.z = orig.z - point.z;
+
+	result.x = atan2(dist.y, dist.z) * 65536.0 * -0.1591549762031479;
+	float len = dist.z * dist.z + dist.y * dist.y;
+	result.y = atan2(dist.x, sqrt(len)) * 65536.0 * 0.1591549762031479;
+
+	/*if (dist.x < 0 && dist.z < 0) { result.y = result.y; result.x = result.x; }
+	if (dist.z < 0 && dist.x > 0) { result.y = result.y; result.x = result.x; }
+	if (dist.x < 0 || dist.z < 0) { result.y += 0x8000; result.x += 0x8000; }
+	if (dist.x < 0 && dist.z > 0) { result.y += 0x8000; result.x += 0x8000; }*/
+
+	result.y = -result.y - 0x4000;
+	return result;
+}
+
+void TransformSpline(EntityData1 * entity, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
+	entity->Position.x = (dest.x - orig.x) * state + orig.x;
+	entity->Position.y = ((dest.y - orig.y) * state + orig.y);
+	entity->Position.z = (dest.z - orig.z) * state + orig.z;
+}
+
+int GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
+	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
+}

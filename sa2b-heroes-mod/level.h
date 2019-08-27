@@ -63,11 +63,20 @@ bool CheckModelDisplay(SOI_LIST item);
 bool CheckModelDisplay2(SOI_LIST2 item);
 bool ClipSetObject(ObjectMaster *a1);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
+int IsPlayerInsideSphere(NJS_VECTOR *center, float radius);
+void TransformSpline(EntityData1 * entity, NJS_VECTOR orig, NJS_VECTOR dest, float state);
+Rotation fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point);
+int GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
+
+void CommonObjects_LoadModels();
+void CommonObjects_FreeModels();
 
 void SeasideHill_LoadModels();
 void SeasideHill_FreeModels();
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
 void SeasideHill_OnFrame();
+
+void DashHoop(ObjectMaster* a1);
 
 extern NJS_MATERIAL matlist_col[1];
 
@@ -92,6 +101,7 @@ struct RenderInfoThing
 DataPointer(RenderInfoThing *, RenderInfo, 0x2670544);
 FunctionPointer(signed int, ClipObject, (ObjectMaster *a1, float dist), 0x488C80);
 FunctionPointer(void, Collision_InitThings, (ObjectMaster *a1), 0x47E6C0);
+FunctionPointer(signed int, FreeTexList, (NJS_TEXLIST *a1), 0x77F9F0);
 VoidFunc(ResetRenderSpace, 0x42D340);
 
 static const void *const AddToCollisionListPtr = (void*)0x47E750;

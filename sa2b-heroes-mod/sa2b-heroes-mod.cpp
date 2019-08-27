@@ -132,6 +132,8 @@ extern "C"
 	__declspec(dllexport) void OnFrame() {
 		switch (CheckModelLoaded()) {
 		case 1:
+			CommonObjects_LoadModels();
+
 			switch (CurrentLevel) {
 			case HeroesLevelID_SeasideHill:
 				SeasideHill_LoadModels();
@@ -139,6 +141,8 @@ extern "C"
 			}
 			break;
 		case 2:
+			CommonObjects_FreeModels();
+
 			switch (CurrentLevel) {
 			case HeroesLevelID_SeasideHill:
 				SeasideHill_FreeModels();

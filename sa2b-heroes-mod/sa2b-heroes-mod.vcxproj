@@ -162,6 +162,7 @@
   <ItemGroup>
     <ClCompile Include="..\sa2-mod-loader\libmodutils\LandTableInfo.cpp" />
     <ClCompile Include="..\sa2-mod-loader\libmodutils\ModelInfo.cpp" />
+    <ClCompile Include="common-objects.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="objects.cpp" />
     <ClCompile Include="sa2b-heroes-mod.cpp" />
