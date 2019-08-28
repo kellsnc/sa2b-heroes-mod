@@ -103,8 +103,6 @@ void SHSpikes_Main(ObjectMaster* a1)
 
 		if (a1->Data1.Entity->Scale.y == 0) a1->Data1.Entity->Scale.z += 10;
 		if (a1->Data1.Entity->Scale.y == 1) a1->Data1.Entity->Scale.z -= 10;
-
-		SHSpikes_Display(a1);
 	}
 }
 
@@ -165,8 +163,6 @@ void SHMovingPltfrms_Main(ObjectMaster* a1) {
 		}
 
 		AddToCollisionList(a1);
-
-		a1->DisplaySub(a1);
 	}
 }
 
@@ -217,7 +213,6 @@ void SHPlatforms_Display(ObjectMaster* a1) {
 void SHPlatforms_Main(ObjectMaster* a1)
 {
 	if (ClipSetObject(a1)) {
-		a1->DisplaySub(a1);
 		AddToCollisionList(a1);
 	}
 }
@@ -252,7 +247,7 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 4000000, (ObjectFuncPtr)KDITEMBOX },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_Default, 0, Checkpoint_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)CWALL },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, RingGroup },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)RingLinearMain },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)RingCircleMain },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)CCYL },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)CCUBE },
@@ -260,8 +255,8 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)HINTBOX },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 40000, (ObjectFuncPtr)IRONBALL2 },
 	{ LoadObj_Data1, ObjIndex_4, DistObj_UseDist, 40000, (ObjectFuncPtr)IRONBALL2 },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)E_AI },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, (ObjectFuncPtr)E_AI },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Robots },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, (ObjectFuncPtr)Robots },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)E_GOLD },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, SHMovingPltfrms },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, SHRuinTrigger },
@@ -298,16 +293,16 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, Beetle_Main },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, Beetle_Main },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 250000, Beetle_Main },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, Beetle_Attack },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, Beetle_Attack },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 250000, Beetle_Attack },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, (ObjectFuncPtr)E_AI },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, (ObjectFuncPtr)E_AI },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 250000, (ObjectFuncPtr)E_AI },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, (ObjectFuncPtr)Robots },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, (ObjectFuncPtr)Robots },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 250000, (ObjectFuncPtr)Robots },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, (ObjectFuncPtr)E_GOLD},
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
@@ -315,9 +310,9 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 	{ (LoadObj)0 },
 	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Stage, DistObj_UseDist, 160000, (ObjectFuncPtr)KDITEMBOX },
 	{ (LoadObj)0 },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Main },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Main },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Main },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Stationary },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Electric },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Attack },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2400000, SHSpikes },
@@ -332,8 +327,8 @@ void SeasideHill_LoadModels() {
 	SH_MORUINS = LoadMDL("SH_MORUINS");
 	SH_PLATFOR = LoadMDL("SH_PLATFOR");
 
-	LoadObject(LoadObj_Data1, "SHFlowers", SHFlowers, 3);
-	LoadObject(LoadObj_Data1, "SHWaterfalls", SHWaterfalls, 3);
+	LoadObject(3, "SHFlowers", SHFlowers, LoadObj_Data1);
+	LoadObject(3, "SHWaterfalls", SHWaterfalls, LoadObj_Data1);
 }
 
 void SeasideHill_FreeModels() {
@@ -370,9 +365,28 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	}
 }
 
-int test = 0;
-
 void SeasideHill_OnFrame() {
 	ChunkHandler("SH", SeasideHillChunks, LengthOfArray(SeasideHillChunks));
 	AnimateTextures(SeasideHillAnimTexs, 2);
+
+	EntityData1* entity = MainCharObj1[0];
+
+	if (CurrentChunk == 16) {
+		if (entity->Position.z > -200) {
+			ruin = 0;
+		}
+
+		if (entity->Position.z > -1000)
+			CurrentLandTable->COLList[CurrentLandTable->COLCount - 1].Flags = 1;
+		if (entity->Position.z > -1994 && entity->Position.z < -1974)
+			CurrentLandTable->COLList[CurrentLandTable->COLCount - 1].Flags = 0;
+	}
+	else if (CurrentChunk == 8) {
+		NJS_VECTOR center = { 900, 1846, -33745 };
+		uint8_t player = IsPlayerInsideSphere(&center, 100);
+		if (player) {
+			MainCharObj1[player - 1]->Position = { 900.2299f, 2255.505f, -34727.86f };
+			MainCharObj2[player - 1]->Speed = { 0, 0, 0 };
+		}
+	}
 }

@@ -3,6 +3,14 @@
 NJS_TEXNAME heroescmn_texname[41];
 NJS_TEXLIST heroescmn_texlist = { arrayptrandlengthT(heroescmn_texname, Uint32) };
 
+TexPackInfo heroestexpacks[] = {
+	{ "heroescmn", &heroescmn_texlist },
+	{ "heroescmn", &heroescmn_texlist },
+	{ 0 }
+};
+
+NJS_TEXLIST **copylist = { nullptr };
+
 ModelInfo * CO_DSHHOOP;
 
 void DashHoop_Display(ObjectMaster* a1) {
@@ -33,8 +41,6 @@ void DashHoop_Perform(ObjectMaster *a1) {
 
 void DashHoop_Main(ObjectMaster* a1) {
 	if (ClipSetObject(a1)) {
-		a1->DisplaySub(a1);
-
 		if (!a1->Data1.Entity->Action) {
 			uint8_t id = IsPlayerInsideSphere(&a1->Data1.Entity->Position, 60);
 			if (id) {
@@ -44,6 +50,8 @@ void DashHoop_Main(ObjectMaster* a1) {
 				MainCharObj2[id - 1]->Speed.x /= 2;
 				MainCharObj2[id - 1]->Speed.y = 0;
 				MainCharObj2[id - 1]->Speed.z = 0;
+
+				AddScore(5);
 
 				ObjectMaster * obj = LoadObject(4, "DashHoop_Perform", DashHoop_Perform, LoadObj_Data1);
 				obj->Data1.Entity->Index = id - 1;
@@ -81,24 +89,50 @@ void Boxes(ObjectMaster* a1) {
 	}
 }
 
-void RingGroup(ObjectMaster* a1) {
+void Beetle_Stationary(ObjectMaster* a1) {
 	EntityData1* entity = a1->Data1.Entity;
+	entity->Rotation.x = 0;
+	entity->Rotation.z = 0xC1;
+	entity->Scale = { 0.10, 3.50, 51 };
+	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
+}
 
-	if (!entity->Scale.z) {
-		//line
-		a1->MainSub = (ObjectFuncPtr)RingMain;
-		entity->Scale = { 1, 1, 1 };
-		entity->Rotation = { 0, 0, 0 };
-	}
-	else {
-		//circle
-		a1->MainSub = DeleteObject_;
-	}
+void Beetle_Attack(ObjectMaster* a1) {
+	EntityData1* entity = a1->Data1.Entity;
+	entity->Rotation.x = 0x1;
+	entity->Rotation.z = 0x1C0;
+	entity->Scale = { 4, 1, 150 };
+	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
+}
+
+void Beetle_Electric(ObjectMaster* a1) {
+	EntityData1* entity = a1->Data1.Entity;
+	entity->Rotation.x = 0;
+	entity->Rotation.z = 0x101;
+	entity->Scale = { 0.10, 3.50, 51 };
+	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
+}
+
+void Robots(ObjectMaster* a1) {
+	EntityData1* entity = a1->Data1.Entity;
+	entity->Rotation.x = 0x1;
+	entity->Rotation.z = 0x100;
+	entity->Scale = { 0, 1, 126 };
+	a1->MainSub = (ObjectFuncPtr)E_AI;
 }
 
 void CommonObjects_LoadModels() {
 	LoadTextureList((char*)"heroescmn", &heroescmn_texlist);
 
+	switch (CurrentLevel) {
+	case 13:
+		WriteData((NJS_TEXLIST****)0x5DCE6C, &copylist);
+		WriteData((TexPackInfo**)0x5DCE71, static_cast<TexPackInfo*>(heroestexpacks));
+		WriteData((NJS_TEXLIST****)0x5DD3E4, &copylist);
+		WriteData((TexPackInfo**)0x5DD3E9, static_cast<TexPackInfo*>(heroestexpacks));
+		break;
+	}
+	
 	CO_DSHHOOP = LoadMDL("CO_DSHHOOP");
 }
 

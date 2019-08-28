@@ -78,7 +78,10 @@ void SeasideHill_OnFrame();
 
 void DashHoop(ObjectMaster* a1);
 void Boxes(ObjectMaster* a1);
-void RingGroup(ObjectMaster* a1);
+void Robots(ObjectMaster* a1);
+void Beetle_Stationary(ObjectMaster* a1);
+void Beetle_Attack(ObjectMaster* a1);
+void Beetle_Electric(ObjectMaster* a1);
 
 extern NJS_MATERIAL matlist_col[1];
 
@@ -104,6 +107,7 @@ DataPointer(RenderInfoThing *, RenderInfo, 0x2670544);
 FunctionPointer(signed int, ClipObject, (ObjectMaster *a1, float dist), 0x488C80);
 FunctionPointer(void, Collision_InitThings, (ObjectMaster *a1), 0x47E6C0);
 FunctionPointer(signed int, FreeTexList, (NJS_TEXLIST *a1), 0x77F9F0);
+
 VoidFunc(ResetRenderSpace, 0x42D340);
 
 static const void *const AddToCollisionListPtr = (void*)0x47E750;

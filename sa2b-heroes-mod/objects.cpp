@@ -33,7 +33,7 @@ int CheckModelLoaded() {
 		ModelLoaded = false;
 		return 2;
 	}
-	else if (GameState == GameStates_Loading && ModelLoaded == false) {
+	else if ((GameState == GameStates_Loading || GameState == 3) && ModelLoaded == false) {
 		ModelLoaded = true;
 		return 1;
 	}
@@ -144,8 +144,4 @@ void TransformSpline(EntityData1 * entity, NJS_VECTOR orig, NJS_VECTOR dest, flo
 	entity->Position.x = (dest.x - orig.x) * state + orig.x;
 	entity->Position.y = ((dest.y - orig.y) * state + orig.y);
 	entity->Position.z = (dest.z - orig.z) * state + orig.z;
-}
-
-int GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
-	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
 }
