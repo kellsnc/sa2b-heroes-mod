@@ -320,6 +320,11 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 2400000, Boxes },
 };
 
+void SeasideHill_LoadObjects() {
+	LoadObject(3, "SHFlowers", SHFlowers, LoadObj_Data1);
+	LoadObject(3, "SHWaterfalls", SHWaterfalls, LoadObj_Data1);
+}
+
 void SeasideHill_LoadModels() {
 	SH_FLOWERS = LoadMDL("SH_FLOWERS");
 	SH_WATERFS = LoadMDL("SH_WATERFS");
@@ -327,8 +332,7 @@ void SeasideHill_LoadModels() {
 	SH_MORUINS = LoadMDL("SH_MORUINS");
 	SH_PLATFOR = LoadMDL("SH_PLATFOR");
 
-	LoadObject(3, "SHFlowers", SHFlowers, LoadObj_Data1);
-	LoadObject(3, "SHWaterfalls", SHWaterfalls, LoadObj_Data1);
+	SeasideHill_LoadObjects();
 }
 
 void SeasideHill_FreeModels() {
@@ -370,6 +374,11 @@ void SeasideHill_OnFrame() {
 	AnimateTextures(SeasideHillAnimTexs, 2);
 
 	EntityData1* entity = MainCharObj1[0];
+
+	if (GameState == GameStates_Ingame && restart) {
+		SeasideHill_LoadObjects();
+		restart = false;
+	}
 
 	if (CurrentChunk == 16) {
 		if (entity->Position.z > -200) {

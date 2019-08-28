@@ -9,6 +9,8 @@ std::string modpath;
 LandTableInfo *info = nullptr;
 LandTableInfo *oldinfo = nullptr;
 
+bool restart;
+
 enum HeroesLevelIDs {
 	HeroesLevelID_SeasideHill = 13
 };
@@ -150,6 +152,9 @@ extern "C"
 		default:
 			break;
 		}
+
+		if (GameState == 9 || GameState == 13 || GameState == GameStates_RestartLevel_1)
+			restart = true;
 
 		if (GameState != GameStates_Pause) {
 			switch (CurrentLevel) {

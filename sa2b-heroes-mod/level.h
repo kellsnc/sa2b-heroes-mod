@@ -66,7 +66,6 @@ void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 int IsPlayerInsideSphere(NJS_VECTOR *center, float radius);
 void TransformSpline(EntityData1 * entity, NJS_VECTOR orig, NJS_VECTOR dest, float state);
 Rotation fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point);
-int GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 
 void CommonObjects_LoadModels();
 void CommonObjects_FreeModels();
@@ -123,3 +122,4 @@ static inline void AddToCollisionList(ObjectMaster *a1)
 extern uint8_t CurrentChunk;
 extern std::string modpath;
 extern bool ModelLoaded;
+extern bool restart;

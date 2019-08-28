@@ -17,7 +17,7 @@ CollisionData Col_MvPltfrm1[] = {
 
 SH_ANIMTEXS SeasideHillAnimTexs[]{
 	{ 21, 19,{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4 } },
-	{ 99, 19,{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 } }
+	{ 80, 10,{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } }
 };
 
 CHUNK_LIST SeasideHillChunks[]{
