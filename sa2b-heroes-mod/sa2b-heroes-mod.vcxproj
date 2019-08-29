@@ -177,7 +177,4 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <Target Name="AfterBuild">
-    <Copy SourceFiles="..\bin\sa2b-heroes-mod.dll" DestinationFolder="D:\Kell\SA2 Modding\SA2\mods\sa2b-heroes-mod" />
-  </Target>
 </Project>
