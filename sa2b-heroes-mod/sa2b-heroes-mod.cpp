@@ -132,19 +132,17 @@ extern "C"
 	__declspec(dllexport) void OnFrame() {
 		switch (CheckModelLoaded()) {
 		case 1:
-			CommonObjects_LoadModels();
-
 			switch (CurrentLevel) {
 			case HeroesLevelID_SeasideHill:
+				CommonObjects_LoadModels();
 				SeasideHill_LoadModels();
 				break;
 			}
 			break;
 		case 2:
-			CommonObjects_FreeModels();
-
 			switch (CurrentLevel) {
 			case HeroesLevelID_SeasideHill:
+				CommonObjects_FreeModels();
 				SeasideHill_FreeModels();
 				break;
 			}
@@ -164,8 +162,10 @@ extern "C"
 			}
 		}
 
-		if (GameState == 0)
+		if (GameState == 0) {
 			CurrentChunk = 0;
+			restart = false;
+		}
 	}
 
 	__declspec(dllexport) ModInfo SA2ModInfo = { ModLoaderVer };
