@@ -10,6 +10,9 @@ LandTableInfo* lands2p[20];
 LandTable* land2p = nullptr;
 uint8_t land2ploaded = 0;
 
+NJS_TEXNAME seasidehill_texname[91];
+NJS_TEXLIST seasidehill_texlist{ seasidehill_texname, 91 };
+
 bool restart;
 
 enum HeroesLevelIDs {
@@ -38,8 +41,8 @@ void FixColFlags(LandTable *land) {
 }
 
 void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
-	uint8_t count = 0;
-	int finalcount = 0;
+	int16_t visiblecount = 0;
+	int16_t finalcount = 0;
 
 	//load every geometry
 	for (uint8_t chunk = 0; chunk < size; ++chunk) {
@@ -51,25 +54,26 @@ void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 		const char *foo = fullPath.c_str();
 		lands2p[chunk] = new LandTableInfo(foo);
 		finalcount += lands2p[chunk]->getlandtable()->COLCount;
-		count += 1;
+		visiblecount += lands2p[chunk]->getlandtable()->ChunkModelCount;
 	}
 
 	//load the landtable
 	land2p = new LandTable();
 	COL* col2p = new COL[finalcount];
+	
 	land2p->COLCount = finalcount;
-	land2p->ChunkModelCount = -1;
 	finalcount = 0;
 
 	//populate the data
-	for (uint8_t chunk = 0; chunk < count; ++chunk) {
+	for (uint8_t chunk = 0; chunk < size; ++chunk) {
 		LandTable* land = lands2p[chunk]->getlandtable();
 			
+		land2p->ChunkModelCount += land->ChunkModelCount;
 		land2p->field_C = land->field_C;
 		land2p->TextureList = land->TextureList;
 		land2p->TextureName = land->TextureName;
 
-		for (int col = 0; col < land->COLCount; ++col) {
+		for (int16_t col = 0; col < land->COLCount; ++col) {
 			col2p[col + finalcount].Center = land->COLList[col].Center;
 			col2p[col + finalcount].field_14 = land->COLList[col].field_14;
 			col2p[col + finalcount].field_18 = land->COLList[col].field_18;
@@ -88,6 +92,34 @@ void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 		finalcount += land->COLCount;
 	}
 
+	//sort visible and invisible models
+	COL* geocol = new COL[visiblecount];
+	COL* colcol = new COL[finalcount - visiblecount];
+	int16_t geocount = 0;
+	int16_t colcount = 0;
+
+	for (int16_t col = 0; col < finalcount; ++col) {
+		if (col2p[col].field_14 > 0) {
+			geocol[geocount] = col2p[col];
+			++geocount;
+		}
+		else {
+			colcol[colcount] = col2p[col];
+			++colcount;
+		}
+	}
+
+	//add them back in
+	for (int16_t col = 0; col < geocount; ++col) {
+		col2p[col] = geocol[col];
+	}
+	for (int16_t col = 0; col < colcount; ++col) {
+		col2p[col + geocount] = colcol[col];
+	}
+
+	delete[] geocol;
+	delete[] colcol;
+
 	land2p->COLList = col2p;
 
 	LandTable *cland = nullptr;
@@ -95,12 +127,12 @@ void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 	switch (CurrentLevel) {
 	case HeroesLevelID_SeasideHill:
 		cland = (LandTable *)GetProcAddress(hmodule, "objLandTable0013");
+		cland->TextureList = &seasidehill_texlist;
 		land2p->TextureName = (char*)"seasidehill";
 		break;
 	}
 
 	land2p->TextureList = cland->TextureList;
-
 	*cland = *land2p;
 	CurrentLandTable = land2p;
 	FixColFlags(CurrentLandTable);
@@ -133,7 +165,7 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 					for (int j = 0; j < CurrentLandTable->COLCount; ++j) {
 						COL* col = &CurrentLandTable->COLList[j];
 
-						if (col->field_14 == 0) continue;
+						if (col->field_14 == 0) return;
 
 						if (col->field_14 == CurrentChunk) {
 							col->Flags |= 0x80000000;
