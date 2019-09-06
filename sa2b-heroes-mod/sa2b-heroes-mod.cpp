@@ -6,8 +6,9 @@ NJS_TEXLIST * LevelTexList;
 uint8_t CurrentChunk = 0;
 std::string modpath;
 
-LandTableInfo *info = nullptr;
-LandTableInfo *oldinfo = nullptr;
+LandTableInfo* lands2p[20];
+LandTable* land2p = nullptr;
+uint8_t land2ploaded = 0;
 
 bool restart;
 
@@ -36,62 +37,84 @@ void FixColFlags(LandTable *land) {
 	}
 }
 
-void SwapCurrentLandTable() {
-	LandTable *land = info->getlandtable();
+void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
+	uint8_t count = 0;
+	int finalcount = 0;
+
+	//load every geometry
+	for (uint8_t chunk = 0; chunk < size; ++chunk) {
+		std::string numtos = std::to_string(chunklist[chunk].Chunk);
+		std::string fullPath = modpath + "\\gd_PC\\";
+		fullPath += level;
+		if (chunklist[chunk].Chunk < 10) fullPath += "0";
+		fullPath += numtos + ".sa2lvl";
+		const char *foo = fullPath.c_str();
+		lands2p[chunk] = new LandTableInfo(foo);
+		finalcount += lands2p[chunk]->getlandtable()->COLCount;
+		count += 1;
+	}
+
+	//load the landtable
+	land2p = new LandTable();
+	COL* col2p = new COL[finalcount];
+	land2p->COLCount = finalcount;
+	land2p->ChunkModelCount = -1;
+	finalcount = 0;
+
+	//populate the data
+	for (uint8_t chunk = 0; chunk < count; ++chunk) {
+		LandTable* land = lands2p[chunk]->getlandtable();
+			
+		land2p->field_C = land->field_C;
+		land2p->TextureList = land->TextureList;
+		land2p->TextureName = land->TextureName;
+
+		for (int col = 0; col < land->COLCount; ++col) {
+			col2p[col + finalcount].Center = land->COLList[col].Center;
+			col2p[col + finalcount].field_14 = land->COLList[col].field_14;
+			col2p[col + finalcount].field_18 = land->COLList[col].field_18;
+			col2p[col + finalcount].Flags = land->COLList[col].Flags;
+			col2p[col + finalcount].Model = land->COLList[col].Model;
+			col2p[col + finalcount].Radius = land->COLList[col].Radius;
+
+			if (col2p[col + finalcount].Flags & 0x80000000) {
+				col2p[col + finalcount].field_14 = chunklist[chunk].Chunk;
+			}
+			else {
+				col2p[col + finalcount].field_14 = 0;
+			}
+		}
+
+		finalcount += land->COLCount;
+	}
+
+	land2p->COLList = col2p;
+
 	LandTable *cland = nullptr;
-	
+
 	switch (CurrentLevel) {
 	case HeroesLevelID_SeasideHill:
 		cland = (LandTable *)GetProcAddress(hmodule, "objLandTable0013");
-		land->TextureName = (char*)"seasidehill";
+		land2p->TextureName = (char*)"seasidehill";
 		break;
 	}
 
-	land->TextureList = cland->TextureList;
-	
-	*cland = *land;
-	CurrentLandTable = land;
+	land2p->TextureList = cland->TextureList;
+
+	*cland = *land2p;
+	CurrentLandTable = land2p;
 	FixColFlags(CurrentLandTable);
-	LoadLandManager(land);
-}
+	LoadLandManager(land2p);
 
-void LoadLevelFile(const char *shortname, int chunknb) {
-	std::string numtos = std::to_string(chunknb);
-
-	PrintDebug("[SHM] Loading "); PrintDebug(shortname); if (chunknb < 10) PrintDebug("0");
-	PrintDebug(numtos.c_str()); PrintDebug("... ");
-
-	std::string fullPath = modpath + "\\gd_PC\\";
-	fullPath += shortname;
-	if (chunknb < 10) fullPath += "0";
-	fullPath += numtos + ".sa2lvl";
-	const char *foo = fullPath.c_str();
-
-	PrintDebug("Freeing chunk... ");
-	
-	if (info) {
-		if (oldinfo) {
-			delete oldinfo;
-			oldinfo = nullptr;
-
-		}
-		oldinfo = info;
-		info = nullptr;
-	}
-
-	info = new LandTableInfo(foo);
-
-	PrintDebug("Done. Loaded '"); PrintDebug(foo); PrintDebug("'. Swapping landtable... ");
-
-	CurrentChunk = chunknb;
-	SwapCurrentLandTable();
-
-	PrintDebug("Done. \n");
+	land2ploaded = 120;
 }
 
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 	if (!MainCharObj1[0]) return;
 	
+	if (land2ploaded == 0) 
+		LoadLevelChunks(level, chunklist, size);
+
 	for (Int i = 0; i < size; ++i) {
 		if (chunklist[i].Chunk != CurrentChunk) {
 			EntityData1 *entity = MainCharObj1[0];
@@ -105,7 +128,21 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 					((chunklist[i].Position2.y == 0 || pos.y > chunklist[i].Position2.y)) &&
 					((chunklist[i].Position2.z == 0 || pos.z > chunklist[i].Position2.z))) {
 
-					LoadLevelFile(level, chunklist[i].Chunk);
+					CurrentChunk = chunklist[i].Chunk;
+				
+					for (int j = 0; j < CurrentLandTable->COLCount; ++j) {
+						COL* col = &CurrentLandTable->COLList[j];
+
+						if (col->field_14 == 0) continue;
+
+						if (col->field_14 == CurrentChunk) {
+							col->Flags |= 0x80000000;
+						}
+						else {
+							col->Flags &= ~0x80000000;
+						}
+					}
+
 					break;
 				}
 			}
@@ -162,8 +199,27 @@ extern "C"
 			}
 		}
 
+		if (land2ploaded > 1) --land2ploaded;
+
 		if (GameState == 0) {
-			CurrentChunk = 0;
+			if (land2ploaded == 1) {
+				CurrentChunk = 0;
+				land2ploaded = 0;
+
+				//unload previous level
+				if (land2p) {
+					delete[] land2p;
+					land2p = nullptr;
+
+					for (uint8_t i = 0; i < 20; ++i) {
+						if (lands2p[i]) {
+							delete lands2p[i];
+							lands2p[i] = nullptr;
+						}
+					}
+				}
+			}
+
 			restart = false;
 		}
 	}
