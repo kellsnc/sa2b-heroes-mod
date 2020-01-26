@@ -154,6 +154,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="level.h" />
+    <ClInclude Include="ocean-palace-deathzones.h" />
+    <ClInclude Include="ocean-palace.h" />
     <ClInclude Include="seaside-hill-deathzones.h" />
     <ClInclude Include="seaside-hill.h" />
     <ClInclude Include="stdafx.h" />
@@ -165,6 +167,7 @@
     <ClCompile Include="common-objects.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="objects.cpp" />
+    <ClCompile Include="ocean-palace.cpp" />
     <ClCompile Include="sa2b-heroes-mod.cpp" />
     <ClCompile Include="seaside-hill.cpp" />
     <ClCompile Include="stdafx.cpp">

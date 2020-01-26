@@ -75,6 +75,11 @@ void SeasideHill_FreeModels();
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
 void SeasideHill_OnFrame();
 
+void OceanPalace_LoadModels();
+void OceanPalace_FreeModels();
+void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions);
+void OceanPalace_OnFrame();
+
 void DashHoop(ObjectMaster* a1);
 void Boxes(ObjectMaster* a1);
 void Robots(ObjectMaster* a1);

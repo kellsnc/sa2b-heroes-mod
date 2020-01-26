@@ -11,11 +11,14 @@ LandTable* land2p = nullptr;
 uint8_t land2ploaded = 0;
 
 NJS_TEXNAME seasidehill_texname[91];
-NJS_TEXLIST seasidehill_texlist{ seasidehill_texname, 91 };
+NJS_TEXNAME oceanpalace_texname[114];
+NJS_TEXLIST seasidehill_texlist{ arrayptrandlength(seasidehill_texname) };
+NJS_TEXLIST oceanpalace_texlist{ arrayptrandlength(oceanpalace_texname) };
 
 bool restart;
 
 enum HeroesLevelIDs {
+	HeroesLevelID_OceanPalace = 10,
 	HeroesLevelID_SeasideHill = 13
 };
 
@@ -123,12 +126,17 @@ void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 	land2p->COLList = col2p;
 
 	LandTable *cland = nullptr;
-
+	
 	switch (CurrentLevel) {
 	case HeroesLevelID_SeasideHill:
 		cland = (LandTable *)GetProcAddress(hmodule, "objLandTable0013");
 		cland->TextureList = &seasidehill_texlist;
 		land2p->TextureName = (char*)"seasidehill";
+		break;
+	case HeroesLevelID_OceanPalace:
+		cland = (LandTable *)GetProcAddress(hmodule, "objLandTable0010");
+		cland->TextureList = &oceanpalace_texlist;
+		land2p->TextureName = (char*)"oceanpalace";
 		break;
 	}
 
@@ -142,7 +150,7 @@ void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 }
 
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
-	if (!MainCharObj1[0]) return;
+	if (!MainCharObj1[0] || !CurrentLandTable) return;
 	
 	if (land2ploaded == 0) 
 		LoadLevelChunks(level, chunklist, size);
@@ -159,9 +167,11 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 					((chunklist[i].Position2.x == 0 || pos.x > chunklist[i].Position2.x)) &&
 					((chunklist[i].Position2.y == 0 || pos.y > chunklist[i].Position2.y)) &&
 					((chunklist[i].Position2.z == 0 || pos.z > chunklist[i].Position2.z))) {
-
+					
 					CurrentChunk = chunklist[i].Chunk;
 				
+					CurrentLandTable->COLList[CurrentLandTable->COLCount - 1];
+
 					for (int j = 0; j < CurrentLandTable->COLCount; ++j) {
 						COL* col = &CurrentLandTable->COLList[j];
 
@@ -186,16 +196,21 @@ extern "C"
 {
 	__declspec(dllexport) void Init(const char *path, const HelperFunctions &helperFunctions)
 	{
-		if (helperFunctions.Version < 5)
-			MessageBoxA(MainWindowHandle, "Your copy of the mod loader does not support API version 5. Some functionality will not be available.\n\nPlease exit the game and update the mod loader for the best experience.", "SA2B Dreamcast Conversion", MB_ICONWARNING);
-
+		if (helperFunctions.Version < 5) {
+			MessageBoxA(MainWindowHandle,
+				"Your copy of the Mod Loader is outdated, please update it to the latest version.",
+				"SA2B Heroes Conversion",
+				MB_ICONWARNING);
+		}
+		
 		modpath = std::string(path);
-
+		
 		WriteCall((void*)0x5DCDF7, LandManagerHook);
 		WriteData((char*)0x5DD4F0, (char)0xC3);
 		WriteData<2>((void*)0x47C2BC, 0x90u);
 
 		SeasideHill_Init(path, helperFunctions);
+		OceanPalace_Init(path, helperFunctions);
 	}
 
 	__declspec(dllexport) void OnFrame() {
@@ -203,17 +218,21 @@ extern "C"
 		case 1:
 			switch (CurrentLevel) {
 			case HeroesLevelID_SeasideHill:
-				CommonObjects_LoadModels();
 				SeasideHill_LoadModels();
-				break;
+				CommonObjects_LoadModels(); break;
+			case HeroesLevelID_OceanPalace:
+				OceanPalace_LoadModels();
+				CommonObjects_LoadModels(); break;
 			}
 			break;
 		case 2:
 			switch (CurrentLevel) {
 			case HeroesLevelID_SeasideHill:
-				CommonObjects_FreeModels();
 				SeasideHill_FreeModels();
-				break;
+				CommonObjects_FreeModels(); break;
+			case HeroesLevelID_OceanPalace:
+				OceanPalace_FreeModels();
+				CommonObjects_FreeModels(); break;
 			}
 			break;
 		default:
@@ -227,6 +246,9 @@ extern "C"
 			switch (CurrentLevel) {
 			case HeroesLevelID_SeasideHill:
 				SeasideHill_OnFrame();
+				break;
+			case HeroesLevelID_OceanPalace:
+				OceanPalace_OnFrame();
 				break;
 			}
 		}
