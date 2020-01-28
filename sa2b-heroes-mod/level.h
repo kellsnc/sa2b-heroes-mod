@@ -69,7 +69,6 @@ enum DistObj : Sint16
 
 ModelInfo* LoadMDL(const char *name);
 void FreeMDL(ModelInfo * pointer);
-int CheckModelLoaded();
 
 void DrawModel(NJS_MODEL * model);
 bool CheckModelDisplay(SOI_LIST item);
@@ -88,17 +87,12 @@ void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* st
 void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size, char* fullname, NJS_TEXLIST* texlist);
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size);
 
+void CommonLevelDelete();
 void CommonObjects_LoadModels();
 void CommonObjects_FreeModels();
 
-void SeasideHill_Load();
-void SeasideHill_FreeModels();
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
-void SeasideHill_Main();
-
-void OceanPalace_FreeModels();
 void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions);
-void OceanPalace_OnFrame();
 
 void DashHoop(ObjectMaster* a1);
 void Boxes(ObjectMaster* a1);
@@ -134,4 +128,3 @@ static inline void AddToCollisionList(ObjectMaster *a1)
 
 extern uint8_t CurrentChunk;
 extern std::string modpath;
-extern bool restart;

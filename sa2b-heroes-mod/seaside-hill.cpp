@@ -325,26 +325,14 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 
 ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList_list) };
 
-void SeasideHill_LoadObjects() {
-	LoadObject(3, "SHFlowers", SHFlowers, LoadObj_Data1);
-	LoadObject(3, "SHWaterfalls", SHWaterfalls, LoadObj_Data1);
-}
-
-void SeasideHill_FreeModels() {
-	FreeMDL(SH_MORUINS);
-	FreeMDL(SH_FLOWERS);
-	FreeMDL(SH_WATERFS);
-	FreeMDL(SH_POLFLAG);
-	FreeMDL(SH_PLATFOR);
-}
-
-void SeasideHill_Main() {
+void SeasideHill_Main(ObjectMaster* obj) {
 	ChunkHandler("SH", SeasideHillChunks, LengthOfArray(SeasideHillChunks));
 	AnimateTextures(SeasideHillAnimTexs, 2);
 
-	if (GameState == GameStates_Ingame && restart) {
-		SeasideHill_LoadObjects();
-		restart = false;
+	if (obj->Data1.Entity->Action == 0) {
+		LoadObject(3, "SHFlowers", SHFlowers, LoadObj_Data1);
+		LoadObject(3, "SHWaterfalls", SHWaterfalls, LoadObj_Data1);
+		obj->Data1.Entity->Action = 1;
 	}
 
 	EntityData1* entity = MainCharObj1[0];
@@ -392,12 +380,21 @@ void SeasideHill_Load() {
 	SH_POLFLAG = LoadMDL("SH_POLFLAG");
 	SH_MORUINS = LoadMDL("SH_MORUINS");
 	SH_PLATFOR = LoadMDL("SH_PLATFOR");
-	SeasideHill_LoadObjects();
-	CommonObjects_LoadModels();
+}
+
+void SeasideHill_Delete() {
+	FreeMDL(SH_MORUINS);
+	FreeMDL(SH_FLOWERS);
+	FreeMDL(SH_WATERFS);
+	FreeMDL(SH_POLFLAG);
+	FreeMDL(SH_PLATFOR);
+
+	CommonLevelDelete();
 }
 
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) {
 	CityEscapeHeader.Init = SeasideHill_Load;
-	CityEscapeHeader.subprgmanager = nullptr;
+	CityEscapeHeader.subprgmanager = SeasideHill_Main;
+	CityEscapeHeader.anonymous_2 = SeasideHill_Delete;
 	SetStartEndPoints(helperFunctions, &sh_startpos, &sh_2pintro, &sh_endpos, &sh_endpos23);
 }

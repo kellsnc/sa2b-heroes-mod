@@ -183,28 +183,21 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 2400000, Boxes },
 };
 
-void OceanPalace_FreeModels() {
-	FreeMDL(OP_TURFINS);
-	FreeMDL(OP_POLFLAG);
-	FreeMDL(OP_FLOWERS);
-	FreeMDL(OP_BOULDER);
-	FreeMDL(OP_WATERFS);
+void OceanPalace_SkyBox(ObjectMaster* obj) {
+
 }
 
-void OceanPalace_LoadObjects() {
-	LoadObject(LoadObj_Data1, "OPWaterfalls", OPWaterfalls, 3);
-	/*LoadObject(LoadObj_Data1, 3, OPFlowers);
-	LoadObject(LoadObj_Data1, 3, OPFins_Main);
-	LoadObject(LoadObj_Data1, 3, OPBoulders);*/
-}
-
-void OceanPalace_OnFrame() {
+void OceanPalace_OnFrame(ObjectMaster* obj) {
 	ChunkHandler("OP", OceanPalaceChunks, LengthOfArray(OceanPalaceChunks));
 	AnimateTextures(OceanPalaceAnimTexs, 2);
 
-	if (GameState == GameStates_Ingame && restart) {
-		OceanPalace_LoadObjects();
-		restart = false;
+	if (obj->Data1.Entity->Action == 0) {
+		LoadObject(LoadObj_Data1, "OPWaterfalls", OPWaterfalls, 3);
+		/*LoadObject(LoadObj_Data1, 3, OPFlowers);
+		LoadObject(LoadObj_Data1, 3, OPFins_Main);
+		LoadObject(LoadObj_Data1, 3, OPBoulders);*/
+		obj->DisplaySub = OceanPalace_SkyBox;
+		obj->Data1.Entity->Action = 1;
 	}
 }
 
@@ -232,12 +225,21 @@ void OceanPalace_Load() {
 	OP_BOULDER = LoadMDL("OP_BOULDER");
 	OP_POLFLAG = LoadMDL("OP_POLFLAG");
 	OP_SKYMDLS = LoadMDL("OP_SKYMDLS");
-	OceanPalace_LoadObjects();
-	CommonObjects_LoadModels();
+}
+
+void OceanPalaceDelete() {
+	FreeMDL(OP_TURFINS);
+	FreeMDL(OP_POLFLAG);
+	FreeMDL(OP_FLOWERS);
+	FreeMDL(OP_BOULDER);
+	FreeMDL(OP_WATERFS);
+
+	CommonLevelDelete();
 }
 
 void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) {
 	MetalHarborHeader.Init = OceanPalace_Load;
-	MetalHarborHeader.subprgmanager = nullptr;
+	MetalHarborHeader.subprgmanager = OceanPalace_OnFrame;
+	CityEscapeHeader.anonymous_2 = OceanPalaceDelete;
 	SetStartEndPoints(helperFunctions, &op_startpos, &op_2pintro, &op_endpos, &op_endpos23);
 }

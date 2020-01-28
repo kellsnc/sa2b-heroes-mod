@@ -6,8 +6,6 @@ std::string modpath;
 uint8_t CurrentChunk = 0;
 LandTableInfo* lands2p[20];
 
-bool restart;
-
 TexPackInfo CommonTexPacks[2]{
 	{ "efftex_common", texlist_efftex_common },
 	{ "objtex_common", texlist_objtex_common }
@@ -170,6 +168,7 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 //Set some other common level stuff
 void CommonLevelInit() {
 	DropRingsFunc_ptr = DropRings;
+	CommonObjects_LoadModels();
 
 	for (uint8_t i = 0; i < LengthOfArray(CommonTexPacks); ++i) {
 		if (i == 0) {
@@ -262,6 +261,26 @@ void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* st
 	}
 }
 
+//Delete the heroes landtable at stage exit
+void CommonLevelDelete() {
+	CommonObjects_FreeModels();
+
+	if (CurrentLandTable) {
+		delete[] CurrentLandTable;
+		CurrentLandTable = nullptr;
+
+		for (uint8_t i = 0; i < 20; ++i) {
+			if (lands2p[i]) {
+				delete lands2p[i];
+				lands2p[i] = nullptr;
+			}
+		}
+	}
+
+	FunctionPointer(void, DeleteLevel, (), 0x5DD340);
+	DeleteLevel();
+}
+
 extern "C"
 {
 	__declspec(dllexport) void Init(const char *path, const HelperFunctions &helperFunctions)
@@ -279,55 +298,6 @@ extern "C"
 
 		SeasideHill_Init(path, helperFunctions);
 		OceanPalace_Init(path, helperFunctions);
-	}
-
-	__declspec(dllexport) void OnFrame() {
-		switch (CheckModelLoaded()) {
-		case 2:
-			switch (CurrentLevel) {
-			case HeroesLevelID_SeasideHill:
-				SeasideHill_FreeModels();
-				CommonObjects_FreeModels(); break;
-			case HeroesLevelID_OceanPalace:
-				OceanPalace_FreeModels();
-				CommonObjects_FreeModels(); break;
-			}
-			return;
-		default:
-			break;
-		}
-
-		if (GameState == 9 || GameState == 13 || GameState == GameStates_RestartLevel_1) {
-			restart = true;
-			return;
-		}
-		
-		if (GameState != GameStates_Pause) {
-			switch (CurrentLevel) {
-			case HeroesLevelID_SeasideHill:
-				SeasideHill_Main();
-				break;
-			case HeroesLevelID_OceanPalace:
-				OceanPalace_OnFrame();
-				break;
-			}
-		}
-
-		if (GameState == 0) {
-			if (CurrentLandTable) {
-				delete[] CurrentLandTable;
-				CurrentLandTable = nullptr;
-
-				for (uint8_t i = 0; i < 20; ++i) {
-					if (lands2p[i]) {
-						delete lands2p[i];
-						lands2p[i] = nullptr;
-					}
-				}
-			}
-
-			restart = false;
-		}
 	}
 
 	__declspec(dllexport) ModInfo SA2ModInfo = { ModLoaderVer };

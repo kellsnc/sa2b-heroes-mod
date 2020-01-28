@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-bool ModelLoaded = false;
-
 NJS_MATERIAL matlist_col[] = {
 	{ { 0xFFFFFFFF },{ 0xFFFFFFFF }, 0, 0, NJD_DA_INV_SRC | NJD_SA_SRC }
 };
@@ -25,21 +23,6 @@ ModelInfo* LoadMDL(const char *name) {
 //Free Object File
 void FreeMDL(ModelInfo * pointer) {
 	if (pointer) delete(pointer);
-}
-
-//Check if objects can be loaded
-int CheckModelLoaded() {
-	if (GameState == 0 && ModelLoaded == true) {
-		ModelLoaded = false;
-		return 2;
-	}
-	else if ((GameState == GameStates_Loading || GameState == 3) && ModelLoaded == false) {
-		ModelLoaded = true;
-		return 1;
-	}
-	else {
-		return 0;
-	}
 }
 
 //Draw a model
