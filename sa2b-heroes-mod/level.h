@@ -95,6 +95,7 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
 void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions);
 
 void DashHoop(ObjectMaster* a1);
+void ObjFan(ObjectMaster *obj);
 void Boxes(ObjectMaster* a1);
 void Robots(ObjectMaster* a1);
 void Beetle_Stationary(ObjectMaster* a1);

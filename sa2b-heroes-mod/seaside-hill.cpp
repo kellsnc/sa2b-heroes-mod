@@ -19,7 +19,9 @@ void SHFlowers(ObjectMaster* a1) {
 		
 	if (Data1->Action == 0) {
 		a1->DisplaySub = a1->MainSub;
+		a1->MainSub = nullptr;
 		Data1->Action = 1;
+		return;
 	}
 	
 	for (int i = 0; i < LengthOfArray(SeasideHill_Flowers); ++i) {
@@ -56,7 +58,9 @@ void SHWaterfalls(ObjectMaster* a1) {
 
 	if (Data1->Action == 0) {
 		a1->DisplaySub = a1->MainSub;
+		a1->MainSub = nullptr;
 		Data1->Action = 1;
+		return;
 	}
 
 	for (int i = 0; i < LengthOfArray(SeasideHill_Waterfalls); ++i) {

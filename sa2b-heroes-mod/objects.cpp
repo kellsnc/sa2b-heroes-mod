@@ -71,10 +71,10 @@ bool CheckModelDisplay2(SOI_LIST2 item) {
 	return false;
 }
 
-bool ClipSetObject(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1.Entity->Position, a1->SETData->field_C / 1000)) return 1;
+bool ClipSetObject(ObjectMaster *obj) {
+	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, obj->SETData->field_C / 1000)) return 1;
 	else {
-		DeleteObject_(a1);
+		DeleteObject_(obj);
 		return 0;
 	}
 }

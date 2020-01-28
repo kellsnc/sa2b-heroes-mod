@@ -168,7 +168,17 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 //Set some other common level stuff
 void CommonLevelInit() {
 	DropRingsFunc_ptr = DropRings;
+	DisplayItemBoxItemFunc_ptr = DisplayItemBoxItem;
 	CommonObjects_LoadModels();
+
+	//These functions crashes the game atm
+	//The itembox is related to the texpack function
+	//The Chaosdrive is related to the drive function pointer set in the levels inits
+	//If can't be fixed, change the stuff with writedata and then call the city escape init
+	WriteData((char*)ItemBoxAir_Main, (char)0xC3);
+	WriteData((char*)KDITEMBOX, (char)0xC3);
+	WriteData((char*)ItemBox_Main, (char)0xC3);
+	WriteData((char*)ChaosDrive_Load2, (char)0xC3);
 
 	for (uint8_t i = 0; i < LengthOfArray(CommonTexPacks); ++i) {
 		if (i == 0) {

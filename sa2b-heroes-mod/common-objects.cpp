@@ -3,15 +3,8 @@
 NJS_TEXNAME heroescmn_texname[41];
 NJS_TEXLIST heroescmn_texlist = { arrayptrandlengthT(heroescmn_texname, Uint32) };
 
-TexPackInfo heroestexpacks[] = {
-	{ "heroescmn", &heroescmn_texlist },
-	{ "heroescmn", &heroescmn_texlist },
-	{ 0 }
-};
-
-NJS_TEXLIST **copylist = { nullptr };
-
 ModelInfo * CO_DSHHOOP;
+ModelInfo * CO_COMNFAN;
 
 void DashHoop_Display(ObjectMaster* a1) {
 	RenderInfo->CurrentTexlist = &heroescmn_texlist;
@@ -70,6 +63,45 @@ void DashHoop(ObjectMaster* a1) {
 	a1->MainSub = DashHoop_Main;
 }
 
+void ObjFan_Display(ObjectMaster *a1)
+{
+	RenderInfo->CurrentTexlist = &heroescmn_texlist;
+	njPushMatrix(0);
+	njTranslate(_nj_current_matrix_ptr_, a1->Data1.Entity->Position.x, a1->Data1.Entity->Position.y, a1->Data1.Entity->Position.z);
+	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y + 0x4000);
+	DrawModel(CO_COMNFAN->getmodel()->basicmodel);
+	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Scale.z);
+	DrawModel(CO_COMNFAN->getmodel()->child->basicmodel);
+	njPopMatrix(1u);
+}
+
+void ObjFan(ObjectMaster *obj)
+{
+	EntityData1* data = obj->Data1.Entity;
+	
+	if (data->Action == 0) {
+		obj->DisplaySub = ObjFan_Display;
+		data->Action = 1;
+	}
+
+	if (ClipSetObject(obj)) {
+		data->Scale.z += data->Scale.y;
+
+		int slot = IsPlayerInsideSphere(&data->Position, 45.0f);
+		if (slot > 0) {
+			EntityData1 *entity = MainCharObj1[slot - 1];
+			CharObj2Base *co2 = MainCharObj2[slot - 1];
+			if (co2 != NULL) {
+				co2->Speed.x = 0; co2->Speed.z = 0;
+				entity->Rotation.x = 0;
+				entity->Rotation.z = 0;
+				co2->Speed.y = data->Scale.x;
+				co2->AnimInfo.Current = 23;
+			}
+		}
+	}
+}
+
 void Boxes(ObjectMaster* a1) {
 	uint8_t type = a1->Data1.Entity->Scale.x;
 
@@ -122,22 +154,14 @@ void Robots(ObjectMaster* a1) {
 }
 
 void CommonObjects_LoadModels() {
-	LoadTextureList((char*)"heroescmn", &heroescmn_texlist);
-
-	switch (CurrentLevel) {
-	case 13:
-		WriteData((NJS_TEXLIST****)0x5DCE6C, &copylist);
-		WriteData((TexPackInfo**)0x5DCE71, static_cast<TexPackInfo*>(heroestexpacks));
-		WriteData((NJS_TEXLIST****)0x5DD3E4, &copylist);
-		WriteData((TexPackInfo**)0x5DD3E9, static_cast<TexPackInfo*>(heroestexpacks));
-		break;
-	}
-	
+	LoadTextureList((char*)"heroescmn", &heroescmn_texlist);	
 	CO_DSHHOOP = LoadMDL("CO_DSHHOOP");
+	CO_COMNFAN = LoadMDL("CO_COMNFAN");
 }
 
 void CommonObjects_FreeModels() {
 	FreeTexList(&heroescmn_texlist);
 
 	FreeMDL(CO_DSHHOOP);
+	FreeMDL(CO_COMNFAN);
 }
