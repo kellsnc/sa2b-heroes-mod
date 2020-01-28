@@ -1,33 +1,24 @@
 #include "stdafx.h"
 
 HMODULE hmodule = GetModuleHandle(__TEXT("Data_DLL_orig"));
-NJS_TEXLIST * LevelTexList;
-
-uint8_t CurrentChunk = 0;
 std::string modpath;
 
+uint8_t CurrentChunk = 0;
 LandTableInfo* lands2p[20];
-LandTable* land2p = nullptr;
-uint8_t land2ploaded = 0;
-
-NJS_TEXNAME seasidehill_texname[91];
-NJS_TEXNAME oceanpalace_texname[114];
-NJS_TEXLIST seasidehill_texlist{ arrayptrandlength(seasidehill_texname) };
-NJS_TEXLIST oceanpalace_texlist{ arrayptrandlength(oceanpalace_texname) };
 
 bool restart;
+
+TexPackInfo CommonTexPacks[2]{
+	{ "efftex_common", texlist_efftex_common },
+	{ "objtex_common", texlist_objtex_common }
+};
 
 enum HeroesLevelIDs {
 	HeroesLevelID_OceanPalace = 10,
 	HeroesLevelID_SeasideHill = 13
 };
 
-void LandManagerHook(int a1, LandTable *a2)
-{
-	LandTableSA2BModels = 0;
-	LoadLandManager(a2);
-}
-
+//Change the sadx col flags to similar sa2 ones
 void FixColFlags(LandTable *land) {
 	for (int i = 0; i < land->COLCount; ++i) {		
 		switch (land->COLList[i].Flags) {
@@ -43,7 +34,8 @@ void FixColFlags(LandTable *land) {
 	}
 }
 
-void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
+//Load every chunk, sort the geometry, set up the chunk system
+void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size, char* fullname, NJS_TEXLIST* texlist) {
 	int16_t visiblecount = 0;
 	int16_t finalcount = 0;
 
@@ -61,20 +53,20 @@ void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 	}
 
 	//load the landtable
-	land2p = new LandTable();
+	CurrentLandTable = new LandTable();
 	COL* col2p = new COL[finalcount];
 	
-	land2p->COLCount = finalcount;
+	CurrentLandTable->COLCount = finalcount;
 	finalcount = 0;
 
 	//populate the data
 	for (uint8_t chunk = 0; chunk < size; ++chunk) {
 		LandTable* land = lands2p[chunk]->getlandtable();
 			
-		land2p->ChunkModelCount += land->ChunkModelCount;
-		land2p->field_C = land->field_C;
-		land2p->TextureList = land->TextureList;
-		land2p->TextureName = land->TextureName;
+		CurrentLandTable->ChunkModelCount += land->ChunkModelCount;
+		CurrentLandTable->field_C = land->field_C;
+		CurrentLandTable->TextureList = land->TextureList;
+		CurrentLandTable->TextureName = land->TextureName;
 
 		for (int16_t col = 0; col < land->COLCount; ++col) {
 			col2p[col + finalcount].Center = land->COLList[col].Center;
@@ -123,37 +115,19 @@ void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 	delete[] geocol;
 	delete[] colcol;
 
-	land2p->COLList = col2p;
+	CurrentLandTable->COLList = col2p;
+	CurrentLandTable->TextureList = texlist;
+	CurrentLandTable->TextureName = fullname;
 
-	LandTable *cland = nullptr;
-	
-	switch (CurrentLevel) {
-	case HeroesLevelID_SeasideHill:
-		cland = (LandTable *)GetProcAddress(hmodule, "objLandTable0013");
-		cland->TextureList = &seasidehill_texlist;
-		land2p->TextureName = (char*)"seasidehill";
-		break;
-	case HeroesLevelID_OceanPalace:
-		cland = (LandTable *)GetProcAddress(hmodule, "objLandTable0010");
-		cland->TextureList = &oceanpalace_texlist;
-		land2p->TextureName = (char*)"oceanpalace";
-		break;
-	}
-
-	land2p->TextureList = cland->TextureList;
-	*cland = *land2p;
-	CurrentLandTable = land2p;
 	FixColFlags(CurrentLandTable);
-	LoadLandManager(land2p);
 
-	land2ploaded = 120;
+	LandTableSA2BModels = 0;
+	LoadLandManager(CurrentLandTable);
 }
 
+//Show the visible pieces when in bounds
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 	if (!MainCharObj1[0] || !CurrentLandTable) return;
-	
-	if (land2ploaded == 0) 
-		LoadLevelChunks(level, chunklist, size);
 
 	for (Int i = 0; i < size; ++i) {
 		if (chunklist[i].Chunk != CurrentChunk) {
@@ -192,6 +166,102 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 	}
 }
 
+//Load the common texpacks, and fill the many common texlists
+//Set some other common level stuff
+void CommonLevelInit() {
+	DropRingsFunc_ptr = DropRings;
+
+	for (uint8_t i = 0; i < LengthOfArray(CommonTexPacks); ++i) {
+		if (i == 0) {
+			LoadTextureList((char*)"objtex_common", texlist_objtex_common);
+			CommonTexPacks[i].TexList = texlist_objtex_common;
+		}
+		else {
+			LoadTextureList((char*)"efftex_common", texlist_efftex_common);
+			CommonTexPacks[i].TexList = texlist_efftex_common;
+		}
+		
+		//Go through all the TexLists
+		NJS_TEXLIST*** c1 = &CommonTexLists[26];
+		while (1) {
+			if (c1[0][0]) {
+				
+				NJS_TEXLIST** c2 = c1[0];
+				while (1) {
+					if (c2[0]) {
+						
+						NJS_TEXLIST* c3 = c2[0];
+						while (1) {
+							if (c3->nbTexture > 0 && c3->nbTexture < 3) {
+								//put the texture pointer if the filename is identical
+
+								for (uint8_t t = 0; t < CommonTexPacks[i].TexList->nbTexture; ++t) {
+									void* orig = CommonTexPacks[i].TexList->textures[t].filename;
+									
+									for (uint8_t t2 = 0; t2 < c3->nbTexture; ++t2) {
+										void* dest = c3->textures[t2].filename;
+
+										if (orig == dest) {
+											c3->textures[t2].texaddr = CommonTexPacks[i].TexList->textures[t].texaddr;
+											c3->textures[t2].attr = CommonTexPacks[i].TexList->textures[t].attr;
+										}
+									}
+								}
+							}
+							else {
+								break;
+							}
+
+							c3 = &c3[1];
+						}
+					}
+					else {
+						break;
+					}
+
+					c2 = &c2[1];
+				}
+
+			}
+			else {
+				return;
+			}
+
+			c1 = &c1[1];
+		}
+	}
+}
+
+//Load the current level music
+void LoadLevelMusic(char* name) {
+	char character;
+	int c = 0;
+	do
+	{
+		character = name[c];
+		CurrentSongName[c++] = character;
+	} while (character);
+
+	
+	PlayMusic(name);
+	ResetMusic();
+}
+
+//Set the start and end positions
+void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* start, LevelEndPosition* start2pIntro, StartPosition* end, LevelEndPosition* missionend) {
+	for (uint8_t i = 0; i < Characters_Amy; i++)
+	{
+		helperFunctions.RegisterStartPosition(i, *start);
+		helperFunctions.Register2PIntroPosition(i, *start2pIntro);
+
+		if (helperFunctions.Version >= 5)
+		{
+			helperFunctions.RegisterEndPosition(i, *end);
+			helperFunctions.RegisterMission23EndPosition(i, *missionend);
+		}
+	}
+}
+
 extern "C"
 {
 	__declspec(dllexport) void Init(const char *path, const HelperFunctions &helperFunctions)
@@ -205,8 +275,6 @@ extern "C"
 		
 		modpath = std::string(path);
 		
-		WriteCall((void*)0x5DCDF7, LandManagerHook);
-		WriteData((char*)0x5DD4F0, (char)0xC3);
 		WriteData<2>((void*)0x47C2BC, 0x90u);
 
 		SeasideHill_Init(path, helperFunctions);
@@ -215,16 +283,6 @@ extern "C"
 
 	__declspec(dllexport) void OnFrame() {
 		switch (CheckModelLoaded()) {
-		case 1:
-			switch (CurrentLevel) {
-			case HeroesLevelID_SeasideHill:
-				SeasideHill_LoadModels();
-				CommonObjects_LoadModels(); break;
-			case HeroesLevelID_OceanPalace:
-				OceanPalace_LoadModels();
-				CommonObjects_LoadModels(); break;
-			}
-			break;
 		case 2:
 			switch (CurrentLevel) {
 			case HeroesLevelID_SeasideHill:
@@ -234,18 +292,20 @@ extern "C"
 				OceanPalace_FreeModels();
 				CommonObjects_FreeModels(); break;
 			}
-			break;
+			return;
 		default:
 			break;
 		}
 
-		if (GameState == 9 || GameState == 13 || GameState == GameStates_RestartLevel_1)
+		if (GameState == 9 || GameState == 13 || GameState == GameStates_RestartLevel_1) {
 			restart = true;
-
+			return;
+		}
+		
 		if (GameState != GameStates_Pause) {
 			switch (CurrentLevel) {
 			case HeroesLevelID_SeasideHill:
-				SeasideHill_OnFrame();
+				SeasideHill_Main();
 				break;
 			case HeroesLevelID_OceanPalace:
 				OceanPalace_OnFrame();
@@ -253,23 +313,15 @@ extern "C"
 			}
 		}
 
-		if (land2ploaded > 1) --land2ploaded;
-
 		if (GameState == 0) {
-			if (land2ploaded == 1) {
-				CurrentChunk = 0;
-				land2ploaded = 0;
+			if (CurrentLandTable) {
+				delete[] CurrentLandTable;
+				CurrentLandTable = nullptr;
 
-				//unload previous level
-				if (land2p) {
-					delete[] land2p;
-					land2p = nullptr;
-
-					for (uint8_t i = 0; i < 20; ++i) {
-						if (lands2p[i]) {
-							delete lands2p[i];
-							lands2p[i] = nullptr;
-						}
+				for (uint8_t i = 0; i < 20; ++i) {
+					if (lands2p[i]) {
+						delete lands2p[i];
+						lands2p[i] = nullptr;
 					}
 				}
 			}

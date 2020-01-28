@@ -8,6 +8,9 @@ ModelInfo * SH_POLFLAG;
 ModelInfo * SH_WATERFS;
 ModelInfo * SH_FLOWERS;
 
+NJS_TEXNAME seasidehill_texname[91];
+NJS_TEXLIST seasidehill_texlist{ arrayptrandlength(seasidehill_texname) };
+
 float ruin = 0;
 static int flagtimer = 0;
 
@@ -320,19 +323,11 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 2400000, Boxes },
 };
 
+ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList_list) };
+
 void SeasideHill_LoadObjects() {
 	LoadObject(3, "SHFlowers", SHFlowers, LoadObj_Data1);
 	LoadObject(3, "SHWaterfalls", SHWaterfalls, LoadObj_Data1);
-}
-
-void SeasideHill_LoadModels() {
-	SH_FLOWERS = LoadMDL("SH_FLOWERS");
-	SH_WATERFS = LoadMDL("SH_WATERFS");
-	SH_POLFLAG = LoadMDL("SH_POLFLAG");
-	SH_MORUINS = LoadMDL("SH_MORUINS");
-	SH_PLATFOR = LoadMDL("SH_PLATFOR");
-
-	SeasideHill_LoadObjects();
 }
 
 void SeasideHill_FreeModels() {
@@ -343,42 +338,16 @@ void SeasideHill_FreeModels() {
 	FreeMDL(SH_PLATFOR);
 }
 
-void __cdecl SeasideHill_SkyBox(ObjectMaster* a1) {
-
-}
-
-void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) {
-	WriteData((ObjectFuncPtr*)0x5DD213, SeasideHill_SkyBox);
-	WriteData((LoopHead***)0x5DD124, SeasideHillPathList);
-	WriteData((DeathZone**)0x5DD226, SeasideHillDeathZones);
-
-	for (uint8_t i = 0; i < 92; ++i) {
-		CityEscape_ObjectArray[i] = SeasideHillObjectList_list[i];
-	}
-
-	for (uint8_t i = 0; i < Characters_Amy; i++)
-	{
-		helperFunctions.RegisterStartPosition(i, sh_startpos);
-		helperFunctions.Register2PIntroPosition(i, sh_2pintro);
-
-		if (helperFunctions.Version >= 5)
-		{
-			helperFunctions.RegisterEndPosition(i, sh_endpos);
-			helperFunctions.RegisterMission23EndPosition(i, sh_endpos23);
-		}
-	}
-}
-
-void SeasideHill_OnFrame() {
+void SeasideHill_Main() {
 	ChunkHandler("SH", SeasideHillChunks, LengthOfArray(SeasideHillChunks));
 	AnimateTextures(SeasideHillAnimTexs, 2);
-
-	EntityData1* entity = MainCharObj1[0];
 
 	if (GameState == GameStates_Ingame && restart) {
 		SeasideHill_LoadObjects();
 		restart = false;
 	}
+
+	EntityData1* entity = MainCharObj1[0];
 
 	if (CurrentChunk == 16) {
 		if (entity->Position.z > -200) {
@@ -398,4 +367,37 @@ void SeasideHill_OnFrame() {
 			MainCharObj2[player - 1]->Speed = { 0, 0, 0 };
 		}
 	}
+}
+
+void SeasideHill_Load() {
+	CommonLevelInit();
+
+	LoadLevelChunks("SH", SeasideHillChunks, LengthOfArray(SeasideHillChunks), (char*)"seasidehill", &seasidehill_texlist);
+	CurrentLevelTexList = CurrentLandTable->TextureList;
+	
+	for (uint8_t i = 0; i < LengthOfArray(SeasideHillObjectList_list); ++i) {
+		CityEscape_ObjectArray[i] = SeasideHillObjectList_list[i];
+	}
+
+	void* setfile = LoadSETFile(2048, (char*)"seaside-hill-set.bin", (char*)"dummy-set.bin");
+	LoadSetObject(&CityEscape_ObjectList, setfile);
+	LoadStageLight("stg13_light.bin");
+	LoadLevelMusic((char*)"seasidehill.adx");
+	LoadStagePaths(SeasideHillPathList);
+	LoadDeathZones(SeasideHillDeathZones);
+	LoadFogData_Fogtask("stg13_fog.bin", (FogData*)0x1A280C8);
+	
+	SH_FLOWERS = LoadMDL("SH_FLOWERS");
+	SH_WATERFS = LoadMDL("SH_WATERFS");
+	SH_POLFLAG = LoadMDL("SH_POLFLAG");
+	SH_MORUINS = LoadMDL("SH_MORUINS");
+	SH_PLATFOR = LoadMDL("SH_PLATFOR");
+	SeasideHill_LoadObjects();
+	CommonObjects_LoadModels();
+}
+
+void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) {
+	CityEscapeHeader.Init = SeasideHill_Load;
+	CityEscapeHeader.subprgmanager = nullptr;
+	SetStartEndPoints(helperFunctions, &sh_startpos, &sh_2pintro, &sh_endpos, &sh_endpos23);
 }

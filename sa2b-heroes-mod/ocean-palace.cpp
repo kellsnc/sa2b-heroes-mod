@@ -1,6 +1,91 @@
 #include "stdafx.h"
 #include "ocean-palace.h"
-#include "ocean-palace-deathzones.h"
+
+ModelInfo * OP_WATERFS;
+ModelInfo * OP_FLOWERS;
+ModelInfo * OP_TURFINS;
+ModelInfo * OP_BOULDER;
+ModelInfo * OP_POLFLAG;
+ModelInfo * OP_SKYMDLS;
+
+NJS_TEXNAME oceanpalace_texname[114];
+NJS_TEXLIST oceanpalace_texlist{ arrayptrandlength(oceanpalace_texname) };
+
+extern CollisionData Col_Pole;
+
+void OPWaterfalls(ObjectMaster *a1) {
+	if (!CurrentLandTable) return;
+
+	EntityData1 *Data1 = a1->Data1.Entity;
+
+	if (Data1->Action == 0) {
+		a1->DisplaySub = a1->MainSub;
+		Data1->Action = 1;
+	}
+
+	for (int i = 0; i < LengthOfArray(OceanPalace_Waterfalls); ++i) {
+		if (CheckModelDisplay2(OceanPalace_Waterfalls[i])) {
+			SOI_LIST2 item = OceanPalace_Waterfalls[i];
+
+			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+			njPushMatrix(0);
+			njTranslate(_nj_current_matrix_ptr_, item.Position.x, item.Position.y, item.Position.z);
+			njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
+			njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
+			njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
+			njScale(item.Scale.x, item.Scale.y, item.Scale.z);
+
+			switch (item.Model) {
+			case 0: DrawModel(OP_WATERFS->getmodel()->basicmodel); break;
+			case 1: DrawModel(OP_WATERFS->getmodel()->child->basicmodel); break;
+			case 2: DrawModel(OP_WATERFS->getmodel()->child->child->basicmodel); break;
+			case 3: DrawModel(OP_WATERFS->getmodel()->child->child->child->basicmodel); break;
+			case 4: DrawModel(OP_WATERFS->getmodel()->child->child->child->child->basicmodel); break;
+			case 5: DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->basicmodel); break;
+			case 6: DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->basicmodel); break;
+			case 7: DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->basicmodel); break;
+			case 8: DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->basicmodel); break;
+			case 9: DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->basicmodel); break;
+			}
+
+			njPopMatrix(1u);
+		}
+	}
+}
+
+void OPPOLE_Display(ObjectMaster *obj) {
+	EntityData1* data = obj->Data1.Entity;
+
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslate(_nj_current_matrix_ptr_, data->Position.x, data->Position.y, data->Position.z);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+		
+	if (data->Scale.x == 1) {
+		DrawModel(OP_POLFLAG->getmodel()->child->basicmodel);
+		DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->basicmodel);
+	}
+	else {
+		DrawModel(OP_POLFLAG->getmodel()->basicmodel);
+		DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->basicmodel);
+	}
+		
+	njPopMatrix(1u);
+}
+
+void OPPOLE_Main(ObjectMaster *obj) {
+	if (!ClipSetObject(obj)) {
+		AddToCollisionList(obj);
+	}
+}
+
+void OPPOLE(ObjectMaster *obj)
+{
+	InitCollision(obj, &Col_Pole, 1, 4);
+
+	obj->MainSub = OPPOLE_Main;
+	obj->DisplaySub = &OPPOLE_Display;
+}
 
 ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
@@ -91,57 +176,68 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Electric },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Attack },
 	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2400000, nullptr },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1360000, (ObjectFuncPtr)SpringA_Main },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, OPPOLE },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 8000000, OPPOLE },
 	{ (LoadObj)0 },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 2400000, Boxes },
 };
 
 void OceanPalace_FreeModels() {
-
+	FreeMDL(OP_TURFINS);
+	FreeMDL(OP_POLFLAG);
+	FreeMDL(OP_FLOWERS);
+	FreeMDL(OP_BOULDER);
+	FreeMDL(OP_WATERFS);
 }
 
 void OceanPalace_LoadObjects() {
-	
-}
-
-void OceanPalace_LoadModels() {
-	OceanPalace_LoadObjects();
-}
-
-void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) {
-	/*WriteData((ObjectFuncPtr*)0x5DD213, OceanPalace_SkyBox);
-	WriteData((LoopHead***)0x5DD124, OceanPalacePathList);
-	WriteData((DeathZone**)0x5DD226, OceanPalaceDeathZones);*/
-	
-	/*for (uint8_t i = 0; i < 92; ++i) {
-		MetalHarbor_ObjectArray[i] = OceanPalaceObjectList_list[i];
-	}*/
-
-	WriteJump(MetalHarbor_Init, CityEscape_Init);
-
-	for (uint8_t i = 0; i < Characters_Amy; i++)
-	{
-		helperFunctions.RegisterStartPosition(i, op_startpos);
-		helperFunctions.Register2PIntroPosition(i, op_2pintro);
-
-		if (helperFunctions.Version >= 5)
-		{
-			helperFunctions.RegisterEndPosition(i, op_endpos);
-			helperFunctions.RegisterMission23EndPosition(i, op_endpos23);
-		}
-	}
+	LoadObject(LoadObj_Data1, "OPWaterfalls", OPWaterfalls, 3);
+	/*LoadObject(LoadObj_Data1, 3, OPFlowers);
+	LoadObject(LoadObj_Data1, 3, OPFins_Main);
+	LoadObject(LoadObj_Data1, 3, OPBoulders);*/
 }
 
 void OceanPalace_OnFrame() {
 	ChunkHandler("OP", OceanPalaceChunks, LengthOfArray(OceanPalaceChunks));
-
 	AnimateTextures(OceanPalaceAnimTexs, 2);
-
-	EntityData1* entity = MainCharObj1[0];
 
 	if (GameState == GameStates_Ingame && restart) {
 		OceanPalace_LoadObjects();
 		restart = false;
 	}
+}
+
+void OceanPalace_Load() {
+	CommonLevelInit();
+
+	LoadLevelChunks("OP", OceanPalaceChunks, LengthOfArray(OceanPalaceChunks), (char*)"oceanpalace", &oceanpalace_texlist);
+	CurrentLevelTexList = CurrentLandTable->TextureList;
+
+	for (uint8_t i = 0; i < LengthOfArray(OceanPalaceObjectList_list); ++i) {
+		CityEscape_ObjectArray[i] = OceanPalaceObjectList_list[i];
+	}
+
+	void* setfile = LoadSETFile(2048, (char*)"ocean-palace-set.bin", (char*)"dummy-set.bin");
+	LoadSetObject(&CityEscape_ObjectList, setfile);
+	LoadStageLight("stg13_light.bin");
+	LoadStagePaths(OceanPalacePathList);
+	LoadLevelMusic((char*)"oceanpalace.adx");
+	LoadDeathZones(SeasideHillDeathZones);
+	LoadFogData_Fogtask("stg13_fog.bin", (FogData*)0x1A280C8);
+
+	OP_WATERFS = LoadMDL("OP_WATERFS");
+	OP_FLOWERS = LoadMDL("OP_FLOWERS");
+	OP_TURFINS = LoadMDL("OP_TURFINS");
+	OP_BOULDER = LoadMDL("OP_BOULDER");
+	OP_POLFLAG = LoadMDL("OP_POLFLAG");
+	OP_SKYMDLS = LoadMDL("OP_SKYMDLS");
+	OceanPalace_LoadObjects();
+	CommonObjects_LoadModels();
+}
+
+void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) {
+	MetalHarborHeader.Init = OceanPalace_Load;
+	MetalHarborHeader.subprgmanager = nullptr;
+	SetStartEndPoints(helperFunctions, &op_startpos, &op_2pintro, &op_endpos, &op_endpos23);
 }

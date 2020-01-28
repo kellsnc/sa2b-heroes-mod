@@ -154,7 +154,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="level.h" />
-    <ClInclude Include="ocean-palace-deathzones.h" />
     <ClInclude Include="ocean-palace.h" />
     <ClInclude Include="seaside-hill-deathzones.h" />
     <ClInclude Include="seaside-hill.h" />
