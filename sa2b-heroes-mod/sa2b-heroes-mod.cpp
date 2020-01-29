@@ -6,16 +6,6 @@ std::string modpath;
 uint8_t CurrentChunk = 0;
 LandTableInfo* lands2p[20];
 
-TexPackInfo CommonTexPacks[2]{
-	{ "efftex_common", texlist_efftex_common },
-	{ "objtex_common", texlist_objtex_common }
-};
-
-enum HeroesLevelIDs {
-	HeroesLevelID_OceanPalace = 10,
-	HeroesLevelID_SeasideHill = 13
-};
-
 //Change the sadx col flags to similar sa2 ones
 void FixColFlags(LandTable *land) {
 	for (int i = 0; i < land->COLCount; ++i) {		

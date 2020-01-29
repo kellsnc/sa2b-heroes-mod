@@ -108,13 +108,11 @@ ObjectFunc(AutoLoop, 0x497B50);
 ObjectFunc(RailPath, 0x4980C0);
 ObjectFunc(CamPath, nullptr);
 DataPointer(NJS_TEXLIST*, CurrentLevelTexList, 0x109E824);
-DataPointer(NJS_TEXLIST*, texlist_efftex_common, 0x104D80C);
 DataPointer(RenderInfoThing *, RenderInfo, 0x2670544);
 FunctionPointer(signed int, ClipObject, (ObjectMaster *a1, float dist), 0x488C80);
 FunctionPointer(void, Collision_InitThings, (ObjectMaster *a1), 0x47E6C0);
 FunctionPointer(signed int, FreeTexList, (NJS_TEXLIST *a1), 0x77F9F0);
 FunctionPointer(unsigned int, LoadLevelCam, (), 0x453A90);
-DataPointer(NJS_TEXLIST***, CommonTexLists, 0x109E748);
 DataPointer(void*, dword_1DE4680, 0x1DE4680); //Chaos Drive Function Pointers
 DataPointer(void*, dword_1DE4684, 0x1DE4684);
 DataPointer(void*, dword_1DE4688, 0x1DE4688);
