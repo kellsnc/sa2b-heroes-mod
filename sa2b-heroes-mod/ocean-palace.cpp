@@ -203,8 +203,8 @@ void BoulderPath(ObjectMaster *obj) {
 	}
 	else {
 		if (data->field_6 < loopdata->Count) {
-			if (GameState != 16) {
-				data->Scale.x = data->Scale.x + (loopdata->TotalDistance / loopdata->Points[data->field_6].Distance) / loopdata->TotalDistance * 8;
+			if (GameState != GameStates_Pause) {
+				data->Scale.x = data->Scale.x + (loopdata->TotalDistance / loopdata->Points[data->field_6].Distance) / loopdata->TotalDistance * 7;
 				TransformSpline(data, loopdata->Points[data->field_6].Position, loopdata->Points[data->field_6 + 1].Position, data->Scale.x);
 				if (loopdata->Points[data->field_6].YRot != 0) data->Rotation.y = loopdata->Points[data->field_6].YRot;
 				if (data->Scale.x > 1) { data->Scale.x = 0; data->field_6++; }
@@ -225,9 +225,9 @@ void BoulderPath(ObjectMaster *obj) {
 			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 			njPushMatrix(0);
 
-			njTranslate(0, data->Position.x, data->Position.y, data->Position.z);
-			njRotateY(0, data->Rotation.y);
-			njRotateX(0, data->Rotation.x);
+			njTranslate(_nj_current_matrix_ptr_, data->Position.x, data->Position.y, data->Position.z);
+			njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+			njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
 
 			DrawModel(OP_BOULDER->getmodel()->basicmodel);
 			njPopMatrix(1u);
@@ -247,16 +247,16 @@ void OPBoulders_Display(ObjectMaster *obj) {
 
 	switch (obj->Data1.Entity->Action) {
 	case 1:
-		njTranslate(0, -8200.3408f, 2030, -39259.3);
-		njRotateY(nullptr, 32768);
+		njTranslate(_nj_current_matrix_ptr_, -8200.3408f, 2030, -39259.3);
+		njRotateY(_nj_current_matrix_ptr_, 32768);
 		break;
 	case 2:
-		njTranslate(0, -8274.9741f, 1363, -44980.36);
-		njRotateY(nullptr, 24735);
+		njTranslate(_nj_current_matrix_ptr_, -8274.9741f, 1363, -44980.36);
+		njRotateY(_nj_current_matrix_ptr_, 24735);
 		break;
 	case 3:
-		njTranslate(0, -6785.288f, 963, -46514.48);
-		njRotateY(nullptr, 32768);
+		njTranslate(_nj_current_matrix_ptr_, -6785.288f, 963, -46514.48);
+		njRotateY(_nj_current_matrix_ptr_, 32768);
 		break;
 	}
 
@@ -385,7 +385,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
-	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Stage, DistObj_UseDist, 160000, (ObjectFuncPtr)KDITEMBOX },
+	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Stage, DistObj_UseDist, 160000, ItemBoxAir_Main },
 	{ (LoadObj)0 },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Stationary },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Electric },
