@@ -115,6 +115,10 @@ FunctionPointer(void, Collision_InitThings, (ObjectMaster *a1), 0x47E6C0);
 FunctionPointer(signed int, FreeTexList, (NJS_TEXLIST *a1), 0x77F9F0);
 FunctionPointer(unsigned int, LoadLevelCam, (), 0x453A90);
 DataPointer(NJS_TEXLIST***, CommonTexLists, 0x109E748);
+DataPointer(void*, dword_1DE4680, 0x1DE4680); //Chaos Drive Function Pointers
+DataPointer(void*, dword_1DE4684, 0x1DE4684);
+DataPointer(void*, dword_1DE4688, 0x1DE4688);
+DataPointer(void*, dword_1DE468C, 0x1DE468C);
 VoidFunc(ResetRenderSpace, 0x42D340);
 
 static const void *const AddToCollisionListPtr = (void*)0x47E750;

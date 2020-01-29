@@ -171,74 +171,18 @@ void CommonLevelInit() {
 	DisplayItemBoxItemFunc_ptr = DisplayItemBoxItem;
 	CommonObjects_LoadModels();
 
-	//These functions crashes the game atm
-	//The itembox is related to the texpack function
-	//The Chaosdrive is related to the drive function pointer set in the levels inits
-	//If can't be fixed, change the stuff with writedata and then call the city escape init
-	WriteData((char*)ItemBoxAir_Main, (char)0xC3);
-	WriteData((char*)KDITEMBOX, (char)0xC3);
-	WriteData((char*)ItemBox_Main, (char)0xC3);
-	WriteData((char*)ChaosDrive_Load2, (char)0xC3);
-
-	for (uint8_t i = 0; i < LengthOfArray(CommonTexPacks); ++i) {
-		if (i == 0) {
-			LoadTextureList((char*)"objtex_common", texlist_objtex_common);
-			CommonTexPacks[i].TexList = texlist_objtex_common;
-		}
-		else {
-			LoadTextureList((char*)"efftex_common", texlist_efftex_common);
-			CommonTexPacks[i].TexList = texlist_efftex_common;
-		}
-		
-		//Go through all the TexLists
-		NJS_TEXLIST*** c1 = &CommonTexLists[26];
-		while (1) {
-			if (c1[0][0]) {
-				
-				NJS_TEXLIST** c2 = c1[0];
-				while (1) {
-					if (c2[0]) {
-						
-						NJS_TEXLIST* c3 = c2[0];
-						while (1) {
-							if (c3->nbTexture > 0 && c3->nbTexture < 3) {
-								//put the texture pointer if the filename is identical
-
-								for (uint8_t t = 0; t < CommonTexPacks[i].TexList->nbTexture; ++t) {
-									void* orig = CommonTexPacks[i].TexList->textures[t].filename;
-									
-									for (uint8_t t2 = 0; t2 < c3->nbTexture; ++t2) {
-										void* dest = c3->textures[t2].filename;
-
-										if (orig == dest) {
-											c3->textures[t2].texaddr = CommonTexPacks[i].TexList->textures[t].texaddr;
-											c3->textures[t2].attr = CommonTexPacks[i].TexList->textures[t].attr;
-										}
-									}
-								}
-							}
-							else {
-								break;
-							}
-
-							c3 = &c3[1];
-						}
-					}
-					else {
-						break;
-					}
-
-					c2 = &c2[1];
-				}
-
-			}
-			else {
-				return;
-			}
-
-			c1 = &c1[1];
-		}
-	}
+	//Chaos Drive Function Pointers
+	dword_1DE4680 = (void*)0x6B6C20;
+	dword_1DE4684 = (void*)0x6BBAE0;
+	dword_1DE4688 = (void*)0x6BC450;
+	dword_1DE468C = (void*)0x6BC4A0;
+	
+	//Very nasty way to call LoadTexPacks please forgive me (0x44C7B0)
+	//Really gotta find a better way, since Seaside Hill can't be disabled with this
+	WriteData<260>((char*)0x5DCD50, 0x90);
+	WriteData<1231>((char*)0x5DCE6B, 0x90);
+	WriteData((TexPackInfo**)0x5DCE5F, (TexPackInfo*)0x109E810);
+	CityEscape_Init();
 }
 
 //Load the current level music
