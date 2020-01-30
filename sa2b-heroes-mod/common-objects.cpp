@@ -18,18 +18,17 @@ void DashHoop_Display(ObjectMaster* a1) {
 
 void DashHoop_Perform(ObjectMaster *a1) {
 	EntityData1* entity = a1->Data1.Entity;
-	EntityData1* parent = a1->Child->Data1.Entity;
 	EntityData1* player = MainCharObj1[entity->Index];
+	
+	entity->Rotation.z += 1;
+	float s = (float)entity->Rotation.z * 0.05f;
 
-	entity->Scale.y += 0.05f;
-
-	if (entity->Scale.y >= 1) {
-		a1->Child = nullptr;
+	if (s >= 1) {
 		DeleteObject_(a1);
 		return;
 	}
-
-	TransformSpline(player, parent->Position, parent->Scale, entity->Scale.y);
+	
+	TransformSpline(player, entity->Position, entity->Scale, s);
 }
 
 void DashHoop_Main(ObjectMaster* a1) {
@@ -43,12 +42,13 @@ void DashHoop_Main(ObjectMaster* a1) {
 				MainCharObj2[id - 1]->Speed.x /= 2;
 				MainCharObj2[id - 1]->Speed.y = 0;
 				MainCharObj2[id - 1]->Speed.z = 0;
-
+				
 				AddScore(5);
 
 				ObjectMaster * obj = LoadObject(4, "DashHoop_Perform", DashHoop_Perform, LoadObj_Data1);
 				obj->Data1.Entity->Index = id - 1;
-				obj->Child = a1;
+				obj->Data1.Entity->Position = a1->Data1.Entity->Position;
+				obj->Data1.Entity->Scale = a1->Data1.Entity->Scale;
 			}
 		}
 		else {
