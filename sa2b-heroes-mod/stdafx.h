@@ -8,5 +8,6 @@
 #include "SA2ModLoader.h"
 #include "LandTableInfo.h"
 #include "ModelInfo.h"
+#include "Trampoline.h"
 
 #include "level.h"

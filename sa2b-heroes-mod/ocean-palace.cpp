@@ -343,7 +343,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
-	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Common, DistObj_UseDist, 2360000, (ObjectFuncPtr)DashRamp_Main },
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Common, DistObj_UseDist, 2360000, DashRampAdjust },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },

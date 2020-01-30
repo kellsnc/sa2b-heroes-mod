@@ -102,6 +102,14 @@ void ObjFan(ObjectMaster *obj)
 	}
 }
 
+void DashRampAdjust(ObjectMaster* obj) {
+	obj->Data1.Entity->Scale.x /= 2;
+	obj->Data1.Entity->Scale.y /= 1.5f;
+
+	obj->MainSub = (ObjectFuncPtr)DashRamp_Main;
+	obj->MainSub(obj);
+}
+
 void Boxes(ObjectMaster* a1) {
 	uint8_t type = a1->Data1.Entity->Scale.x;
 
