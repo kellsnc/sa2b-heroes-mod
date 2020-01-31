@@ -145,3 +145,19 @@ float* njPushUnitMatrix() {
 void njTranslateV(float* matrix, NJS_VECTOR* pos) {
 	njTranslate(matrix, pos->x, pos->y, pos->z);
 }
+
+void njCalcPoint(NJS_VECTOR *transform, NJS_VECTOR *out, float *matrix, uint8_t somebool)
+{
+	float x = matrix[1] * transform->y + *matrix * transform->x + matrix[2] * transform->z;
+	float y = matrix[4] * transform->x + matrix[5] * transform->y + matrix[6] * transform->z;
+	float z = matrix[8] * transform->x + matrix[9] * transform->y + matrix[10] * transform->z;
+	if (!somebool)
+	{
+		x = matrix[3] + x;
+		y = matrix[7] + y;
+		z = matrix[11] + z;
+	}
+	out->x = x;
+	out->y = y;
+	out->z = z;
+}

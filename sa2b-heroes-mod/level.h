@@ -76,6 +76,7 @@ bool CheckModelDisplay2(SOI_LIST2 item);
 bool ClipSetObject(ObjectMaster *a1);
 float* njPushUnitMatrix();
 void njTranslateV(float* matrix, NJS_VECTOR* pos);
+void njCalcPoint(NJS_VECTOR *transform, NJS_VECTOR *out, float *matrix, uint8_t somebool);
 
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 

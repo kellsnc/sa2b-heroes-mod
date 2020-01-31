@@ -84,6 +84,8 @@ void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size, c
 	for (int16_t col = 0; col < finalcount; ++col) {
 		if (col2p[col].field_14 > 0) {
 			geocol[geocount] = col2p[col];
+			geocol[geocount].Radius *= 1000;
+			geocol[geocount].field_18 = 0;
 			++geocount;
 		}
 		else {

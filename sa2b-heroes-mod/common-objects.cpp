@@ -102,21 +102,7 @@ void ObjFan(ObjectMaster *obj)
 	}
 }
 
-void njCalcPoint(NJS_VECTOR *transform, NJS_VECTOR *out, float *matrix, uint8_t somebool)
-{
-	float x = matrix[1] * transform->y + *matrix * transform->x + matrix[2] * transform->z;
-	float y = matrix[4] * transform->x + matrix[5] * transform->y + matrix[6] * transform->z;
-	float z = matrix[8] * transform->x + matrix[9] * transform->y + matrix[10] * transform->z;
-	if (!somebool)
-	{
-		x = matrix[3] + x;
-		y = matrix[7] + y;
-		z = matrix[11] + z;
-	}
-	out->x = x;
-	out->y = y;
-	out->z = z;
-}
+
 
 void RingGroup(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
@@ -130,8 +116,7 @@ void RingGroup(ObjectMaster* obj) {
 	data->Scale.x = data->Scale.z;
 	data->Scale.z = data->Scale.y;
 
-	//20 * data->Scale.y
-	NJS_VECTOR dir = { 0, 0, 0};
+	NJS_VECTOR dir = { 0, 0, 20 * data->Scale.y };
 
 	float* matrix = njPushUnitMatrix();
 	NJS_VECTOR* pos = &data->Position;
