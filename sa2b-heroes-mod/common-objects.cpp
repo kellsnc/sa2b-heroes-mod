@@ -9,7 +9,7 @@ ModelInfo * CO_COMNFAN;
 void DashHoop_Display(ObjectMaster* a1) {
 	RenderInfo->CurrentTexlist = &heroescmn_texlist;
 	njPushMatrix(0);
-	njTranslate(_nj_current_matrix_ptr_, a1->Data1.Entity->Position.x, a1->Data1.Entity->Position.y, a1->Data1.Entity->Position.z);
+	njTranslateV(_nj_current_matrix_ptr_, &a1->Data1.Entity->Position);
 	njRotateX(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.x);
 	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y + 0x4000);
 	DrawModel(CO_DSHHOOP->getmodel()->basicmodel);
@@ -67,7 +67,7 @@ void ObjFan_Display(ObjectMaster *a1)
 {
 	RenderInfo->CurrentTexlist = &heroescmn_texlist;
 	njPushMatrix(0);
-	njTranslate(_nj_current_matrix_ptr_, a1->Data1.Entity->Position.x, a1->Data1.Entity->Position.y, a1->Data1.Entity->Position.z);
+	njTranslateV(_nj_current_matrix_ptr_, &a1->Data1.Entity->Position);
 	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y + 0x4000);
 	DrawModel(CO_COMNFAN->getmodel()->basicmodel);
 	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Scale.z);
@@ -100,6 +100,50 @@ void ObjFan(ObjectMaster *obj)
 			}
 		}
 	}
+}
+
+void njCalcPoint(NJS_VECTOR *transform, NJS_VECTOR *out, float *matrix, uint8_t somebool)
+{
+	float x = matrix[1] * transform->y + *matrix * transform->x + matrix[2] * transform->z;
+	float y = matrix[4] * transform->x + matrix[5] * transform->y + matrix[6] * transform->z;
+	float z = matrix[8] * transform->x + matrix[9] * transform->y + matrix[10] * transform->z;
+	if (!somebool)
+	{
+		x = matrix[3] + x;
+		y = matrix[7] + y;
+		z = matrix[11] + z;
+	}
+	out->x = x;
+	out->y = y;
+	out->z = z;
+}
+
+void RingGroup(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	if (data->Scale.z) {
+		ClipSetObject(obj);
+		return;
+	}
+	
+	data->Scale.z = data->Scale.y;
+	data->Scale.y = data->Scale.x;
+	data->Scale.x = data->Scale.z;
+	data->Scale.z = data->Scale.y;
+
+	//20 * data->Scale.y
+	NJS_VECTOR dir = { 0, 0, 0};
+
+	float* matrix = njPushUnitMatrix();
+	NJS_VECTOR* pos = &data->Position;
+	njTranslateV(matrix, pos);
+	njRotateZ(matrix, data->Rotation.z);
+	njRotateY(matrix, data->Rotation.y);
+	njRotateX(matrix, data->Rotation.x);
+	njCalcPoint(&dir, &data->Position, matrix, 0);
+	njPopMatrix(1u);
+
+	obj->MainSub = (ObjectFuncPtr)RingLinearMain;
+	obj->MainSub(obj);
 }
 
 void DashRampAdjust(ObjectMaster* obj) {

@@ -128,3 +128,20 @@ void TransformSpline(EntityData1 * entity, NJS_VECTOR orig, NJS_VECTOR dest, flo
 	entity->Position.y = ((dest.y - orig.y) * state + orig.y);
 	entity->Position.z = (dest.z - orig.z) * state + orig.z;
 }
+
+float* njPushUnitMatrix() {
+	float *v8 = _nj_current_matrix_ptr_;
+	float *v9 = _nj_current_matrix_ptr_ + 12;
+	v8 = _nj_current_matrix_ptr_ + 12;
+	memcpy(v9, _nj_current_matrix_ptr_, 0x30u);
+	_nj_current_matrix_ptr_ = v9;
+	memset(v8, 0, 0x30u);
+	*v8 = 1.0;
+	v8[5] = 1.0;
+	v8[10] = 1.0;
+	return v8;
+}
+
+void njTranslateV(float* matrix, NJS_VECTOR* pos) {
+	njTranslate(matrix, pos->x, pos->y, pos->z);
+}

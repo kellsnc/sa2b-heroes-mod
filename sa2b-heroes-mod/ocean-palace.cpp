@@ -21,7 +21,7 @@ void OPFins_Display(ObjectMaster *a1) {
 
 				RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 				njPushMatrix(0);
-				njTranslate(_nj_current_matrix_ptr_, item.Position.x, item.Position.y, item.Position.z);
+				njTranslateV(_nj_current_matrix_ptr_, &item.Position);
 				njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
 				njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
 				njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
@@ -97,7 +97,7 @@ void OPFlowers(ObjectMaster* a1) {
 
 			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 			njPushMatrix(0);
-			njTranslate(_nj_current_matrix_ptr_, item.Position.x, item.Position.y, item.Position.z);
+			njTranslateV(_nj_current_matrix_ptr_, &item.Position);
 			njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
 			njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
 			njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
@@ -133,7 +133,7 @@ void OPWaterfalls(ObjectMaster *a1) {
 
 			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 			njPushMatrix(0);
-			njTranslate(_nj_current_matrix_ptr_, item.Position.x, item.Position.y, item.Position.z);
+			njTranslateV(_nj_current_matrix_ptr_, &item.Position);
 			njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
 			njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
 			njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
@@ -162,7 +162,7 @@ void OPPOLE_Display(ObjectMaster *obj) {
 
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
-	njTranslate(_nj_current_matrix_ptr_, data->Position.x, data->Position.y, data->Position.z);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 		
 	if (data->Scale.x == 1) {
@@ -225,7 +225,7 @@ void BoulderPath(ObjectMaster *obj) {
 			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 			njPushMatrix(0);
 
-			njTranslate(_nj_current_matrix_ptr_, data->Position.x, data->Position.y, data->Position.z);
+			njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 			njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 			njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
 
@@ -324,8 +324,8 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 4000000, (ObjectFuncPtr)KDITEMBOX },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_Default, 0, Checkpoint_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)CWALL },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)RingLinearMain },
-	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)RingCircleMain },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, RingGroup },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, RingGroup },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)CCYL },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)CCUBE },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)SPHERE },

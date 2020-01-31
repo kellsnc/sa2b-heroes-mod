@@ -30,7 +30,7 @@ void SHFlowers(ObjectMaster* a1) {
 
 			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 			njPushMatrix(0);
-			njTranslate(_nj_current_matrix_ptr_, item.Position.x, item.Position.y, item.Position.z);
+			njTranslateV(_nj_current_matrix_ptr_, &item.Position);
 			njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
 			njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
 			njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
@@ -69,7 +69,7 @@ void SHWaterfalls(ObjectMaster* a1) {
 
 			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 			njPushMatrix(0);
-			njTranslate(_nj_current_matrix_ptr_, item.Position.x, item.Position.y, item.Position.z);
+			njTranslateV(_nj_current_matrix_ptr_, &item.Position);
 			njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
 			njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
 			njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
@@ -91,7 +91,7 @@ void SHSpikes_Display(ObjectMaster* a1)
 {
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
-	njTranslate(_nj_current_matrix_ptr_, a1->Data1.Entity->Position.x, a1->Data1.Entity->Position.y, a1->Data1.Entity->Position.z);
+	njTranslateV(_nj_current_matrix_ptr_, &a1->Data1.Entity->Position);
 	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y);
 	DrawModel(SH_POLFLAG->getmodel()->basicmodel);
 	njRotateY(_nj_current_matrix_ptr_, -a1->Data1.Entity->Rotation.y + a1->Data1.Entity->Scale.z);
@@ -125,7 +125,7 @@ void SHSpikes(ObjectMaster* a1)
 void SHMovingPltfrms_Display(ObjectMaster* a1) {
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
-	njTranslate(_nj_current_matrix_ptr_, a1->Data1.Entity->Position.x, a1->Data1.Entity->Position.y, a1->Data1.Entity->Position.z);
+	njTranslateV(_nj_current_matrix_ptr_, &a1->Data1.Entity->Position);
 	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y);
 
 	switch (a1->Data1.Entity->Action) {
@@ -210,7 +210,7 @@ void SHRuinTrigger(ObjectMaster* a1)
 void SHPlatforms_Display(ObjectMaster* a1) {
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
-	njTranslate(_nj_current_matrix_ptr_, a1->Data1.Entity->Position.x, a1->Data1.Entity->Position.y, a1->Data1.Entity->Position.z);
+	njTranslateV(_nj_current_matrix_ptr_, &a1->Data1.Entity->Position);
 	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y);
 	njScale(a1->Data1.Entity->Scale.x, a1->Data1.Entity->Scale.y, a1->Data1.Entity->Scale.z);
 	DrawModel(SH_PLATFOR->getmodel()->basicmodel);

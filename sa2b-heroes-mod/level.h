@@ -74,6 +74,8 @@ void DrawModel(NJS_MODEL * model);
 bool CheckModelDisplay(SOI_LIST item);
 bool CheckModelDisplay2(SOI_LIST2 item);
 bool ClipSetObject(ObjectMaster *a1);
+float* njPushUnitMatrix();
+void njTranslateV(float* matrix, NJS_VECTOR* pos);
 
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 
@@ -96,6 +98,7 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions);
 
 void DashHoop(ObjectMaster* a1);
 void ObjFan(ObjectMaster *obj);
+void RingGroup(ObjectMaster* obj);
 void DashRampAdjust(ObjectMaster* obj);
 void Boxes(ObjectMaster* a1);
 void Robots(ObjectMaster* a1);
