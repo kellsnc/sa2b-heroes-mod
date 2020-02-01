@@ -4,9 +4,9 @@ DataArray(ObjectListEntry, MetalHarbor_ObjectArray, 0xAEC550, 93);
 extern DeathZone SeasideHillDeathZones[];
 
 StartPosition op_startpos = { LevelIDs_MetalHarbor, 0xBFFF, 0xBFFF, 0xBFFF, { -8771, 1303, -2819.688f }, { -8768, 1303, -2819.688f }, { -8774, 1303, -2819.688f } };
-StartPosition op_endpos = { LevelIDs_MetalHarbor, 4000, 4000, 3000, { 1404, 1075.34f, -45687 }, { 1404, 1075.34f, -45687 }, { 1432, 1063.55f, -45782 } };
-LevelEndPosition op_2pintro = { LevelIDs_MetalHarbor, 0x64EC, 0x64EC, 0, { 220, 41.65f, 436 }, { 195, 6.8f, -706 } };
-LevelEndPosition op_endpos23 = { LevelIDs_MetalHarbor, 0, 0x4000, 0, { 900.0848f, -298.2f, -33579.89f }, { -4569, 441.8f, -17016 } };
+StartPosition op_endpos = { LevelIDs_MetalHarbor, 4000, 4000, 3000, { -10487.58f, 146.7999f, -48281.96f }, { -10487.58f, 146.7999f, -48281.96f }, { -10490.17f, 146.7999f, -48598.5f } };
+LevelEndPosition op_2pintro = { LevelIDs_MetalHarbor2P, 0x64EC, 0x64EC, 0, { -9202, 1096.8f, -5413 }, { -9145, 1397.46, -523 } };
+LevelEndPosition op_endpos23 = { LevelIDs_MetalHarbor, 0, 0x4000, 0, { -10487.58f, 146.7999f, -48281.96f }, { -10137.75f, 570.8741f, -18416.79f } };
 
 SH_ANIMTEXS OceanPalaceAnimTexs[]{
 	{ 2, 19,{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4 } },

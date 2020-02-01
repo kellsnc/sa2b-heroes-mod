@@ -464,6 +464,13 @@ void OceanPalaceDelete() {
 void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) {
 	MetalHarborHeader.Init = OceanPalace_Load;
 	MetalHarborHeader.subprgmanager = OceanPalace_Main;
-	CityEscapeHeader.anonymous_2 = OceanPalaceDelete;
+	MetalHarborHeader.anonymous_2 = OceanPalaceDelete;
+	MetalHarbor2PHeader.Init = OceanPalace_Load;
+	MetalHarbor2PHeader.subprgmanager = OceanPalace_Main;
+	MetalHarbor2PHeader.anonymous_2 = OceanPalaceDelete;
+	SetStartEndPoints(helperFunctions, &op_startpos, nullptr, &op_endpos, &op_endpos23);
+	op_startpos.Level = LevelIDs_MetalHarbor2P;
+	op_endpos.Level = LevelIDs_MetalHarbor2P;
+	op_endpos23.Level = LevelIDs_MetalHarbor2P;
 	SetStartEndPoints(helperFunctions, &op_startpos, &op_2pintro, &op_endpos, &op_endpos23);
 }

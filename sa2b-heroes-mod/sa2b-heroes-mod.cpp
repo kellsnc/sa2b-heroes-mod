@@ -66,6 +66,12 @@ void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size, c
 
 			if (col2p[col + finalcount].Flags & 0x80000000) {
 				col2p[col + finalcount].field_14 = chunklist[chunk].Chunk;
+				if (chunk == 0) {
+					col2p[col + finalcount].Flags = 0x80000000;
+				}
+				else {
+					col2p[col + finalcount].Flags = 0;
+				}
 			}
 			else {
 				col2p[col + finalcount].field_14 = 0;
@@ -197,7 +203,7 @@ void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* st
 	for (uint8_t i = 0; i < Characters_Amy; i++)
 	{
 		helperFunctions.RegisterStartPosition(i, *start);
-		helperFunctions.Register2PIntroPosition(i, *start2pIntro);
+		if (start2pIntro) helperFunctions.Register2PIntroPosition(i, *start2pIntro);
 
 		if (helperFunctions.Version >= 5)
 		{
@@ -210,6 +216,7 @@ void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* st
 //Delete the heroes landtable at stage exit
 void CommonLevelDelete() {
 	CommonObjects_FreeModels();
+	CurrentChunk = 0;
 
 	if (CurrentLandTable) {
 		delete[] CurrentLandTable;
