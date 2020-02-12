@@ -205,7 +205,7 @@ void BoulderPath(ObjectMaster *obj) {
 		if (data->field_6 < loopdata->Count) {
 			if (GameState != GameStates_Pause) {
 				data->Scale.x = data->Scale.x + (loopdata->TotalDistance / loopdata->Points[data->field_6].Distance) / loopdata->TotalDistance * 7;
-				TransformSpline(data, loopdata->Points[data->field_6].Position, loopdata->Points[data->field_6 + 1].Position, data->Scale.x);
+				TransformSpline(&data->Position, loopdata->Points[data->field_6].Position, loopdata->Points[data->field_6 + 1].Position, data->Scale.x);
 				if (loopdata->Points[data->field_6].YRot != 0) data->Rotation.y = loopdata->Points[data->field_6].YRot;
 				if (data->Scale.x > 1) { data->Scale.x = 0; data->field_6++; }
 				data->Rotation.x += 1500;
@@ -215,6 +215,8 @@ void BoulderPath(ObjectMaster *obj) {
 					char player = data->Status - 1;
 					EntityData1 *ed1 = MainCharObj1[player];
 					CharObj2Base *co2 = MainCharObj2[player];
+
+					GameState = GameStates_RestartLevel_1;
 
 					ed1->Rotation.y = data->Rotation.y + 0x4000;
 					co2->Speed.x = 22;
@@ -302,6 +304,42 @@ void OPBoulders(ObjectMaster *obj) {
 	}
 }
 
+NJS_VECTOR pos;
+
+void BoulderCam(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	
+	if (IsPlayerInsideSphere(&data->Position, data->Scale.y)) {
+		if (data->Scale.x == 8) {
+			pos = OP_BoulderPaths[0].Points[10].Position;
+			data->field_6 = 10;
+			data->Scale.z = 0;
+			data->Action = 1;
+		}
+		else {
+			data->Action = 0;
+			data->field_6 = 0;
+		}
+	}
+
+	if (data->Action == 1) {
+		LoopHead* loopdata = &OP_BoulderPaths[0];
+
+		if (data->field_6 == 79) return;
+
+		float dist = GetDistance(&pos, &MainCharObj1[0]->Position);
+		float speed = (1 - (dist / 500)) * 24;
+		if (speed < 0) speed = 0;
+
+		data->Scale.z = data->Scale.z + (loopdata->TotalDistance / loopdata->Points[data->field_6].Distance) / loopdata->TotalDistance * speed;
+		TransformSpline(&stru_1DCFF40.field_194, loopdata->Points[data->field_6].Position, loopdata->Points[data->field_6 + 1].Position, data->Scale.z);
+		stru_1DCFF40.field_194.y -= 50;
+		if (loopdata->Points[data->field_6].YRot != 0) data->Rotation.y = loopdata->Points[data->field_6].YRot;
+		if (data->Scale.z > 1) { data->Scale.z = 0; data->field_6++; }
+		pos = stru_1DCFF40.field_194;
+	}
+}
+
 ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1360000, (ObjectFuncPtr)SpringA_Main },
@@ -339,7 +377,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1160000, ObjFan },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, ObjFan },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1460000, ObjFan },
-	{ (LoadObj)0 },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 50000, BoulderCam },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
@@ -412,7 +450,7 @@ void OceanPalace_SkyBox(ObjectMaster* obj) {
 void OceanPalace_Main(ObjectMaster* obj) {
 	ChunkHandler("OP", OceanPalaceChunks, LengthOfArray(OceanPalaceChunks));
 	AnimateTextures(OceanPalaceAnimTexs, 2);
-
+	
 	obj->Data1.Entity->Position = MainCharObj1[0]->Position;
 
 	if (obj->Data1.Entity->Action == 0) {
@@ -435,7 +473,15 @@ void OceanPalace_Load() {
 		CityEscape_ObjectArray[i] = OceanPalaceObjectList_list[i];
 	}
 
-	void* setfile = LoadSETFile(2048, (char*)"ocean-palace-set.bin", (char*)"dummy-set.bin");
+	void* setfile = nullptr;
+
+	if (CurrentLevel = LevelIDs_MetalHarbor) {
+		setfile = LoadSETFile(2048, (char*)"ocean-palace-set.bin", (char*)"dummy-set.bin");
+	}
+	else {
+		setfile = LoadSETFile(2048, (char*)"ocean-palace-set-2p.bin", (char*)"dummy-set.bin");
+	}
+	
 	LoadSetObject(&CityEscape_ObjectList, setfile);
 	LoadStageLight("stg13_light.bin");
 	LoadStagePaths(OceanPalacePathList);

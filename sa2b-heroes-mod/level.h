@@ -81,7 +81,8 @@ void njCalcPoint(NJS_VECTOR *transform, NJS_VECTOR *out, float *matrix, uint8_t 
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 
 int IsPlayerInsideSphere(NJS_VECTOR *center, float radius);
-void TransformSpline(EntityData1 * entity, NJS_VECTOR orig, NJS_VECTOR dest, float state);
+void TransformSpline(NJS_VECTOR* pos, NJS_VECTOR orig, NJS_VECTOR dest, float state);
+float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 Rotation fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point);
 
 void CommonLevelInit();
@@ -123,6 +124,25 @@ DataPointer(void*, dword_1DE4684, 0x1DE4684);
 DataPointer(void*, dword_1DE4688, 0x1DE4688);
 DataPointer(void*, dword_1DE468C, 0x1DE468C);
 VoidFunc(ResetRenderSpace, 0x42D340);
+
+struct camera_struct
+{
+	int field_0;
+	int field_4;
+	int field_8;
+	char gapC[328];
+	float field_154;
+	float field_158;
+	float field_15C;
+	int field_160;
+	char gap164[48];
+	NJS_VECTOR field_194;
+	Rotation field_1A0;
+	char gap1AC[9000];
+	int field_24D4;
+};
+
+DataPointer(camera_struct, stru_1DCFF40, 0x1DCFF40);
 
 static const void *const AddToCollisionListPtr = (void*)0x47E750;
 static inline void AddToCollisionList(ObjectMaster *a1)

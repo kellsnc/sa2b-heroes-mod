@@ -28,7 +28,7 @@ void DashHoop_Perform(ObjectMaster *a1) {
 		return;
 	}
 	
-	TransformSpline(player, entity->Position, entity->Scale, s);
+	TransformSpline(&player->Position, entity->Position, entity->Scale, s);
 }
 
 void DashHoop_Main(ObjectMaster* a1) {

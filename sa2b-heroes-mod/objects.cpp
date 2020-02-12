@@ -123,10 +123,14 @@ Rotation fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point) {
 	return result;
 }
 
-void TransformSpline(EntityData1 * entity, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
-	entity->Position.x = (dest.x - orig.x) * state + orig.x;
-	entity->Position.y = ((dest.y - orig.y) * state + orig.y);
-	entity->Position.z = (dest.z - orig.z) * state + orig.z;
+void TransformSpline(NJS_VECTOR * pos, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
+	pos->x = (dest.x - orig.x) * state + orig.x;
+	pos->y = ((dest.y - orig.y) * state + orig.y);
+	pos->z = (dest.z - orig.z) * state + orig.z;
+}
+
+float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
+	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
 }
 
 float* njPushUnitMatrix() {
