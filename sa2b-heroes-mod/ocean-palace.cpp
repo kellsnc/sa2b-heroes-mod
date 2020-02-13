@@ -475,7 +475,7 @@ void OceanPalace_Load() {
 
 	void* setfile = nullptr;
 
-	if (CurrentLevel = LevelIDs_MetalHarbor) {
+	if (CurrentLevel == LevelIDs_MetalHarbor) {
 		setfile = LoadSETFile(2048, (char*)"ocean-palace-set.bin", (char*)"dummy-set.bin");
 	}
 	else {

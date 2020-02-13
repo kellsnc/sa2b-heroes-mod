@@ -58,7 +58,7 @@ void DashHoop_Main(ObjectMaster* a1) {
 }
 
 void DashHoop(ObjectMaster* a1) {
-	a1->Data1.Entity->Rotation = fPositionToRotation(a1->Data1.Entity->Position, a1->Data1.Entity->Scale);
+	a1->Data1.Entity->Rotation = fPositionToRotation(&a1->Data1.Entity->Position, &a1->Data1.Entity->Scale);
 	a1->DisplaySub = DashHoop_Display;
 	a1->MainSub = DashHoop_Main;
 }

@@ -83,7 +83,7 @@ void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 int IsPlayerInsideSphere(NJS_VECTOR *center, float radius);
 void TransformSpline(NJS_VECTOR* pos, NJS_VECTOR orig, NJS_VECTOR dest, float state);
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
-Rotation fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point);
+Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
 
 void CommonLevelInit();
 void LoadLevelMusic(char* name);

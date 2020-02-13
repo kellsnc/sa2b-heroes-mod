@@ -102,22 +102,16 @@ void AnimateTextures(SH_ANIMTEXS *list, Int listcount) {
 	}
 }
 
-Rotation fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point) {
+Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point) {
 	NJS_VECTOR dist;
 	Rotation result;
 
-	dist.x = orig.x - point.x;
-	dist.y = orig.y - point.y;
-	dist.z = orig.z - point.z;
+	dist.x = point->x - orig->x;
+	dist.y = point->y - orig->y;
+	dist.z = point->z - orig->z;
 
 	result.x = atan2(dist.y, dist.z) * 65536.0 * -0.1591549762031479;
-	float len = dist.z * dist.z + dist.y * dist.y;
-	result.y = atan2(dist.x, sqrt(len)) * 65536.0 * 0.1591549762031479;
-
-	if (dist.x < 0 && dist.z < 0) { result.y = result.y; result.x = result.x; }
-	if (dist.z < 0 && dist.x > 0) { result.y = result.y; result.x = result.x; }
-	if (dist.x < 0 || dist.z < 0) { result.y += 0x8000; result.x += 0x8000; }
-	if (dist.x < 0 && dist.z > 0) { result.y += 0x8000; result.x += 0x8000; }
+	result.y = atan2(dist.x, dist.z) * 65536.0 * 0.1591549762031479;
 
 	result.y = -result.y - 0x4000;
 	return result;
