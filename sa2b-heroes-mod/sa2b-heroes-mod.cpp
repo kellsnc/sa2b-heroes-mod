@@ -125,6 +125,10 @@ void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size, c
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size) {
 	if (!MainCharObj1[0] || !CurrentLandTable) return;
 
+	if (!MainCharObj2[1] && MainCharObj2[0]->Speed.x > 1) {
+		stru_1DCFF40.field_194.y += 1;
+	}
+	
 	for (Int i = 0; i < size; ++i) {
 		if (chunklist[i].Chunk != CurrentChunk) {
 			EntityData1 *entity = MainCharObj1[0];
