@@ -126,3 +126,4 @@ DataPointer(Uint16, LandTable_VisibleEntriesCount, 0x1945A00);
 DataPointer(NJS_VECTOR*, CameraPosArray, 0x1DD92B0); // Actual position and rotation, two times
 DataPointer(int, CurrentScreen, 0x1DD92A0);
 DataPointer(Uint8, ScreenRenderingMode, 0x25EFFCC);
+VoidFunc(ToggleScreenRenderingThing, 0x42A870);

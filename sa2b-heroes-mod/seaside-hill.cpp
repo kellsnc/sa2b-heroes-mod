@@ -95,7 +95,7 @@ NJS_TEXNAME_ seasidehill_texname[] {
 	{ "tk1_nam1", 0, 0 },
 };
 
-NJS_TEXLIST_ seasidehill_texlist{ arrayptrandlength(seasidehill_texname) };
+NJS_TEXLIST_ seasidehill_texlist = { arrayptrandlength(seasidehill_texname) };
 
 float ruin = 0;
 static int flagtimer = 0;

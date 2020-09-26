@@ -101,7 +101,7 @@ NJS_TEXNAME_ oceanpalace_texname[]{
 	{ "k1_kame1", 0, 0 },
 };
 
-NJS_TEXLIST_ oceanpalace_texlist{ arrayptrandlength(oceanpalace_texname) };
+NJS_TEXLIST_ oceanpalace_texlist = { arrayptrandlength(oceanpalace_texname) };
 
 extern CollisionData Col_Pole;
 
