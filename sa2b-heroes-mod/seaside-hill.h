@@ -1,6 +1,6 @@
 #pragma once
 
-StartPosition sh_startpos = { LevelIDs_CityEscape, 0xBFFF, 0xBFFF, 0xBFFF, { 0, 7, 5 }, { -3, 7, 5 }, { 3, 7, 5 } };
+StartPosition sh_startpos = { LevelIDs_CityEscape, 0xBFFF, 0xBFFF, 0xBFFF, { 0, 50, 5 }, { -3, 7, 5 }, { 3, 7, 5 } };
 StartPosition sh_endpos = { LevelIDs_CityEscape, 4000, 4000, 3000, { 1404, 1075.34f, -45687 }, { 1404, 1075.34f, -45687 }, { 1432, 1063.55f, -45782 } };
 LevelEndPosition sh_2pintro = { LevelIDs_CityEscape, 0x64EC, 0x64EC, 0, { 220, 41.65f, 436 }, { 195, 6.8f, -706 } };
 LevelEndPosition sh_endpos23 = { LevelIDs_CityEscape, 0, 0x4000, 0, { 900.0848f, -298.2f, -33579.89f }, { -4569, 441.8f, -17016 } };

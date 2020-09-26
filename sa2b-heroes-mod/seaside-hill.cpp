@@ -330,7 +330,6 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList_list) };
 
 void SeasideHill_Main(ObjectMaster* obj) {
-	ChunkHandler("SH", SeasideHillChunks, LengthOfArray(SeasideHillChunks));
 	AnimateTextures(SeasideHillAnimTexs, 2);
 
 	if (obj->Data1.Entity->Action == 0) {
@@ -363,8 +362,7 @@ void SeasideHill_Main(ObjectMaster* obj) {
 
 void SeasideHill_Load() {
 	CommonLevelInit();
-
-	LoadLevelChunks("SH", SeasideHillChunks, LengthOfArray(SeasideHillChunks), (char*)"seasidehill", &seasidehill_texlist);
+	LoadLevelTex(&seasidehill_texlist);
 	CurrentLevelTexList = CurrentLandTable->TextureList;
 	
 	for (uint8_t i = 0; i < LengthOfArray(SeasideHillObjectList_list); ++i) {

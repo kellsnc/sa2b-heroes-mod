@@ -1,5 +1,10 @@
 #pragma once
 
+extern HelperFunctions HelperFunctionsGlobal;
+std::string GetLevelFilePath();
+NJS_TEXLIST* GetCurrentHeroesTexList();
+void LoadLevelTex(NJS_TEXLIST* texlist);
+
 typedef struct {
 	uint8_t			Chunk;
 	NJS_VECTOR		Position1;
@@ -88,8 +93,6 @@ Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
 void CommonLevelInit();
 void LoadLevelMusic(char* name);
 void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* start, LevelEndPosition* start2pIntro, StartPosition* end, LevelEndPosition* missionend);
-void LoadLevelChunks(const char * level, CHUNK_LIST * chunklist, uint8_t size, char* fullname, NJS_TEXLIST* texlist);
-void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size);
 
 void CommonLevelDelete();
 void CommonObjects_LoadModels();
@@ -97,6 +100,7 @@ void CommonObjects_FreeModels();
 
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
 void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions);
+void EggFleet_Init(const char *path, const HelperFunctions &helperFunctions);
 
 void DashHoop(ObjectMaster* a1);
 void ObjFan(ObjectMaster *obj);
@@ -136,13 +140,13 @@ struct camera_struct
 	float field_15C;
 	int field_160;
 	char gap164[48];
-	NJS_VECTOR field_194;
+	NJS_VECTOR Position;
 	Rotation field_1A0;
 	char gap1AC[9000];
 	int field_24D4;
 };
 
-DataPointer(camera_struct, stru_1DCFF40, 0x1DCFF40);
+DataPointer(camera_struct, CameraInfo, 0x1DCFF40);
 
 static const void *const AddToCollisionListPtr = (void*)0x47E750;
 static inline void AddToCollisionList(ObjectMaster *a1)
@@ -155,4 +159,3 @@ static inline void AddToCollisionList(ObjectMaster *a1)
 }
 
 extern uint8_t CurrentChunk;
-extern std::string modpath;

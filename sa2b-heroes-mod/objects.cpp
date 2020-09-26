@@ -8,11 +8,11 @@ NJS_MATERIAL matlist_col[] = {
 ModelInfo* LoadMDL(const char *name) {
 	PrintDebug("[SHM] Loading model "); PrintDebug(name); PrintDebug("... ");
 
-	std::string fullPath = modpath + "\\gd_PC\\";
+	std::string fullPath = "resource\\gd_PC\\";
 	fullPath = fullPath + name + ".sa2mdl";
 	const char *foo = fullPath.c_str();
 
-	ModelInfo * temp = new ModelInfo(foo);
+	ModelInfo * temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
 
 	if (temp->getformat() == ModelFormat_Chunk) PrintDebug("Done.\n");
 	else PrintDebug("Error.\n");

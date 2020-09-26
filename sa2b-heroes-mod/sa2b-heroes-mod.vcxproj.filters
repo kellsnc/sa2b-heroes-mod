@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Fichiers sources\Extern">
+      <UniqueIdentifier>{05e0b4de-94b1-4ea5-af1a-d10c7ae9423d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -33,6 +36,18 @@
     <ClInclude Include="ocean-palace.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="egg-fleet.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="byteswap.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="chunkmanager.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="landmanager.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -44,16 +59,10 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\sa2-mod-loader\libmodutils\LandTableInfo.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="seaside-hill.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="objects.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sa2-mod-loader\libmodutils\ModelInfo.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="common-objects.cpp">
@@ -61,6 +70,27 @@
     </ClCompile>
     <ClCompile Include="ocean-palace.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="egg-fleet.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sa2-mod-loader\libmodutils\LandTableInfo.cpp">
+      <Filter>Fichiers sources\Extern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sa2-mod-loader\libmodutils\ModelInfo.cpp">
+      <Filter>Fichiers sources\Extern</Filter>
+    </ClCompile>
+    <ClCompile Include="landmanager.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="chunkmanager.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="byteswap.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sa2-mod-loader\libmodutils\Trampoline.cpp">
+      <Filter>Fichiers sources\Extern</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

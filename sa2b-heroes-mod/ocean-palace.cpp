@@ -332,11 +332,11 @@ void BoulderCam(ObjectMaster* obj) {
 		if (speed < 0) speed = 0;
 
 		data->Scale.z = data->Scale.z + (loopdata->TotalDistance / loopdata->Points[data->field_6].Distance) / loopdata->TotalDistance * speed;
-		TransformSpline(&stru_1DCFF40.field_194, loopdata->Points[data->field_6].Position, loopdata->Points[data->field_6 + 1].Position, data->Scale.z);
-		stru_1DCFF40.field_194.y -= 50;
+		TransformSpline(&CameraInfo.Position, loopdata->Points[data->field_6].Position, loopdata->Points[data->field_6 + 1].Position, data->Scale.z);
+		CameraInfo.Position.y -= 50;
 		if (loopdata->Points[data->field_6].YRot != 0) data->Rotation.y = loopdata->Points[data->field_6].YRot;
 		if (data->Scale.z > 1) { data->Scale.z = 0; data->field_6++; }
-		pos = stru_1DCFF40.field_194;
+		pos = CameraInfo.Position;
 	}
 }
 
@@ -448,7 +448,6 @@ void OceanPalace_SkyBox(ObjectMaster* obj) {
 }
 
 void OceanPalace_Main(ObjectMaster* obj) {
-	ChunkHandler("OP", OceanPalaceChunks, LengthOfArray(OceanPalaceChunks));
 	AnimateTextures(OceanPalaceAnimTexs, 2);
 	
 	obj->Data1.Entity->Position = MainCharObj1[0]->Position;
@@ -466,7 +465,6 @@ void OceanPalace_Main(ObjectMaster* obj) {
 void OceanPalace_Load() {
 	CommonLevelInit();
 
-	LoadLevelChunks("OP", OceanPalaceChunks, LengthOfArray(OceanPalaceChunks), (char*)"oceanpalace", &oceanpalace_texlist);
 	CurrentLevelTexList = CurrentLandTable->TextureList;
 
 	for (uint8_t i = 0; i < LengthOfArray(OceanPalaceObjectList_list); ++i) {
