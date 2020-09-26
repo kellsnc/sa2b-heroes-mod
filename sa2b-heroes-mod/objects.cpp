@@ -8,7 +8,7 @@ NJS_MATERIAL matlist_col[] = {
 ModelInfo* LoadMDL(const char *name) {
 	PrintDebug("[SHM] Loading model "); PrintDebug(name); PrintDebug("... ");
 
-	std::string fullPath = "resource\\gd_PC\\";
+	std::string fullPath = "resource\\gd_PC\\MODELS\\";
 	fullPath = fullPath + name + ".sa2mdl";
 	const char *foo = fullPath.c_str();
 

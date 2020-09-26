@@ -37,7 +37,7 @@ bool CheckLandVisibility(Sint32 chunk, NJS_VECTOR* position) {
 void __cdecl ListGroundForDrawing_r();
 Trampoline ListGroundForDrawing_t(0x47CAE0, 0x47CAE8, ListGroundForDrawing_r);
 void __cdecl ListGroundForDrawing_r() {
-	if (CurrentHeroesLevel != 1) {
+	if (CurrentHeroesLevel != 0) {
 		NJS_VECTOR* position = &CameraPosArray[CurrentScreen * 2];
 
 		Uint16 current = 0;

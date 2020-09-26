@@ -10,7 +10,6 @@ void FixColFlags(LandTable* land) {
 			break;
 		case 0x2:
 			land->COLList[i].Flags = 0x40000002;
-			land->COLList[i].Flags = 0x1;
 			break;
 		default:
 			land->COLList[i].Flags = 0x1;
