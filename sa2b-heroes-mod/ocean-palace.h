@@ -3,10 +3,10 @@
 DataArray(ObjectListEntry, MetalHarbor_ObjectArray, 0xAEC550, 93);
 extern DeathZone SeasideHillDeathZones[];
 
-StartPosition op_startpos = { LevelIDs_MetalHarbor, 0xBFFF, 0xBFFF, 0xBFFF, { 230, 1345, -23 }, { 210, 1345, -23 }, { 250, 1345, -23 } };
-StartPosition op_endpos = { LevelIDs_MetalHarbor, 4000, 4000, 3000, { -10487.58f, 146.7999f, -48281.96f }, { -10487.58f, 146.7999f, -48281.96f }, { -10490.17f, 146.7999f, -48598.5f } };
-LevelEndPosition op_2pintro = { LevelIDs_MetalHarbor2P, 0x64EC, 0x64EC, 0, { -9202, 1096.8f, -5413 }, { -9145, 1397.46, -523 } };
-LevelEndPosition op_endpos23 = { LevelIDs_MetalHarbor, 0, 0x4000, 0, { -10487.58f, 146.7999f, -48281.96f }, { -10137.75f, 570.8741f, -18416.79f } };
+StartPosition op_startpos = { LevelIDs_MetalHarbor, 0xC000, 0xC000, 0xC000, { 230.0f, 1300.0f, 2630.0f }, { 210.0f, 1340.0f, -20.0f  }, { 250.0f, 1340.0f, -20.0f } };
+StartPosition op_endpos = { LevelIDs_MetalHarbor, 0xF000, 0xF000, 0xF000, { -1300.0f, 140.0f, -45450.0f }, { 2560.0f, 50.0f, -20900.0f }, { 2560.0f, 50.0f, -20900.0f } };
+LevelEndPosition op_2pintro = { LevelIDs_MetalHarbor2P, 0, 0, 0, { 230.0f, 1340.0f, -20.0f }, { 230.0f, 1340.0f, -20.0f } };
+LevelEndPosition op_endpos23 = { LevelIDs_MetalHarbor, 0, 0, 0, { 2560.0f, 50.0f, -20900.0f }, { 2560.0f, 50.0f, -20900.0f } };
 
 NJS_VECTOR OceanPalaceTrigger = { -8200, 1401, -40045 };
 
