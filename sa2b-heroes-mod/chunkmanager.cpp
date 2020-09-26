@@ -16,23 +16,45 @@ struct BLKEntry {
 
 BLKEntry ChunkInfos[64];
 
-DataPointer(NJS_VECTOR*, CameraPosArray, 0x1DD92B0);
+DataPointer(COL**, LandTable_VisibleEntries, 0x1A5A2E4);
+DataPointer(Uint16, LandTable_VisibleEntriesCount, 0x1945A00);
+DataPointer(NJS_VECTOR*, CameraPosArray, 0x1DD92B0); // Actual position and rotation, two times
 DataPointer(int, CurrentScreen, 0x1DD92A0);
 
-int __cdecl GetLandVisibility(float x, float z);
-Trampoline GetLandVisibility_r(0x47C8D0, 0x47C8D6, GetLandVisibility);
-int __cdecl GetLandVisibility(float x, float z) {
-	NJS_VECTOR* position = &CameraPosArray[CurrentScreen * 2];
-	
+bool CheckLandVisibility(Sint32 chunk, NJS_VECTOR* position) {
 	for (Uint8 i = 0; i < LengthOfArray(ChunkInfos); ++i) {
-		if (position->x > ChunkInfos[i].MinX && position->x < ChunkInfos[i].MaxX &&
+		if (chunk == ChunkInfos[i].ChunkID &&
+			position->x > ChunkInfos[i].MinX && position->x < ChunkInfos[i].MaxX &&
 			position->y > ChunkInfos[i].MinY && position->y < ChunkInfos[i].MaxY &&
 			position->z > ChunkInfos[i].MinZ && position->z < ChunkInfos[i].MaxZ) {
-			return ChunkInfos[i].ChunkID;
+			return true;
 		}
 	}
 
-	return -1;
+	return false;
+}
+
+void __cdecl ListGroundForDrawing_r();
+Trampoline ListGroundForDrawing_t(0x47CAE0, 0x47CAE8, ListGroundForDrawing_r);
+void __cdecl ListGroundForDrawing_r() {
+	if (CurrentHeroesLevel != 1) {
+		NJS_VECTOR* position = &CameraPosArray[CurrentScreen * 2];
+
+		Uint16 current = 0;
+
+		for (Uint32 i = 0; i < CurrentLandTable->COLCount; ++i) {
+			if (CheckLandVisibility(CurrentLandTable->COLList[i].field_18, position)) {
+				LandTable_VisibleEntries[current] = &CurrentLandTable->COLList[i];
+				current += 1;
+			}
+		}
+
+		LandTable_VisibleEntriesCount = current;
+	}
+	else {
+		VoidFunc(original, ListGroundForDrawing_t.Target());
+		original();
+	}
 }
 
 void LoadChunkFile() {

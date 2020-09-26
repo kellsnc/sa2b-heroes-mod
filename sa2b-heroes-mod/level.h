@@ -1,5 +1,7 @@
 #pragma once
 
+extern int CurrentHeroesLevel;
+
 extern HelperFunctions HelperFunctionsGlobal;
 std::string GetLevelFilePath();
 NJS_TEXLIST* GetCurrentHeroesTexList();
