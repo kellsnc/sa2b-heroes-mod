@@ -18,31 +18,6 @@ void LoadLevelMusic(char* name);
 void SetStartEndPoints(const HelperFunctions& helperFunctions, StartPosition* start, LevelEndPosition* start2pIntro, StartPosition* end, LevelEndPosition* missionend);
 void CommonLevelDelete();
 
-typedef struct {
-	int			texid;
-	int			count;
-	int			duration[40];
-	int			cache;
-	Uint32		address;
-} SH_ANIMTEXS;
-
-typedef struct {
-	NJS_VECTOR		Position;
-	Angle			Rotation[3];
-	uint8_t			Chunk;
-	Float			DrawDistance;
-} SOI_LIST;
-
-typedef struct {
-	uint8_t			Model;
-	NJS_VECTOR		Position;
-	Angle			Rotation[3];
-	NJS_VECTOR		Scale;
-	Float			Bias;
-	uint8_t			Chunk;
-	Float			DrawDistance;
-} SOI_LIST2;
-
 struct RenderInfoThing
 {
 	char gap0[8];
@@ -83,14 +58,10 @@ ModelInfo* LoadMDL(const char *name);
 void FreeMDL(ModelInfo * pointer);
 
 void DrawModel(NJS_MODEL * model);
-bool CheckModelDisplay(SOI_LIST item);
-bool CheckModelDisplay2(SOI_LIST2 item);
 bool ClipSetObject(ObjectMaster *a1);
 float* njPushUnitMatrix();
 void njTranslateV(float* matrix, NJS_VECTOR* pos);
 void njCalcPoint(NJS_VECTOR *transform, NJS_VECTOR *out, float *matrix, uint8_t somebool);
-
-void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 
 int IsPlayerInsideSphere(NJS_VECTOR *center, float radius);
 void TransformSpline(NJS_VECTOR* pos, NJS_VECTOR orig, NJS_VECTOR dest, float state);

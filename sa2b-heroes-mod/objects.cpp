@@ -44,61 +44,11 @@ int IsPlayerInsideSphere(NJS_VECTOR *center, float radius) {
 	return 0;
 }
 
-//Check if we can display a SOI_LIST2 model
-bool CheckModelDisplay(SOI_LIST item) {
-	if (item.Chunk == CurrentChunk || item.Chunk == 0) {
-		if (item.DrawDistance == 0.0f) {
-			return true;
-		}
-		else {
-			if (IsPlayerInsideSphere(&item.Position, item.DrawDistance) == true)
-				return true;
-		}
-	}
-	return false;
-}
-
-bool CheckModelDisplay2(SOI_LIST2 item) {
-	if (item.Chunk == CurrentChunk || item.Chunk == 0) {
-		if (item.DrawDistance == 0.0f) {
-			return true;
-		}
-		else {
-			if (IsPlayerInsideSphere(&item.Position, item.DrawDistance) == true)
-				return true;
-		}
-	}
-	return false;
-}
-
 bool ClipSetObject(ObjectMaster *obj) {
 	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, obj->SETData->field_C / 1000)) return 1;
 	else {
 		DeleteObject_(obj);
 		return 0;
-	}
-}
-
-//Per-texture animation
-void AnimateTextures(SH_ANIMTEXS *list, Int listcount) {
-	if (CurrentLandTable) {
-		for (uint8_t count = 0; count < listcount; ++count) {
-			SH_ANIMTEXS * clist = &list[count];
-			int base = clist->texid;
-			NJS_TEXNAME * texname = &CurrentLandTable->TextureList->textures[base];
-
-			if (clist->cache < clist->count) {
-				if (FrameCount % clist->duration[clist->cache] == 0) {
-					if (clist->cache == 0) clist->address = texname->texaddr;
-					texname->texaddr = CurrentLandTable->TextureList->textures[base + clist->cache].texaddr;
-					clist->cache++;
-				}
-			}
-			else {
-				clist->cache = 0;
-				texname->texaddr = clist->address;
-			}
-		}
 	}
 }
 

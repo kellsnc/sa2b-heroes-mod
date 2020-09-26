@@ -13,150 +13,6 @@ NJS_TEXLIST oceanpalace_texlist{ arrayptrandlength(oceanpalace_texname) };
 
 extern CollisionData Col_Pole;
 
-void OPFins_Display(ObjectMaster *a1) {
-	if (CurrentChunk == 4 || CurrentChunk == 5) {
-		for (int i = 0; i < LengthOfArray(OceanPalace_EventObjects); ++i) {
-			if (OceanPalace_EventObjects[i].Model > 1 && CheckModelDisplay2(OceanPalace_EventObjects[i])) {
-				SOI_LIST2 item = OceanPalace_EventObjects[i];
-
-				RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
-				njPushMatrix(0);
-				njTranslateV(_nj_current_matrix_ptr_, &item.Position);
-				njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
-				njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
-				njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
-				njScale(item.Scale.x, item.Scale.y, item.Scale.z);
-
-				switch (item.Model) {
-				case 2: DrawModel(OP_TURFINS->getmodel()->basicmodel); break;
-				case 3: DrawModel(OP_TURFINS->getmodel()->child->basicmodel); break;
-				case 4: DrawModel(OP_TURFINS->getmodel()->child->child->basicmodel); break;
-				case 5: DrawModel(OP_TURFINS->getmodel()->child->child->child->basicmodel); break;
-				}
-
-				njPopMatrix(1u);
-			}
-		}
-	}
-}
-
-void OPFins_Main(ObjectMaster *obj) {
-	EntityData1* data = obj->Data1.Entity;
-
-	if (data->Action == 0) {
-		obj->DisplaySub = OPFins_Display;
-		data->Action = 1;
-	}
-
-	if (CurrentChunk == 5) {
-		data->Scale.x++;
-		if (data->Scale.x > 300) data->Scale.x = 0;
-
-		short finsstate = data->Scale.x;
-
-		for (Int i = 9; i < 41; ++i) {
-			if (finsstate <= 100) {
-				OceanPalace_EventObjects[i].Rotation[1] -= 100;
-			}
-			if (finsstate > 100) {
-				OceanPalace_EventObjects[i].Rotation[1] += 50.5f;
-			}
-		}
-		for (Int i = 41; i < 73; ++i) {
-			if (finsstate <= 100) {
-				OceanPalace_EventObjects[i].Rotation[1] += 100;
-			}
-			if (finsstate > 100) {
-				OceanPalace_EventObjects[i].Rotation[1] -= 50.5f;
-			}
-		}
-		for (Int i = 9; i < 73; ++i) {
-			if (finsstate <= 100) {
-				OceanPalace_EventObjects[i].Rotation[0] += 10;
-			}
-			if (finsstate > 100) {
-				OceanPalace_EventObjects[i].Rotation[0] -= 5;
-			}
-		}
-	}
-}
-
-void OPFlowers(ObjectMaster* a1) {
-	EntityData1 *Data1 = a1->Data1.Entity;
-
-	if (Data1->Action == 0) {
-		a1->DisplaySub = a1->MainSub;
-		a1->MainSub = nullptr;
-		Data1->Action = 1;
-		return;
-	}
-
-	for (int i = 0; i < LengthOfArray(OceanPalace_Flowers); ++i) {
-		if (CheckModelDisplay2(OceanPalace_Flowers[i])) {
-			SOI_LIST2 item = OceanPalace_Flowers[i];
-
-			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
-			njPushMatrix(0);
-			njTranslateV(_nj_current_matrix_ptr_, &item.Position);
-			njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
-			njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
-			njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
-			njScale(item.Scale.x, item.Scale.y, item.Scale.z);
-
-			switch (item.Model) {
-			case 0: DrawModel(OP_FLOWERS->getmodel()->basicmodel); break;
-			case 1: DrawModel(OP_FLOWERS->getmodel()->child->basicmodel); break;
-			case 2: DrawModel(OP_FLOWERS->getmodel()->child->child->basicmodel); break;
-			case 3: DrawModel(OP_FLOWERS->getmodel()->child->child->child->basicmodel); break;
-			}
-
-			njPopMatrix(1u);
-		}
-	}
-}
-
-void OPWaterfalls(ObjectMaster *a1) {
-	if (!CurrentLandTable) return;
-
-	EntityData1 *Data1 = a1->Data1.Entity;
-
-	if (Data1->Action == 0) {
-		a1->DisplaySub = a1->MainSub;
-		a1->MainSub = nullptr;
-		Data1->Action = 1;
-		return;
-	}
-
-	for (int i = 0; i < LengthOfArray(OceanPalace_Waterfalls); ++i) {
-		if (CheckModelDisplay2(OceanPalace_Waterfalls[i])) {
-			SOI_LIST2 item = OceanPalace_Waterfalls[i];
-
-			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
-			njPushMatrix(0);
-			njTranslateV(_nj_current_matrix_ptr_, &item.Position);
-			njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
-			njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
-			njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
-			njScale(item.Scale.x, item.Scale.y, item.Scale.z);
-
-			switch (item.Model) {
-			case 0: DrawModel(OP_WATERFS->getmodel()->basicmodel); break;
-			case 1: DrawModel(OP_WATERFS->getmodel()->child->basicmodel); break;
-			case 2: DrawModel(OP_WATERFS->getmodel()->child->child->basicmodel); break;
-			case 3: DrawModel(OP_WATERFS->getmodel()->child->child->child->basicmodel); break;
-			case 4: DrawModel(OP_WATERFS->getmodel()->child->child->child->child->basicmodel); break;
-			case 5: DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->basicmodel); break;
-			case 6: DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->basicmodel); break;
-			case 7: DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->basicmodel); break;
-			case 8: DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->basicmodel); break;
-			case 9: DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->basicmodel); break;
-			}
-
-			njPopMatrix(1u);
-		}
-	}
-}
-
 void OPPOLE_Display(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1.Entity;
 
@@ -448,14 +304,9 @@ void OceanPalace_SkyBox(ObjectMaster* obj) {
 }
 
 void OceanPalace_Main(ObjectMaster* obj) {
-	AnimateTextures(OceanPalaceAnimTexs, 2);
-	
 	obj->Data1.Entity->Position = MainCharObj1[0]->Position;
 
 	if (obj->Data1.Entity->Action == 0) {
-		LoadObject(LoadObj_Data1, "OPWaterfalls", OPWaterfalls, 3);
-		LoadObject(LoadObj_Data1, "OPFlowers", OPFlowers, 3);
-		LoadObject(LoadObj_Data1, "OPFins_Main", OPFins_Main, 3);
 		LoadObject(LoadObj_Data1, "OPBoulders", OPBoulders, 3);
 		obj->DisplaySub = OceanPalace_SkyBox;
 		obj->Data1.Entity->Action = 1;

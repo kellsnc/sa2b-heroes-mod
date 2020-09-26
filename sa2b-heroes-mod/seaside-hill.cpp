@@ -14,79 +14,6 @@ NJS_TEXLIST seasidehill_texlist{ arrayptrandlength(seasidehill_texname) };
 float ruin = 0;
 static int flagtimer = 0;
 
-void SHFlowers(ObjectMaster* a1) {
-	EntityData1 *Data1 = a1->Data1.Entity;
-		
-	if (Data1->Action == 0) {
-		a1->DisplaySub = a1->MainSub;
-		a1->MainSub = nullptr;
-		Data1->Action = 1;
-		return;
-	}
-	
-	for (int i = 0; i < LengthOfArray(SeasideHill_Flowers); ++i) {
-		if (CheckModelDisplay2(SeasideHill_Flowers[i])) {
-			SOI_LIST2 item = SeasideHill_Flowers[i];
-
-			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
-			njPushMatrix(0);
-			njTranslateV(_nj_current_matrix_ptr_, &item.Position);
-			njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
-			njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
-			njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
-			njScale(item.Scale.x, item.Scale.y, item.Scale.z);
-
-			switch (item.Model) {
-			case 0: DrawModel(SH_FLOWERS->getmodel()->basicmodel); break;
-			case 1: DrawModel(SH_FLOWERS->getmodel()->child->basicmodel); break;
-			case 2: DrawModel(SH_FLOWERS->getmodel()->child->child->basicmodel); break;
-			case 3: DrawModel(SH_FLOWERS->getmodel()->child->child->child->basicmodel); break;
-			case 4: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->basicmodel); break;
-			case 5: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->basicmodel); break;
-			case 6: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->child->basicmodel); break;
-			case 7: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->child->child->basicmodel); break;
-			case 8: DrawModel(SH_FLOWERS->getmodel()->child->child->child->child->child->child->child->child->basicmodel); break;
-			}
-
-			njPopMatrix(1u);
-		}
-	}
-}
-
-void SHWaterfalls(ObjectMaster* a1) {
-	EntityData1 *Data1 = a1->Data1.Entity;
-
-	if (Data1->Action == 0) {
-		a1->DisplaySub = a1->MainSub;
-		a1->MainSub = nullptr;
-		Data1->Action = 1;
-		return;
-	}
-
-	for (int i = 0; i < LengthOfArray(SeasideHill_Waterfalls); ++i) {
-		if (CheckModelDisplay2(SeasideHill_Waterfalls[i])) {
-			SOI_LIST2 item = SeasideHill_Waterfalls[i];
-
-			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
-			njPushMatrix(0);
-			njTranslateV(_nj_current_matrix_ptr_, &item.Position);
-			njRotateX(_nj_current_matrix_ptr_, item.Rotation[0]);
-			njRotateY(_nj_current_matrix_ptr_, item.Rotation[1]);
-			njRotateZ(_nj_current_matrix_ptr_, item.Rotation[2]);
-			njScale(item.Scale.x, item.Scale.y, item.Scale.z);
-
-			switch (item.Model) {
-			case 0: DrawModel(SH_WATERFS->getmodel()->basicmodel); break;
-			case 1: DrawModel(SH_WATERFS->getmodel()->child->basicmodel); break;
-			case 2: DrawModel(SH_WATERFS->getmodel()->child->child->basicmodel); break;
-			case 3: DrawModel(SH_WATERFS->getmodel()->child->child->child->basicmodel); break;
-			}
-
-			njPopMatrix(1u);
-		}
-	}
-}
-
 void SHSpikes_Display(ObjectMaster* a1)
 {
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
@@ -330,14 +257,6 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList_list) };
 
 void SeasideHill_Main(ObjectMaster* obj) {
-	AnimateTextures(SeasideHillAnimTexs, 2);
-
-	if (obj->Data1.Entity->Action == 0) {
-		LoadObject(3, "SHFlowers", SHFlowers, LoadObj_Data1);
-		LoadObject(3, "SHWaterfalls", SHWaterfalls, LoadObj_Data1);
-		obj->Data1.Entity->Action = 1;
-	}
-
 	EntityData1* entity = MainCharObj1[0];
 
 	if (CurrentChunk == 16) {

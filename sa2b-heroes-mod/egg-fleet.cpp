@@ -76,8 +76,6 @@ void EggFleet_SkyBox(ObjectMaster* obj) {
 }
 
 void EggFleet_Main(ObjectMaster* obj) {
-	AnimateTextures(arrayptrandlength(EggFleetAnimTexs));
-
 	obj->Data1.Entity->Position = MainCharObj1[0]->Position;
 
 	if (obj->Data1.Entity->Action == 0) {

@@ -5,10 +5,6 @@ StartPosition ef_endpos = { LevelIDs_FinalRush, 4000, 4000, 3000, { -10487.58f, 
 LevelEndPosition ef_2pintro = { LevelIDs_FinalRush, 0x64EC, 0x64EC, 0, { -9202, 1096.8f, -5413 }, { -9145, 1397.46, -523 } };
 LevelEndPosition ef_endpos23 = { LevelIDs_FinalRush, 0, 0x4000, 0, { -10487.58f, 146.7999f, -48281.96f }, { -10137.75f, 570.8741f, -18416.79f } };
 
-SH_ANIMTEXS EggFleetAnimTexs[]{
-	{ 41, 7,{ 14, 10, 8, 10, 8, 10, 8, 5 } }
-};
-
 LoopHead* EggFleetPathList[] = {
 	0
 };
