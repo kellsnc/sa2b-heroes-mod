@@ -14,6 +14,7 @@ NJS_TEXLIST* GetCurrentHeroesTexList();
 void LoadLevelTex(NJS_TEXLIST* texlist, const char* name);
 void CommonLevelInit();
 void LoadLevelMusic(char* name);
+void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u);
 void SetStartEndPoints(const HelperFunctions& helperFunctions, StartPosition* start, LevelEndPosition* start2pIntro, StartPosition* end, LevelEndPosition* missionend);
 void CommonLevelDelete();
 

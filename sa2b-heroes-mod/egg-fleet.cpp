@@ -159,7 +159,7 @@ ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, 0x10, 1060000, nullptr }
 };
 
-ObjectListHead EggFleetObjectList = { arraylengthandptrT(EggFleetObjectList_list, int) };
+ObjectListHead EggFleetObjectList = { arraylengthandptr(EggFleetObjectList_list) };
 
 void EggFleet_SkyBox(ObjectMaster* obj) {
 	NJS_VECTOR* position = &CameraPosArray[CurrentScreen * 2];
@@ -173,12 +173,7 @@ void EggFleet_SkyBox(ObjectMaster* obj) {
 }
 
 void EggFleet_Main(ObjectMaster* obj) {
-	obj->Data1.Entity->Position = MainCharObj1[0]->Position;
-
-	if (obj->Data1.Entity->Action == 0) {
-		LoadObject((LoadObj)0, "SKYBOX", EggFleet_SkyBox, 1)->DisplaySub = EggFleet_SkyBox;
-		obj->Data1.Entity->Action = 1;
-	}
+	
 }
 
 void EggFleet_Load() {
@@ -190,19 +185,16 @@ void EggFleet_Load() {
 	LoadLevelTex((NJS_TEXLIST*)&eggfleet_texlist, "s13");
 	LoadTXCFile("resource\\gd_pc\\s13.txc");
 
-	for (uint8_t i = 0; i < LengthOfArray(EggFleetObjectList_list); ++i) {
-		CityEscape_ObjectArray[i] = EggFleetObjectList_list[i];
-	}
+	LoadLevelLayout(&EggFleetObjectList, "s13_P1.bin", "s13_DB.bin");
 
-	void* setfile = LoadSETFile(2048, (char*)"egg-fleet-set.bin", (char*)"dummy-set.bin");
-
-	LoadSetObject(&CityEscape_ObjectList, setfile);
 	LoadStageLight("stg13_light.bin");
 	LoadStagePaths(EggFleetPathList);
 	LoadLevelMusic((char*)"eggfleet.adx");
 	LoadDeathZones(EggFleetDeathZones);
 	LoadFogData_Fogtask("stg13_fog.bin", (FogData*)0x1A280C8);
-	LoadTextures(CommonTextureInfoPtr);
+	
+	LoadObject((LoadObj)0, "SKYBOX", EggFleet_SkyBox, 1)->DisplaySub = EggFleet_SkyBox;
+
 	EF_SKYMDLS = LoadMDL("EF_SKYMDLS");
 	EF_CANNON1 = LoadMDL("EF_CANNON1");
 	EF_BULLETS = LoadMDL("EF_BULLETS");

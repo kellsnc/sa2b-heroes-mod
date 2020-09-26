@@ -384,6 +384,8 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 2400000, Boxes },
 };
 
+ObjectListHead OceanPalaceObjectList = { arraylengthandptr(OceanPalaceObjectList_list) };
+
 void OceanPalace_SkyBox(ObjectMaster* obj) {
 	NJS_VECTOR* position = &CameraPosArray[CurrentScreen * 2];
 
@@ -396,13 +398,7 @@ void OceanPalace_SkyBox(ObjectMaster* obj) {
 }
 
 void OceanPalace_Main(ObjectMaster* obj) {
-	obj->Data1.Entity->Position = MainCharObj1[0]->Position;
-
-	if (obj->Data1.Entity->Action == 0) {
-		LoadObject(LoadObj_Data1, "BOULDERS", OPBoulders, 3);
-		LoadObject((LoadObj)0, "SKYBOX", OceanPalace_SkyBox, 1)->DisplaySub = OceanPalace_SkyBox;
-		obj->Data1.Entity->Action = 1;
-	}
+	
 }
 
 void OceanPalace_Load() {
@@ -415,26 +411,15 @@ void OceanPalace_Load() {
 	LoadLevelTex((NJS_TEXLIST*)&oceanpalace_texlist, "s02");
 	LoadTXCFile("resource\\gd_pc\\s02.txc");
 	
-	for (uint8_t i = 0; i < LengthOfArray(OceanPalaceObjectList_list); ++i) {
-		CityEscape_ObjectArray[i] = OceanPalaceObjectList_list[i];
-	}
-
-	void* setfile = nullptr;
-
-	if (CurrentLevel == LevelIDs_MetalHarbor) {
-		setfile = LoadSETFile(2048, (char*)"ocean-palace-set.bin", (char*)"dummy-set.bin");
-	}
-	else {
-		setfile = LoadSETFile(2048, (char*)"ocean-palace-set-2p.bin", (char*)"dummy-set.bin");
-	}
+	LoadLevelLayout(&OceanPalaceObjectList, "s02_P1.bin", "s02_DB.bin");
 	
-	LoadSetObject(&CityEscape_ObjectList, setfile);
 	LoadStageLight("stg13_light.bin");
 	LoadStagePaths(OceanPalacePathList);
 	LoadLevelMusic((char*)"oceanpalace.adx");
 	LoadDeathZones(SeasideHillDeathZones);
 	LoadFogData_Fogtask("stg13_fog.bin", (FogData*)0x1A280C8);
-	LoadTextures(CommonTextureInfoPtr);
+
+	LoadObject((LoadObj)0, "SKYBOX", OceanPalace_SkyBox, 1)->DisplaySub = OceanPalace_SkyBox;
 
 	OP_WATERFS = LoadMDL("OP_WATERFS");
 	OP_FLOWERS = LoadMDL("OP_FLOWERS");

@@ -345,17 +345,7 @@ ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList
 void SeasideHill_Main(ObjectMaster* obj) {
 	EntityData1* entity = MainCharObj1[0];
 
-	if (CurrentChunk == 16) {
-		if (entity->Position.z > -200) {
-			ruin = 0;
-		}
-
-		if (entity->Position.z > -1000)
-			CurrentLandTable->COLList[CurrentLandTable->COLCount - 1].Flags = 1;
-		if (entity->Position.z > -1994 && entity->Position.z < -1974)
-			CurrentLandTable->COLList[CurrentLandTable->COLCount - 1].Flags = 0;
-	}
-	else if (CurrentChunk == 8) {
+	if (CurrentChunk == 8) {
 		NJS_VECTOR center = { 900, 1846, -33745 };
 		uint8_t player = IsPlayerInsideSphere(&center, 100);
 		if (player) {
@@ -375,12 +365,8 @@ void SeasideHill_Load() {
 	LoadLevelTex((NJS_TEXLIST*)&seasidehill_texlist, "s01");
 	LoadTXCFile("resource\\gd_pc\\s01.txc");
 	
-	for (uint8_t i = 0; i < LengthOfArray(SeasideHillObjectList_list); ++i) {
-		CityEscape_ObjectArray[i] = SeasideHillObjectList_list[i];
-	}
+	LoadLevelLayout(&SeasideHillObjectList, "s01_P1.bin", "s01_DB.bin");
 
-	void* setfile = LoadSETFile(2048, (char*)"seaside-hill-set.bin", (char*)"dummy-set.bin");
-	LoadSetObject(&CityEscape_ObjectList, setfile);
 	LoadStageLight("stg13_light.bin");
 	LoadLevelMusic((char*)"seasidehill.adx");
 	LoadStagePaths(SeasideHillPathList);

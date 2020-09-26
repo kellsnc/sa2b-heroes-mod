@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+Uint32 Timer = 0;
 HelperFunctions HelperFunctionsGlobal;
 
 HeroesLevelIDs CurrentHeroesLevel = HeroesLevelIDs::Invalid;
@@ -7,6 +8,10 @@ NJS_TEXLIST* CurrentHeroesTexList = nullptr;
 
 NJS_TEXLIST* GetCurrentHeroesTexList() {
 	return CurrentHeroesTexList;
+}
+
+Uint32 GetTimer() {
+	return Timer;
 }
 
 // Load the common texpacks, and fill the many common texlists
@@ -72,6 +77,15 @@ void LoadLevelTex(NJS_TEXLIST* texlist, const char* name) {
 	CurrentLandTable->TextureName = (char*)name;
 }
 
+void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u) {
+	for (uint8_t i = 0; i < objlist->Count; ++i) {
+		CityEscape_ObjectArray[i] = objlist->List[i];
+	}
+
+	void* setfile = LoadSETFile(2048, (char*)s, (char*)u);
+	LoadSetObject(&CityEscape_ObjectList, setfile);
+}
+
 //Set the start and end positions
 void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* start, LevelEndPosition* start2pIntro, StartPosition* end, LevelEndPosition* missionend) {
 	for (uint8_t i = 0; i < Characters_Amy; i++)
@@ -106,6 +120,13 @@ extern "C"
 	}
 
 	__declspec(dllexport) void OnFrame() {
+		if (GameState == GameStates_Ingame) {
+			Timer += 1;
+		}
+		else if (GameState != GameStates_Pause) {
+			Timer = 0;
+		}
+
 		TwoPlayerMode = 1;
 	}
 

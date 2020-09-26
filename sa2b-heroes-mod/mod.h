@@ -7,6 +7,8 @@
 extern std::string modpath;
 extern HelperFunctions HelperFunctionsGlobal;
 
+Uint32 GetTimer();
+
 typedef struct {
 	const char* filename;	/* texture filename strings     */
 	Uint32			attr;		/* texture attribute            */

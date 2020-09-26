@@ -27,7 +27,7 @@ void AnimTexManager(ObjectMaster* obj) {
     for (Uint8 i = 0; i < AnimTexCount; ++i) {
         AnimTexEntry* entry = &AnimTexEntries[i];
         NJS_TEXLIST_* texlist = (NJS_TEXLIST_*)GetCurrentHeroesTexList();
-        int CurrentFrame = FrameCountIngame % entry->FrameCount;
+        int CurrentFrame = GetTimer() % entry->FrameCount;
 
         for (Uint8 j = 0; j < entry->FrameEntryCount; ++j) {
             if (CurrentFrame < entry->Frames[j].FrameOffset) {
@@ -66,7 +66,7 @@ void LoadAnimTexManager() {
             }
         }
 
-        LoadObject((LoadObj)0, "ANIMTEXMNG", AnimTexManager, 8);
+        LoadObject((LoadObj)0, "ANIMTEXMNG", AnimTexManager, 1);
     }
 }
 
