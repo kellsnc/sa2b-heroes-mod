@@ -9,31 +9,6 @@ NJS_TEXLIST* GetCurrentHeroesTexList() {
 	return CurrentHeroesTexList;
 }
 
-// void __usercall(TexPackInfo* a1@<eax>, NJS_TEXLIST*** a2)
-static const void* const LoadTexPacksPtr = (void*)0x44C7B0;
-static inline void LoadTexPacks(TexPackInfo* TexPackList, NJS_TEXLIST*** Texlists)
-{
-	__asm
-	{
-		push[Texlists]
-		mov eax, [TexPackList]
-		call LoadTexPacksPtr
-		add esp, 4
-	}
-}
-
-// void __usercall(NJS_TEXLIST*** a1@<eax>, TexPackInfo* a2@<ecx>)
-static const void* const FreeTexPacksPtr = (void*)0x44C810;
-static inline void FreeTexPacks(NJS_TEXLIST*** Texlists, TexPackInfo* TexPackList)
-{
-	__asm
-	{
-		mov ecx, [TexPackList]
-		mov eax, [Texlists]
-		call FreeTexPacksPtr
-	}
-}
-
 // Load the common texpacks, and fill the many common texlists
 void CommonLevelInit() {
 	DropRingsFunc_ptr = DropRings;

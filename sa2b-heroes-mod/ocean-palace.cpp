@@ -8,8 +8,100 @@ ModelInfo * OP_BOULDER;
 ModelInfo * OP_POLFLAG;
 ModelInfo * OP_SKYMDLS;
 
-NJS_TEXNAME oceanpalace_texname[90];
-NJS_TEXLIST oceanpalace_texlist{ arrayptrandlength(oceanpalace_texname) };
+NJS_TEXNAME_ oceanpalace_texname[]{
+	{ "tk1_sib2", 0, 0 },
+	{ "s2_kao3", 0, 0 },
+	{ "s2_kao2", 0, 0 },
+	{ "s2_kao1", 0, 0 },
+	{ "pm2_005", 0, 0 },
+	{ "pm2_004", 0, 0 },
+	{ "pm2_003", 0, 0 },
+	{ "pm2_002", 0, 0 },
+	{ "pm2_001", 0, 0 },
+	{ "pk2_flo2", 0, 0 },
+	{ "pk2_flo1", 0, 0 },
+	{ "pk1_sib1", 0, 0 },
+	{ "m2_sima9", 0, 0 },
+	{ "m2_sima8", 0, 0 },
+	{ "m2_sima7", 0, 0 },
+	{ "m2_sima4", 0, 0 },
+	{ "m2_sima3", 0, 0 },
+	{ "m2_sima2", 0, 0 },
+	{ "m2_sima1", 0, 0 },
+	{ "m2_6003", 0, 0 },
+	{ "m2_6002", 0, 0 },
+	{ "m2_6001", 0, 0 },
+	{ "m2_5002", 0, 0 },
+	{ "m2_2021", 0, 0 },
+	{ "m2_2020", 0, 0 },
+	{ "m2_2019", 0, 0 },
+	{ "m2_2018", 0, 0 },
+	{ "m2_2017", 0, 0 },
+	{ "m2_2016", 0, 0 },
+	{ "m2_2015", 0, 0 },
+	{ "m2_2014", 0, 0 },
+	{ "m2_2013", 0, 0 },
+	{ "m2_2012", 0, 0 },
+	{ "m2_2011", 0, 0 },
+	{ "m2_2010", 0, 0 },
+	{ "m2_2009", 0, 0 },
+	{ "m2_2008", 0, 0 },
+	{ "m2_2007", 0, 0 },
+	{ "m2_2006", 0, 0 },
+	{ "m2_2005", 0, 0 },
+	{ "m2_2004", 0, 0 },
+	{ "m2_2002", 0, 0 },
+	{ "m2_2001", 0, 0 },
+	{ "m2_1014", 0, 0 },
+	{ "m2_1013", 0, 0 },
+	{ "m2_1012", 0, 0 },
+	{ "m2_1011", 0, 0 },
+	{ "m2_1010", 0, 0 },
+	{ "m2_1009", 0, 0 },
+	{ "m2_1008", 0, 0 },
+	{ "m2_1007", 0, 0 },
+	{ "m2_1006", 0, 0 },
+	{ "m2_1005", 0, 0 },
+	{ "m2_1004", 0, 0 },
+	{ "m2_1003", 0, 0 },
+	{ "m2_1002", 0, 0 },
+	{ "m2_1001", 0, 0 },
+	{ "m1_2011", 0, 0 },
+	{ "m1_1012", 0, 0 },
+	{ "m1_1011", 0, 0 },
+	{ "m1_1010", 0, 0 },
+	{ "m1_1007", 0, 0 },
+	{ "m1_1004", 0, 0 },
+	{ "k2_tika2", 0, 0 },
+	{ "k2_tika1", 0, 0 },
+	{ "k2_miti2", 0, 0 },
+	{ "k2_miti1", 0, 0 },
+	{ "k1_u1.1", 0, 0 },
+	{ "k1_u1.2", 0, 0 },
+	{ "k1_u1.3", 0, 0 },
+	{ "k1_u1.4", 0, 0 },
+	{ "k1_u1.5", 0, 0 },
+	{ "k1_u1.6", 0, 0 },
+	{ "k1_u1.7", 0, 0 },
+	{ "k1_u1.8", 0, 0 },
+	{ "k1_u1.9", 0, 0 },
+	{ "k1_u1.10", 0, 0 },
+	{ "k1_u1.11", 0, 0 },
+	{ "k1_u1.12", 0, 0 },
+	{ "k1_u1.13", 0, 0 },
+	{ "k1_u1.14", 0, 0 },
+	{ "k1_u1.15", 0, 0 },
+	{ "k1_u1.16", 0, 0 },
+	{ "k1_u1.17", 0, 0 },
+	{ "k1_u1.18", 0, 0 },
+	{ "k1_u1.19", 0, 0 },
+	{ "k1_u1.20", 0, 0 },
+	{ "k1_kame3", 0, 0 },
+	{ "k1_kame2", 0, 0 },
+	{ "k1_kame1", 0, 0 },
+};
+
+NJS_TEXLIST_ oceanpalace_texlist{ arrayptrandlength(oceanpalace_texname) };
 
 extern CollisionData Col_Pole;
 
@@ -293,11 +385,11 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 };
 
 void OceanPalace_SkyBox(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1.Entity;
+	NJS_VECTOR* position = &CameraPosArray[CurrentScreen * 2];
 
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
-	njTranslate(_nj_current_matrix_ptr_, data->Position.x, 0.0f, data->Position.z);
+	njTranslate(_nj_current_matrix_ptr_, position->x, 0.0f, position->z);
 	DrawModel(OP_SKYMDLS->getmodel()->basicmodel);
 	DrawModel(OP_SKYMDLS->getmodel()->child->basicmodel);
 	njPopMatrix(1u);
@@ -307,8 +399,8 @@ void OceanPalace_Main(ObjectMaster* obj) {
 	obj->Data1.Entity->Position = MainCharObj1[0]->Position;
 
 	if (obj->Data1.Entity->Action == 0) {
-		LoadObject(LoadObj_Data1, "OPBoulders", OPBoulders, 3);
-		obj->DisplaySub = OceanPalace_SkyBox;
+		LoadObject(LoadObj_Data1, "BOULDERS", OPBoulders, 3);
+		LoadObject((LoadObj)0, "SKYBOX", OceanPalace_SkyBox, 1)->DisplaySub = OceanPalace_SkyBox;
 		obj->Data1.Entity->Action = 1;
 	}
 }
@@ -320,8 +412,9 @@ void OceanPalace_Load() {
 	
 	LoadChunkFile("resource\\gd_pc\\s02_blk.bin");
 	LoadLandTable("resource\\gd_pc\\s02.sa2lvl");
-	LoadLevelTex(&oceanpalace_texlist, "s02");
-
+	LoadLevelTex((NJS_TEXLIST*)&oceanpalace_texlist, "s02");
+	LoadTXCFile("resource\\gd_pc\\s02.txc");
+	
 	for (uint8_t i = 0; i < LengthOfArray(OceanPalaceObjectList_list); ++i) {
 		CityEscape_ObjectArray[i] = OceanPalaceObjectList_list[i];
 	}
@@ -342,6 +435,7 @@ void OceanPalace_Load() {
 	LoadDeathZones(SeasideHillDeathZones);
 	LoadFogData_Fogtask("stg13_fog.bin", (FogData*)0x1A280C8);
 	LoadTextures(CommonTextureInfoPtr);
+
 	OP_WATERFS = LoadMDL("OP_WATERFS");
 	OP_FLOWERS = LoadMDL("OP_FLOWERS");
 	OP_TURFINS = LoadMDL("OP_TURFINS");

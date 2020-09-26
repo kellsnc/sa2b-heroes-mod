@@ -8,8 +8,94 @@ ModelInfo * SH_POLFLAG;
 ModelInfo * SH_WATERFS;
 ModelInfo * SH_FLOWERS;
 
-NJS_TEXNAME seasidehill_texname[91];
-NJS_TEXLIST seasidehill_texlist{ arrayptrandlength(seasidehill_texname) };
+NJS_TEXNAME_ seasidehill_texname[] {
+	{ "k1_flo2", 0, 0 },
+	{ "k1_kab01", 0, 0 },
+	{ "k1_kab03", 0, 0 },
+	{ "k1_kab11", 0, 0 },
+	{ "k1_kab12", 0, 0 },
+	{ "k1_kuj01", 0, 0 },
+	{ "k1_kuj11", 0, 0 },
+	{ "k1_kuj12", 0, 0 },
+	{ "k1_m_k01", 0, 0 },
+	{ "k1_mit01", 0, 0 },
+	{ "k1_mit11", 0, 0 },
+	{ "k1_rop01", 0, 0 },
+	{ "k1_rop02", 0, 0 },
+	{ "k1_sna01", 0, 0 },
+	{ "k1_sna02", 0, 0 },
+	{ "k1_sna03", 0, 0 },
+	{ "k1_sra02", 0, 0 },
+	{ "k1_sya01", 0, 0 },
+	{ "k1_sya02", 0, 0 },
+	{ "k1_sya03", 0, 0 },
+	{ "k1_tika1", 0, 0 },
+	{ "k1_tika1_", 0, 0 },
+	{ "k1_tika2", 0, 0 },
+	{ "k1_tika2_", 0, 0 },
+	{ "k1_u1.1", 0, 0 },
+	{ "k1_u1.2", 0, 0 },
+	{ "k1_u1.3", 0, 0 },
+	{ "k1_u1.4", 0, 0 },
+	{ "k1_u1.5", 0, 0 },
+	{ "k1_u1.6", 0, 0 },
+	{ "k1_u1.7", 0, 0 },
+	{ "k1_u1.8", 0, 0 },
+	{ "k1_u1.9", 0, 0 },
+	{ "k1_u1.10", 0, 0 },
+	{ "k1_u1.11", 0, 0 },
+	{ "k1_u1.12", 0, 0 },
+	{ "k1_u1.13", 0, 0 },
+	{ "k1_u1.14", 0, 0 },
+	{ "k1_u1.15", 0, 0 },
+	{ "k1_u1.16", 0, 0 },
+	{ "k1_u1.17", 0, 0 },
+	{ "k1_u1.18", 0, 0 },
+	{ "k1_u1.19", 0, 0 },
+	{ "k1_u1.20", 0, 0 },
+	{ "k1_umi02", 0, 0 },
+	{ "k1_umi03", 0, 0 },
+	{ "k1_umi11", 0, 0 },
+	{ "k1_umi13", 0, 0 },
+	{ "k1_umi14", 0, 0 },
+	{ "k1_yasi1", 0, 0 },
+	{ "m1_1001", 0, 0 },
+	{ "m1_1002", 0, 0 },
+	{ "m1_1003", 0, 0 },
+	{ "m1_1004", 0, 0 },
+	{ "m1_1005", 0, 0 },
+	{ "m1_1006", 0, 0 },
+	{ "m1_1007", 0, 0 },
+	{ "m1_1008", 0, 0 },
+	{ "m1_1009", 0, 0 },
+	{ "m1_1010", 0, 0 },
+	{ "m1_1011", 0, 0 },
+	{ "m1_1012", 0, 0 },
+	{ "m1_2001", 0, 0 },
+	{ "m1_2004", 0, 0 },
+	{ "m1_2005", 0, 0 },
+	{ "m1_2006", 0, 0 },
+	{ "m1_2008", 0, 0 },
+	{ "m1_2011", 0, 0 },
+	{ "m1_2012", 0, 0 },
+	{ "m1_2013", 0, 0 },
+	{ "m1_5002", 0, 0 },
+	{ "pk1_flo1", 0, 0 },
+	{ "pk1_flo3", 0, 0 },
+	{ "pk1_flo4", 0, 0 },
+	{ "pk1_flo5", 0, 0 },
+	{ "pk1_flo6", 0, 0 },
+	{ "pk1_flo7", 0, 0 },
+	{ "pk1_hika", 0, 0 },
+	{ "pk1_par1", 0, 0 },
+	{ "pk1_yas2", 0, 0 },
+	{ "pk1_yas3", 0, 0 },
+	{ "pkb1_hta", 0, 0 },
+	{ "tk1_mizu", 0, 0 },
+	{ "tk1_nam1", 0, 0 },
+};
+
+NJS_TEXLIST_ seasidehill_texlist{ arrayptrandlength(seasidehill_texname) };
 
 float ruin = 0;
 static int flagtimer = 0;
@@ -286,7 +372,8 @@ void SeasideHill_Load() {
 
 	LoadChunkFile("resource\\gd_pc\\s01_blk.bin");
 	LoadLandTable("resource\\gd_pc\\s01.sa2lvl");
-	LoadLevelTex(&seasidehill_texlist, "s01");
+	LoadLevelTex((NJS_TEXLIST*)&seasidehill_texlist, "s01");
+	LoadTXCFile("resource\\gd_pc\\s01.txc");
 	
 	for (uint8_t i = 0; i < LengthOfArray(SeasideHillObjectList_list); ++i) {
 		CityEscape_ObjectArray[i] = SeasideHillObjectList_list[i];

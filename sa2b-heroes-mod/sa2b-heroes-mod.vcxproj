@@ -147,11 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="animtexmanager.h" />
     <ClInclude Include="byteswap.h" />
     <ClInclude Include="chunkmanager.h" />
     <ClInclude Include="egg-fleet.h" />
     <ClInclude Include="landmanager.h" />
     <ClInclude Include="level.h" />
+    <ClInclude Include="mod.h" />
     <ClInclude Include="ocean-palace.h" />
     <ClInclude Include="seaside-hill-deathzones.h" />
     <ClInclude Include="seaside-hill.h" />
@@ -162,6 +164,7 @@
     <ClCompile Include="..\sa2-mod-loader\libmodutils\LandTableInfo.cpp" />
     <ClCompile Include="..\sa2-mod-loader\libmodutils\ModelInfo.cpp" />
     <ClCompile Include="..\sa2-mod-loader\libmodutils\Trampoline.cpp" />
+    <ClCompile Include="animtexmanager.cpp" />
     <ClCompile Include="byteswap.cpp" />
     <ClCompile Include="chunkmanager.cpp" />
     <ClCompile Include="common-objects.cpp" />

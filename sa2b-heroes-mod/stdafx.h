@@ -13,7 +13,9 @@
 #include "ModelInfo.h"
 #include "Trampoline.h"
 
+#include "mod.h"
 #include "level.h"
 #include "byteswap.h"
 #include "landmanager.h"
 #include "chunkmanager.h"
+#include "animtexmanager.h"

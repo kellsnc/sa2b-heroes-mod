@@ -17,11 +17,6 @@ struct BLKEntry {
 BLKEntry ChunkInfos[64];
 Sint32 CurrentChunk = 0;
 
-DataPointer(COL**, LandTable_VisibleEntries, 0x1A5A2E4);
-DataPointer(Uint16, LandTable_VisibleEntriesCount, 0x1945A00);
-DataPointer(NJS_VECTOR*, CameraPosArray, 0x1DD92B0); // Actual position and rotation, two times
-DataPointer(int, CurrentScreen, 0x1DD92A0);
-
 bool CheckLandVisibility(Sint32 chunk, NJS_VECTOR* position) {
 	if (ChunkInfos[0].ChunkID == 0) {
 		return true;
