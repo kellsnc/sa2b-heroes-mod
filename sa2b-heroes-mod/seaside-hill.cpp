@@ -361,9 +361,13 @@ void SeasideHill_Main(ObjectMaster* obj) {
 }
 
 void SeasideHill_Load() {
+	CurrentHeroesLevel = HeroesLevelIDs::SeasideHill;
+
 	CommonLevelInit();
-	LoadLevelTex(&seasidehill_texlist);
-	CurrentLevelTexList = CurrentLandTable->TextureList;
+
+	LoadChunkFile("resource\\gd_pc\\s01_blk.bin");
+	LoadLandTable("resource\\gd_pc\\s01.sa2lvl");
+	LoadLevelTex(&seasidehill_texlist, "s01");
 	
 	for (uint8_t i = 0; i < LengthOfArray(SeasideHillObjectList_list); ++i) {
 		CityEscape_ObjectArray[i] = SeasideHillObjectList_list[i];

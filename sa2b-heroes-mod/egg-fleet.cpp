@@ -87,6 +87,7 @@ void EggFleet_Main(ObjectMaster* obj) {
 }
 
 void EggFleet_Load() {
+	CurrentHeroesLevel = HeroesLevelIDs::EggFleet;
 	CommonLevelInit();
 
 	CurrentLevelTexList = CurrentLandTable->TextureList;

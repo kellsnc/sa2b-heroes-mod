@@ -8,7 +8,7 @@ ModelInfo * OP_BOULDER;
 ModelInfo * OP_POLFLAG;
 ModelInfo * OP_SKYMDLS;
 
-NJS_TEXNAME oceanpalace_texname[114];
+NJS_TEXNAME oceanpalace_texname[90];
 NJS_TEXLIST oceanpalace_texlist{ arrayptrandlength(oceanpalace_texname) };
 
 extern CollisionData Col_Pole;
@@ -441,7 +441,7 @@ void OceanPalace_SkyBox(ObjectMaster* obj) {
 
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
-	njTranslate(_nj_current_matrix_ptr_, data->Position.x, 1.8f, data->Position.z);
+	njTranslate(_nj_current_matrix_ptr_, data->Position.x, 0.0f, data->Position.z);
 	DrawModel(OP_SKYMDLS->getmodel()->basicmodel);
 	DrawModel(OP_SKYMDLS->getmodel()->child->basicmodel);
 	njPopMatrix(1u);
@@ -463,9 +463,13 @@ void OceanPalace_Main(ObjectMaster* obj) {
 }
 
 void OceanPalace_Load() {
-	CommonLevelInit();
+	CurrentHeroesLevel = HeroesLevelIDs::OceanPalace;
 
-	CurrentLevelTexList = CurrentLandTable->TextureList;
+	CommonLevelInit();
+	
+	LoadChunkFile("resource\\gd_pc\\s02_blk.bin");
+	LoadLandTable("resource\\gd_pc\\s02.sa2lvl");
+	LoadLevelTex(&oceanpalace_texlist, "s02");
 
 	for (uint8_t i = 0; i < LengthOfArray(OceanPalaceObjectList_list); ++i) {
 		CityEscape_ObjectArray[i] = OceanPalaceObjectList_list[i];

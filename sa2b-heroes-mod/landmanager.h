@@ -1,4 +1,4 @@
 #pragma once
 
 void UnloadLandTable();
-void LoadLandTable();
+void LoadLandTable(const char* path);

@@ -1,17 +1,22 @@
 #pragma once
 
-extern int CurrentHeroesLevel;
+enum class HeroesLevelIDs {
+	Invalid = -1,
+	TestRoom = 0,
+	SeasideHill = 1,
+	OceanPalace,
+	EggFleet = 13
+};
 
+extern HeroesLevelIDs CurrentHeroesLevel;
 extern HelperFunctions HelperFunctionsGlobal;
-std::string GetLevelFilePath();
-NJS_TEXLIST* GetCurrentHeroesTexList();
-void LoadLevelTex(NJS_TEXLIST* texlist);
 
-typedef struct {
-	uint8_t			Chunk;
-	NJS_VECTOR		Position1;
-	NJS_VECTOR		Position2;
-} CHUNK_LIST;
+NJS_TEXLIST* GetCurrentHeroesTexList();
+void LoadLevelTex(NJS_TEXLIST* texlist, const char* name);
+void CommonLevelInit();
+void LoadLevelMusic(char* name);
+void SetStartEndPoints(const HelperFunctions& helperFunctions, StartPosition* start, LevelEndPosition* start2pIntro, StartPosition* end, LevelEndPosition* missionend);
+void CommonLevelDelete();
 
 typedef struct {
 	int			texid;
@@ -92,11 +97,6 @@ void TransformSpline(NJS_VECTOR* pos, NJS_VECTOR orig, NJS_VECTOR dest, float st
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
 
-void CommonLevelInit();
-void LoadLevelMusic(char* name);
-void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* start, LevelEndPosition* start2pIntro, StartPosition* end, LevelEndPosition* missionend);
-
-void CommonLevelDelete();
 void CommonObjects_LoadModels();
 void CommonObjects_FreeModels();
 
@@ -159,5 +159,3 @@ static inline void AddToCollisionList(ObjectMaster *a1)
 		call AddToCollisionListPtr
 	}
 }
-
-extern uint8_t CurrentChunk;

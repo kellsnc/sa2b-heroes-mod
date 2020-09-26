@@ -3,7 +3,7 @@
 DataArray(ObjectListEntry, MetalHarbor_ObjectArray, 0xAEC550, 93);
 extern DeathZone SeasideHillDeathZones[];
 
-StartPosition op_startpos = { LevelIDs_MetalHarbor, 0xBFFF, 0xBFFF, 0xBFFF, { -8771, 1303, -2819.688f }, { -8768, 1303, -2819.688f }, { -8774, 1303, -2819.688f } };
+StartPosition op_startpos = { LevelIDs_MetalHarbor, 0xBFFF, 0xBFFF, 0xBFFF, { 230, 1345, -23 }, { 210, 1345, -23 }, { 250, 1345, -23 } };
 StartPosition op_endpos = { LevelIDs_MetalHarbor, 4000, 4000, 3000, { -10487.58f, 146.7999f, -48281.96f }, { -10487.58f, 146.7999f, -48281.96f }, { -10490.17f, 146.7999f, -48598.5f } };
 LevelEndPosition op_2pintro = { LevelIDs_MetalHarbor2P, 0x64EC, 0x64EC, 0, { -9202, 1096.8f, -5413 }, { -9145, 1397.46, -523 } };
 LevelEndPosition op_endpos23 = { LevelIDs_MetalHarbor, 0, 0x4000, 0, { -10487.58f, 146.7999f, -48281.96f }, { -10137.75f, 570.8741f, -18416.79f } };
@@ -11,17 +11,6 @@ LevelEndPosition op_endpos23 = { LevelIDs_MetalHarbor, 0, 0x4000, 0, { -10487.58
 SH_ANIMTEXS OceanPalaceAnimTexs[]{
 	{ 2, 19,{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4 } },
 	{ 90, 10,{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 } }
-};
-
-CHUNK_LIST OceanPalaceChunks[]{
-	{ 1,{ 0, 0, 0 },{ 0, 0, -10637 } },
-	{ 2,{ 0, 0, -10638 },{ 0, 0, -16182 } },
-	{ 3,{ 0, 0, -16185 },{ 0, 0, -21276 } },
-	{ 4,{ 0, 0, -21286 },{ 0, 0, -24604 } },
-	{ 5,{ 0, 0, -25192 },{ 0, 0, -33666 } },
-	{ 6,{ 0, 0, -33667 },{ 0, 0, -40250 } },
-	{ 7,{ 0, 0, -40251 },{ -8443, 0, -48669 } },
-	{ 8,{ -8442, 0, -45529 },{ 0, 0, 0 } }
 };
 
 NJS_VECTOR OceanPalaceTrigger = { -8200, 1401, -40045 };

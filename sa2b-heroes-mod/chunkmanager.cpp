@@ -15,6 +15,7 @@ struct BLKEntry {
 #pragma pack(pop)
 
 BLKEntry ChunkInfos[64];
+Sint32 CurrentChunk = 0;
 
 DataPointer(COL**, LandTable_VisibleEntries, 0x1A5A2E4);
 DataPointer(Uint16, LandTable_VisibleEntriesCount, 0x1945A00);
@@ -22,11 +23,16 @@ DataPointer(NJS_VECTOR*, CameraPosArray, 0x1DD92B0); // Actual position and rota
 DataPointer(int, CurrentScreen, 0x1DD92A0);
 
 bool CheckLandVisibility(Sint32 chunk, NJS_VECTOR* position) {
+	if (ChunkInfos[0].ChunkID == 0) {
+		return true;
+	}
+
 	for (Uint8 i = 0; i < LengthOfArray(ChunkInfos); ++i) {
 		if (chunk == ChunkInfos[i].ChunkID &&
 			position->x > ChunkInfos[i].MinX && position->x < ChunkInfos[i].MaxX &&
 			position->y > ChunkInfos[i].MinY && position->y < ChunkInfos[i].MaxY &&
 			position->z > ChunkInfos[i].MinZ && position->z < ChunkInfos[i].MaxZ) {
+			CurrentChunk = chunk;
 			return true;
 		}
 	}
@@ -37,7 +43,7 @@ bool CheckLandVisibility(Sint32 chunk, NJS_VECTOR* position) {
 void __cdecl ListGroundForDrawing_r();
 Trampoline ListGroundForDrawing_t(0x47CAE0, 0x47CAE8, ListGroundForDrawing_r);
 void __cdecl ListGroundForDrawing_r() {
-	if (CurrentHeroesLevel != 0) {
+	if (CurrentHeroesLevel != HeroesLevelIDs::Invalid) {
 		NJS_VECTOR* position = &CameraPosArray[CurrentScreen * 2];
 
 		Uint16 current = 0;
@@ -57,10 +63,14 @@ void __cdecl ListGroundForDrawing_r() {
 	}
 }
 
-void LoadChunkFile() {
+void FreeChunkFile() {
+	memset(&ChunkInfos, 0, sizeof(ChunkInfos));
+}
+
+void LoadChunkFile(const char* path) {
 	std::ifstream file;
 
-	file.open(HelperFunctionsGlobal.GetReplaceablePath((GetLevelFilePath() + "_blk.bin").c_str()), std::ios::in | std::ios::binary);
+	file.open(HelperFunctionsGlobal.GetReplaceablePath(path), std::ios::in | std::ios::binary);
 	file.read((char*)&ChunkInfos[0], SizeOfArray(ChunkInfos));
 
 	for (Uint8 i = 0; i < LengthOfArray(ChunkInfos); ++i) {

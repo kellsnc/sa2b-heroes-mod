@@ -2,17 +2,8 @@
 
 HelperFunctions HelperFunctionsGlobal;
 
-std::string LevelFilePath;
-std::string LevelName;
-uint8_t CurrentChunk = 0;
-
+HeroesLevelIDs CurrentHeroesLevel = HeroesLevelIDs::Invalid;
 NJS_TEXLIST* CurrentHeroesTexList = nullptr;
-
-int CurrentHeroesLevel = 1;
-
-std::string GetLevelFilePath() {
-	return LevelFilePath;
-}
 
 NJS_TEXLIST* GetCurrentHeroesTexList() {
 	return CurrentHeroesTexList;
@@ -43,11 +34,11 @@ static inline void FreeTexPacks(NJS_TEXLIST*** Texlists, TexPackInfo* TexPackLis
 	}
 }
 
-//Load the common texpacks, and fill the many common texlists
-//Set some other common level stuff
+// Load the common texpacks, and fill the many common texlists
 void CommonLevelInit() {
 	DropRingsFunc_ptr = DropRings;
 	DisplayItemBoxItemFunc_ptr = DisplayItemBoxItem;
+
 	CommonObjects_LoadModels();
 
 	//Chaos Drive Function Pointers
@@ -57,18 +48,6 @@ void CommonLevelInit() {
 	dword_1DE468C = (void*)0x6BC4A0;
 
 	LoadTexPacks((TexPackInfo*)0x109E810, (NJS_TEXLIST***)0x109E748);
-
-	std::string LevelName = "s";
-
-	if (CurrentHeroesLevel < 10) {
-		LevelName += "0";
-	}
-
-	LevelName += std::to_string(CurrentHeroesLevel);
-
-	LevelFilePath = "resource\\gd_PC\\" + LevelName;
-	LoadChunkFile();
-	LoadLandTable();
 }
 
 //Delete the heroes landtable at stage exit
@@ -77,6 +56,7 @@ void CommonLevelDelete() {
 	FreeTexPacks((NJS_TEXLIST***)0x109E748, (TexPackInfo*)0x109E810);
 	
 	UnloadLandTable();
+	FreeChunkFile();
 
 	DropRingsFunc_ptr = nullptr;
 	DisplayItemBoxItemFunc_ptr = nullptr;
@@ -88,12 +68,16 @@ void CommonLevelDelete() {
 
 	DeleteObject_(LandManagerPtr);
 	DeleteObject_(SetObject_ptr);
+
+	CurrentHeroesLevel = HeroesLevelIDs::Invalid;
+	CurrentHeroesTexList = nullptr;
 }
 
 //Load the current level music
 void LoadLevelMusic(char* name) {
 	char character;
 	int c = 0;
+
 	do
 	{
 		character = name[c];
@@ -105,11 +89,12 @@ void LoadLevelMusic(char* name) {
 	ResetMusic();
 }
 
-void LoadLevelTex(NJS_TEXLIST* texlist) {
-	LoadTextureList(LevelName.c_str(), texlist);
+void LoadLevelTex(NJS_TEXLIST* texlist, const char* name) {
+	LoadTextureList(name, texlist);
 	CurrentHeroesTexList = texlist;
+	CurrentLevelTexList = texlist;
 	CurrentLandTable->TextureList = texlist;
-	CurrentLandTable->TextureName = (char*)LevelName.c_str();
+	CurrentLandTable->TextureName = (char*)name;
 }
 
 //Set the start and end positions

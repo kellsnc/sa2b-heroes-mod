@@ -26,9 +26,8 @@ void UnloadLandTable() {
 	}
 }
 
-void LoadLandTable() {
-	std::string path = GetLevelFilePath() + ".sa2lvl";
-	CurrentHeroesLandTable = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(path.c_str()));
+void LoadLandTable(const char* path) {
+	CurrentHeroesLandTable = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(path));
 	LoadLandManager(CurrentHeroesLandTable->getlandtable());
 	FixColFlags(CurrentHeroesLandTable->getlandtable());
 }

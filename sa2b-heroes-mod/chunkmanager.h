@@ -1,4 +1,6 @@
 #pragma once
 
-bool CheckLandVisibility(Sint32 chunk, NJS_VECTOR position);
-void LoadChunkFile();
+extern Sint32 CurrentChunk;
+
+void FreeChunkFile();
+void LoadChunkFile(const char* path);
