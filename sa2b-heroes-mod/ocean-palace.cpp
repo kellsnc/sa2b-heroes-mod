@@ -387,7 +387,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 ObjectListHead OceanPalaceObjectList = { arraylengthandptr(OceanPalaceObjectList_list) };
 
 void OceanPalace_SkyBox(ObjectMaster* obj) {
-	NJS_VECTOR* position = &CameraPosArray[CurrentScreen * 2];
+	NJS_VECTOR* position = &CameraScreenArray[CurrentScreen]->pos;
 
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);

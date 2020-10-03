@@ -24,9 +24,9 @@ bool CheckLandVisibility(Sint32 chunk, NJS_VECTOR* position) {
 
 	for (Uint8 i = 0; i < LengthOfArray(ChunkInfos); ++i) {
 		if (chunk == ChunkInfos[i].ChunkID &&
-			position->x > ChunkInfos[i].MinX && position->x < ChunkInfos[i].MaxX &&
-			position->y > ChunkInfos[i].MinY && position->y < ChunkInfos[i].MaxY &&
-			position->z > ChunkInfos[i].MinZ && position->z < ChunkInfos[i].MaxZ) {
+			position->x >= ChunkInfos[i].MinX && position->x <= ChunkInfos[i].MaxX &&
+			position->y >= ChunkInfos[i].MinY && position->y <= ChunkInfos[i].MaxY &&
+			position->z >= ChunkInfos[i].MinZ && position->z <= ChunkInfos[i].MaxZ) {
 			CurrentChunk = chunk;
 			return true;
 		}
@@ -39,7 +39,7 @@ void __cdecl ListGroundForDrawing_r();
 Trampoline ListGroundForDrawing_t(0x47CAE0, 0x47CAE8, ListGroundForDrawing_r);
 void __cdecl ListGroundForDrawing_r() {
 	if (CurrentHeroesLevel != HeroesLevelIDs::Invalid) {
-		NJS_VECTOR* position = &CameraPosArray[CurrentScreen * 2];
+		NJS_VECTOR* position = &CameraScreenArray[CurrentScreen]->pos;
 
 		Uint16 current = 0;
 

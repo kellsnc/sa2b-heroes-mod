@@ -34,6 +34,11 @@ struct RenderInfoThing
 	int CurrentTexid;
 };
 
+struct camera_screen {
+	NJS_VECTOR pos;
+	Rotation rot;
+};
+
 struct camera_struct
 {
 	int field_0;
@@ -125,7 +130,7 @@ VoidFunc(ResetRenderSpace, 0x42D340);
 DataPointer(camera_struct, CameraInfo, 0x1DCFF40);
 DataPointer(COL**, LandTable_VisibleEntries, 0x1A5A2E4);
 DataPointer(Uint16, LandTable_VisibleEntriesCount, 0x1945A00);
-DataPointer(NJS_VECTOR*, CameraPosArray, 0x1DD92B0); // Actual position and rotation, two times
+DataArray(camera_screen*, CameraScreenArray, 0x1DD92B0, 2);
 DataPointer(int, CurrentScreen, 0x1DD92A0);
 DataPointer(Uint8, ScreenRenderingMode, 0x25EFFCC);
 VoidFunc(ToggleScreenRenderingThing, 0x42A870);

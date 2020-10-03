@@ -162,7 +162,7 @@ ObjectListEntry EggFleetObjectList_list[] = {
 ObjectListHead EggFleetObjectList = { arraylengthandptr(EggFleetObjectList_list) };
 
 void EggFleet_SkyBox(ObjectMaster* obj) {
-	NJS_VECTOR* position = &CameraPosArray[CurrentScreen * 2];
+	NJS_VECTOR* position = &CameraScreenArray[CurrentScreen]->pos;
 
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
