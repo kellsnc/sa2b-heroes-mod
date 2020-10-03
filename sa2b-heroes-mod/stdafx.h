@@ -15,6 +15,7 @@
 
 #include "mod.h"
 #include "level.h"
+#include "objects.h"
 #include "byteswap.h"
 #include "landmanager.h"
 #include "chunkmanager.h"

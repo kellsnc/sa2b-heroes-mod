@@ -154,6 +154,7 @@
     <ClInclude Include="landmanager.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="mod.h" />
+    <ClInclude Include="objects.h" />
     <ClInclude Include="ocean-palace.h" />
     <ClInclude Include="seaside-hill-deathzones.h" />
     <ClInclude Include="seaside-hill.h" />

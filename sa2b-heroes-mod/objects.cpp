@@ -1,9 +1,5 @@
 #include "stdafx.h"
 
-NJS_MATERIAL matlist_col[] = {
-	{ { 0xFFFFFFFF },{ 0xFFFFFFFF }, 0, 0, NJD_DA_INV_SRC | NJD_SA_SRC }
-};
-
 //Load Object File
 ModelInfo* LoadMDL(const char *name) {
 	PrintDebug("[SHM] Loading model "); PrintDebug(name); PrintDebug("... ");
@@ -31,7 +27,11 @@ void DrawModel(NJS_MODEL * model) {
 	ProcessChunkModel((NJS_CNK_MODEL*)model);
 }
 
-//Collision Checks
+// Math stuff
+float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
+	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
+}
+
 int IsPlayerInsideSphere(NJS_VECTOR *center, float radius) {
 	for (uint8_t player = 0; player < 2; ++player) {
 		if (!MainCharObj1[player]) continue;
@@ -45,7 +45,9 @@ int IsPlayerInsideSphere(NJS_VECTOR *center, float radius) {
 }
 
 bool ClipSetObject(ObjectMaster *obj) {
-	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, obj->SETData->field_C / 1000)) return 1;
+	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, sqrtf(obj->SETData->field_C))) {
+		return 1;
+	}
 	else {
 		DeleteObject_(obj);
 		return 0;
@@ -69,14 +71,11 @@ Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point) {
 
 void TransformSpline(NJS_VECTOR * pos, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
 	pos->x = (dest.x - orig.x) * state + orig.x;
-	pos->y = ((dest.y - orig.y) * state + orig.y);
+	pos->y = (dest.y - orig.y) * state + orig.y;
 	pos->z = (dest.z - orig.z) * state + orig.z;
 }
 
-float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
-	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
-}
-
+// Ninja stuff
 float* njPushUnitMatrix() {
 	float *v8 = _nj_current_matrix_ptr_;
 	float *v9 = _nj_current_matrix_ptr_ + 12;
@@ -99,12 +98,14 @@ void njCalcPoint(NJS_VECTOR *transform, NJS_VECTOR *out, float *matrix, uint8_t 
 	float x = matrix[1] * transform->y + *matrix * transform->x + matrix[2] * transform->z;
 	float y = matrix[4] * transform->x + matrix[5] * transform->y + matrix[6] * transform->z;
 	float z = matrix[8] * transform->x + matrix[9] * transform->y + matrix[10] * transform->z;
+
 	if (!somebool)
 	{
 		x = matrix[3] + x;
 		y = matrix[7] + y;
 		z = matrix[11] + z;
 	}
+
 	out->x = x;
 	out->y = y;
 	out->z = z;
