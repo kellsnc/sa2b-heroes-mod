@@ -139,25 +139,6 @@ void DashRampAdjust(ObjectMaster* obj) {
 	obj->MainSub(obj);
 }
 
-void Boxes(ObjectMaster* a1) {
-	uint8_t type = a1->Data1.Entity->Scale.x;
-
-	switch (type) {
-	case 0:
-		a1->MainSub = WoodenCrate_Main;
-		break;
-	case 1:
-		a1->MainSub = IronCrate_Main;
-		break;
-	case 2:
-		a1->MainSub = (ObjectFuncPtr)IronEggmanCrate;
-		break;
-	case 3:
-		a1->MainSub = SOLIDBOX;
-		break;
-	}
-}
-
 void Beetle_Stationary(ObjectMaster* a1) {
 	EntityData1* entity = a1->Data1.Entity;
 	entity->Rotation.x = 0;
