@@ -75,6 +75,22 @@ void TransformSpline(NJS_VECTOR * pos, NJS_VECTOR orig, NJS_VECTOR dest, float s
 	pos->z = (dest.z - orig.z) * state + orig.z;
 }
 
+NJS_OBJECT* GetChildModelByIndex(NJS_OBJECT* object, int index) {
+	int i = 0;
+	NJS_OBJECT* child = object;
+	
+	while (child) {
+		if (i == index) {
+			return child;
+		}
+
+		child = child->child;
+		i += 1;
+	}
+
+	return nullptr;
+}
+
 // Ninja stuff
 float* njPushUnitMatrix() {
 	float *v8 = _nj_current_matrix_ptr_;
@@ -93,8 +109,7 @@ void njTranslateV(float* matrix, NJS_VECTOR* pos) {
 	njTranslate(matrix, pos->x, pos->y, pos->z);
 }
 
-void njCalcPoint(NJS_VECTOR *transform, NJS_VECTOR *out, float *matrix, uint8_t somebool)
-{
+void njCalcPoint(NJS_VECTOR *transform, NJS_VECTOR *out, float *matrix, uint8_t somebool) {
 	float x = matrix[1] * transform->y + *matrix * transform->x + matrix[2] * transform->z;
 	float y = matrix[4] * transform->x + matrix[5] * transform->y + matrix[6] * transform->z;
 	float z = matrix[8] * transform->x + matrix[9] * transform->y + matrix[10] * transform->z;
@@ -109,4 +124,8 @@ void njCalcPoint(NJS_VECTOR *transform, NJS_VECTOR *out, float *matrix, uint8_t 
 	out->x = x;
 	out->y = y;
 	out->z = z;
+}
+
+void njScalef(Float f) {
+	njScale(f, f, f);
 }

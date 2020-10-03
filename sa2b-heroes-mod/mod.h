@@ -134,3 +134,6 @@ DataArray(camera_screen*, CameraScreenArray, 0x1DD92B0, 2);
 DataPointer(int, CurrentScreen, 0x1DD92A0);
 DataPointer(Uint8, ScreenRenderingMode, 0x25EFFCC);
 VoidFunc(ToggleScreenRenderingThing, 0x42A870);
+ObjectFunc(ClipObjectObjFunc, 0x5B4250);
+ObjectFunc(DeleteFunc_ResetVars, 0x5BCCF0);
+FastcallFunctionPointer(float, njSin, (Angle angle), 0x42AAB0);

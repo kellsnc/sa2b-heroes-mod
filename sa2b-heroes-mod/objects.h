@@ -8,11 +8,13 @@ bool ClipSetObject(ObjectMaster* a1);
 float* njPushUnitMatrix();
 void njTranslateV(float* matrix, NJS_VECTOR* pos);
 void njCalcPoint(NJS_VECTOR* transform, NJS_VECTOR* out, float* matrix, uint8_t somebool);
+void njScalef(Float f);
 
 int IsPlayerInsideSphere(NJS_VECTOR* center, float radius);
 void TransformSpline(NJS_VECTOR* pos, NJS_VECTOR orig, NJS_VECTOR dest, float state);
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
+NJS_OBJECT* GetChildModelByIndex(NJS_OBJECT* object, int index);
 
 void CommonObjects_LoadModels();
 void CommonObjects_FreeModels();

@@ -100,39 +100,102 @@ NJS_TEXLIST_ seasidehill_texlist = { arrayptrandlength(seasidehill_texname) };
 float ruin = 0;
 static int flagtimer = 0;
 
-void SHSpikes_Display(ObjectMaster* a1)
-{
+void SHFlowers_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
+
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
-	njTranslateV(_nj_current_matrix_ptr_, &a1->Data1.Entity->Position);
-	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+	njScalef(data->Scale.y);
+	DrawModel(model->basicmodel);
+	njPopMatrix(1u);
+}
+
+void SHFlowers(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+
+	obj->EntityData2 = (UnknownData2*)GetChildModelByIndex(SH_FLOWERS->getmodel(), data->Scale.x);
+
+	obj->DeleteSub = DeleteFunc_ResetVars;
+	obj->MainSub = ClipObjectObjFunc;
+	obj->DisplaySub = SHFlowers_Display;
+}
+
+void SHWaterfallLarge_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
+
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+	njScalef(data->Scale.x);
+	DrawModel(model->basicmodel);
+	njPopMatrix(1u);
+}
+
+void SHWaterfallLarge(ObjectMaster* obj) {
+	obj->EntityData2 = (UnknownData2*)SH_WATERFS->getmodel()->child->child->child;
+
+	obj->DeleteSub = DeleteFunc_ResetVars;
+	obj->MainSub = ClipObjectObjFunc;
+	obj->DisplaySub = SHWaterfallLarge_Display;
+}
+
+void SHWaterfallSmall_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
+
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+	njScalef(data->Scale.y);
+	DrawModel(model->basicmodel);
+	njPopMatrix(1u);
+}
+
+void SHWaterfallSmall(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+
+	obj->EntityData2 = (UnknownData2*)GetChildModelByIndex(SH_WATERFS->getmodel(), data->Scale.x);
+
+	obj->DeleteSub = DeleteFunc_ResetVars;
+	obj->MainSub = ClipObjectObjFunc;
+	obj->DisplaySub = SHWaterfallSmall_Display;
+}
+
+void SHFlag_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njScalef(data->Scale.z);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	DrawModel(SH_POLFLAG->getmodel()->basicmodel);
-	njRotateY(_nj_current_matrix_ptr_, -a1->Data1.Entity->Rotation.y + a1->Data1.Entity->Scale.z);
-	njScale(0.8f, 1, 1);
+	njRotateY(_nj_current_matrix_ptr_, data->Scale.y + (-0x500 + (0x1000 * (1 - (sin(GetTimer()) / 10)))));
 	DrawModel(SH_POLFLAG->getmodel()->child->basicmodel);
 	njPopMatrix(1u);
 }
 
-void SHSpikes_Main(ObjectMaster* a1)
-{
-	if (ClipSetObject(a1)) {
-		AddToCollisionList(a1);
-
-		if (a1->Data1.Entity->Scale.z > 4000) a1->Data1.Entity->Scale.y = 1;
-		if (a1->Data1.Entity->Scale.z == 0) a1->Data1.Entity->Scale.y = 0;
-
-		if (a1->Data1.Entity->Scale.y == 0) a1->Data1.Entity->Scale.z += 10;
-		if (a1->Data1.Entity->Scale.y == 1) a1->Data1.Entity->Scale.z -= 10;
+void SHFlag_Main(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		AddToCollisionList(obj);
 	}
 }
 
-void SHSpikes(ObjectMaster* a1)
+void SHFlag(ObjectMaster* obj)
 {
-	InitCollision(a1, &Col_Pole, 1, 4);
-	a1->Data1.Entity->Scale.y = 0;
+	InitCollision(obj, &Col_Pole, 1, 4);
 
-	a1->MainSub = &SHSpikes_Main;
-	a1->DisplaySub = &SHSpikes_Display;
+	obj->EntityData2 = (UnknownData2*)SH_POLFLAG->getmodel();
+
+	obj->DeleteSub = DeleteFunc_ResetVars;
+	obj->MainSub = SHFlag_Main;
+	obj->DisplaySub = SHFlag_Display;
 }
 
 void SHMovingPltfrms_Display(ObjectMaster* a1) {
@@ -281,14 +344,14 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, SHMovingPltfrms },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, SHRuinTrigger },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, SHPlatforms },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, SHFlowers },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, SHWaterfallLarge },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, SHWaterfallSmall },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, SHFlag },
+	{ (LoadObj)0 }, // large bird
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Common, DistObj_UseDist, 2360000, (ObjectFuncPtr)DashRamp_Main },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
+	{ (LoadObj)0 }, // seagull
+	{ (LoadObj)0 }, // whale
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
@@ -296,48 +359,19 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Big_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, WoodenCrate_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, IronCrate_Main },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, (ObjectFuncPtr)IronEggmanCrate },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, SOLIDBOX },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)0x5E8EF0 },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)0x5E2C30 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
+	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Stage, DistObj_UseDist, 160000, (ObjectFuncPtr)KDITEMBOX },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, Beetle_Attack },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, Beetle_Attack },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 250000, Beetle_Attack },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, (ObjectFuncPtr)Robots },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, (ObjectFuncPtr)Robots },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 250000, (ObjectFuncPtr)Robots },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, (ObjectFuncPtr)E_GOLD},
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Stage, DistObj_UseDist, 160000, (ObjectFuncPtr)KDITEMBOX },
-	{ (LoadObj)0 },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Stationary },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Electric },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Attack },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2400000, SHSpikes },
-	{ (LoadObj)0 },
-	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 2400000, Boxes },
 };
 
 ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList_list) };

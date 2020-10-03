@@ -126,8 +126,6 @@ extern "C"
 		else if (GameState != GameStates_Pause) {
 			Timer = 0;
 		}
-
-		TwoPlayerMode = 1;
 	}
 
 	__declspec(dllexport) ModInfo SA2ModInfo = { ModLoaderVer };
