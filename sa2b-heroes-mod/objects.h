@@ -10,9 +10,11 @@ float* njPushUnitMatrix();
 void njTranslateV(float* matrix, NJS_VECTOR* pos);
 void njCalcPoint(NJS_VECTOR* transform, NJS_VECTOR* out, float* matrix, uint8_t somebool);
 void njScalef(Float f);
+void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs);
 
-int IsPlayerInsideSphere(NJS_VECTOR* center, float radius);
-void TransformSpline(NJS_VECTOR* pos, NJS_VECTOR orig, NJS_VECTOR dest, float state);
+int IsPlayerInsideSphere(Float x, Float y, Float z, Float radius);
+int IsPlayerInsideSphere(NJS_VECTOR* center, Float radius);
+void TransformSpline(NJS_VECTOR* pos, NJS_VECTOR* orig, NJS_VECTOR* dest, float state);
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
 NJS_OBJECT* GetChildModelByIndex(NJS_OBJECT* object, int index);

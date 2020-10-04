@@ -47,16 +47,21 @@ float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
 	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
 }
 
-int IsPlayerInsideSphere(NJS_VECTOR *center, float radius) {
+int IsPlayerInsideSphere(Float x, Float y, Float z, Float radius) {
 	for (uint8_t player = 0; player < 2; ++player) {
 		if (!MainCharObj1[player]) continue;
-		
-		NJS_VECTOR *pos = &MainCharObj1[player]->Position;
-		if ((powf(pos->x - center->x, 2) + pow(pos->y - center->y, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2)) {
+
+		NJS_VECTOR* pos = &MainCharObj1[player]->Position;
+		if ((powf(pos->x - x, 2) + pow(pos->y - y, 2) + pow(pos->z - z, 2)) <= pow(radius, 2)) {
 			return player + 1;
 		}
 	}
+
 	return 0;
+}
+
+int IsPlayerInsideSphere(NJS_VECTOR *center, Float radius) {
+	return IsPlayerInsideSphere(center->x, center->y, center->z, radius);
 }
 
 bool ClipSetObject(ObjectMaster *obj) {
@@ -84,10 +89,10 @@ Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point) {
 	return result;
 }
 
-void TransformSpline(NJS_VECTOR * pos, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
-	pos->x = (dest.x - orig.x) * state + orig.x;
-	pos->y = (dest.y - orig.y) * state + orig.y;
-	pos->z = (dest.z - orig.z) * state + orig.z;
+void TransformSpline(NJS_VECTOR* pos, NJS_VECTOR* orig, NJS_VECTOR* dest, float state) {
+	pos->x = (dest->x - orig->x) * state + orig->x;
+	pos->y = (dest->y - orig->y) * state + orig->y;
+	pos->z = (dest->z - orig->z) * state + orig->z;
 }
 
 NJS_OBJECT* GetChildModelByIndex(NJS_OBJECT* object, int index) {
@@ -143,4 +148,10 @@ void njCalcPoint(NJS_VECTOR *transform, NJS_VECTOR *out, float *matrix, uint8_t 
 
 void njScalef(Float f) {
 	njScale(f, f, f);
+}
+
+void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs) {
+	vd->x += vs->x;
+	vd->y += vs->y;
+	vd->z += vs->z;
 }

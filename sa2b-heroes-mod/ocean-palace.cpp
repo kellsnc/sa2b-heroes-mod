@@ -338,7 +338,16 @@ void BoulderPath(ObjectMaster *obj) {
 		if (data->field_6 < loopdata->Count) {
 			if (GameState != GameStates_Pause) {
 				data->Scale.x = data->Scale.x + (loopdata->TotalDistance / loopdata->Points[data->field_6].Distance) / loopdata->TotalDistance * 7;
-				TransformSpline(&data->Position, loopdata->Points[data->field_6].Position, loopdata->Points[data->field_6 + 1].Position, data->Scale.x);
+
+				NJS_VECTOR pos1 = loopdata->Points[data->field_6].Position;
+				NJS_VECTOR pos2 = loopdata->Points[data->field_6 + 1].Position;
+
+				NJS_VECTOR fixoffset = { 9000, -1.8f, 2900 };
+
+				njAddVector(&pos1, &fixoffset);
+				njAddVector(&pos2, &fixoffset);
+
+				TransformSpline(&data->Position, &pos1, &pos2, data->Scale.x);
 				if (loopdata->Points[data->field_6].YRot != 0) data->Rotation.y = loopdata->Points[data->field_6].YRot;
 				if (data->Scale.x > 1) { data->Scale.x = 0; data->field_6++; }
 				data->Rotation.x += 1500;
@@ -380,6 +389,8 @@ void OPBoulders_Display(ObjectMaster *obj) {
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
 
+	njTranslate(_nj_current_matrix_ptr_, 9000, -1.8f, 2900);
+
 	switch (obj->Data1.Entity->Action) {
 	case 1:
 		njTranslate(_nj_current_matrix_ptr_, -8200.3408f, 2030, -39259.3);
@@ -412,7 +423,7 @@ void OPBoulders(ObjectMaster *obj) {
 		data->Action = 1;
 		break;
 	case 1:
-		if (IsPlayerInsideSphere(&OceanPalaceTrigger, 45.0f) == 1) {
+		if (IsPlayerInsideSphere(800.0f, 1399.2f, -37145.0f, 45.0f) == 1) {
 			data->Action = 2;
 			LoadChildObject(LoadObj_Data1, BoulderPath, obj);
 		}
@@ -465,7 +476,16 @@ void BoulderCam(ObjectMaster* obj) {
 		if (speed < 0) speed = 0;
 
 		data->Scale.z = data->Scale.z + (loopdata->TotalDistance / loopdata->Points[data->field_6].Distance) / loopdata->TotalDistance * speed;
-		TransformSpline(&CameraInfo.Position, loopdata->Points[data->field_6].Position, loopdata->Points[data->field_6 + 1].Position, data->Scale.z);
+
+		NJS_VECTOR pos1 = loopdata->Points[data->field_6].Position;
+		NJS_VECTOR pos2 = loopdata->Points[data->field_6 + 1].Position;
+
+		NJS_VECTOR fixoffset = { 9000, -1.8f, 2900 };
+
+		njAddVector(&pos1, &fixoffset);
+		njAddVector(&pos2, &fixoffset);
+
+		TransformSpline(&CameraInfo.Position, &pos1, &pos2, data->Scale.z);
 		CameraInfo.Position.y -= 50;
 		if (loopdata->Points[data->field_6].YRot != 0) data->Rotation.y = loopdata->Points[data->field_6].YRot;
 		if (data->Scale.z > 1) { data->Scale.z = 0; data->field_6++; }
@@ -575,6 +595,7 @@ void OceanPalace_Load() {
 	LoadFogData_Fogtask("stg13_fog.bin", (FogData*)0x1A280C8);
 
 	LoadObject((LoadObj)0, "SKYBOX", OceanPalace_SkyBox, 1)->DisplaySub = OceanPalace_SkyBox;
+	LoadObject(LoadObj_Data1, "OP BOULDERS", OPBoulders, 2);
 
 	OP_WATERFS = LoadMDL("OP_WATERFS");
 	OP_FLOWERS = LoadMDL("OP_FLOWERS");
