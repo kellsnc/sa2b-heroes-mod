@@ -65,6 +65,10 @@ int IsPlayerInsideSphere(NJS_VECTOR *center, Float radius) {
 }
 
 bool ClipSetObject(ObjectMaster *obj) {
+	if (obj->SETData == nullptr) {
+		return 1;
+	}
+
 	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, sqrtf(obj->SETData->field_C))) {
 		return 1;
 	}
