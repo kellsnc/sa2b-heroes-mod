@@ -20,8 +20,7 @@ typedef struct {
 	Uint32          nbTexture;	/* texture count                */
 } NJS_TEXLIST_;
 
-struct RenderInfoThing
-{
+struct RenderInfoThing {
 	char gap0[8];
 	int texparplus4;
 	int Thing;
@@ -39,8 +38,7 @@ struct camera_screen {
 	Rotation rot;
 };
 
-struct camera_struct
-{
+struct camera_struct {
 	int field_0;
 	int field_4;
 	int field_8;
@@ -56,8 +54,7 @@ struct camera_struct
 	int field_24D4;
 };
 
-enum IndexObj : Sint8
-{
+enum IndexObj : Sint8 {
 	ObjIndex_NoDisplay = 0,
 	ObjIndex_1 = 0x1,
 	ObjIndex_Common = 0x2,
@@ -68,8 +65,7 @@ enum IndexObj : Sint8
 	ObjIndex_RunFirst = 0x7
 };
 
-enum DistObj : Sint16
-{
+enum DistObj : Sint16 {
 	DistObj_Default = 0,
 	DistObj_UseDist = 0x1,
 	DistObj_NoDistCheck = 0x2,
@@ -113,6 +109,19 @@ static inline void FreeTexPacks(NJS_TEXLIST*** Texlists, TexPackInfo* TexPackLis
 	}
 }
 
+//void __usercall DynCol_Add(SurfaceFlags flags@<eax>, ObjectMaster *obj@<edx>, DynColData *dyncoldata@<esi>)
+static const void* const DynCol_AddPtr = (void*)0x47D6B0;
+static inline void DynCol_Add(int flags, ObjectMaster* obj, NJS_OBJECT* object)
+{
+	__asm
+	{
+		mov edx, [obj]
+		mov esi, [object]
+		mov eax, [flags]
+		call DynCol_AddPtr
+	}
+}
+
 ObjectFunc(AutoLoop, 0x497B50);
 ObjectFunc(RailPath, 0x4980C0);
 ObjectFunc(CamPath, nullptr);
@@ -136,4 +145,6 @@ DataPointer(Uint8, ScreenRenderingMode, 0x25EFFCC);
 VoidFunc(ToggleScreenRenderingThing, 0x42A870);
 ObjectFunc(ClipObjectObjFunc, 0x5B4250);
 ObjectFunc(DeleteFunc_ResetVars, 0x5BCCF0);
+ObjectFunc(ObjectFunc_DynColDelete, 0x5F12B0);
 FastcallFunctionPointer(float, njSin, (Angle angle), 0x42AAB0);
+FunctionPointer(NJS_OBJECT*, GetFreeDynObject, (), 0x47D7F0);

@@ -16,6 +16,21 @@ ModelInfo* LoadMDL(const char *name) {
 	return temp;
 }
 
+ModelInfo* LoadCOLMDL(const char* name) {
+	PrintDebug("[SHM] Loading collision model "); PrintDebug(name); PrintDebug("... ");
+
+	std::string fullPath = "resource\\gd_PC\\COLLISIONS\\";
+	fullPath = fullPath + name + ".sa1mdl";
+	const char* foo = fullPath.c_str();
+
+	ModelInfo* temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
+
+	if (temp->getformat() == ModelFormat_Basic) PrintDebug("Done.\n");
+	else PrintDebug("Error.\n");
+
+	return temp;
+}
+
 //Free Object File
 void FreeMDL(ModelInfo * pointer) {
 	if (pointer) delete(pointer);

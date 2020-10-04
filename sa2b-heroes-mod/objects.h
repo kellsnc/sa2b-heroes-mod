@@ -1,6 +1,7 @@
 #pragma once
 
 ModelInfo* LoadMDL(const char* name);
+ModelInfo* LoadCOLMDL(const char* name);
 void FreeMDL(ModelInfo* pointer);
 
 void DrawModel(NJS_MODEL* model);
