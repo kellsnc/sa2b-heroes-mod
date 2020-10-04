@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ocean-palace-paths.h"
 #include "ocean-palace.h"
 
 ModelInfo * OP_WATERFS;

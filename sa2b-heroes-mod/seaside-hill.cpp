@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "seaside-hill-deathzones.h"
+#include "seaside-hill-paths.h"
 #include "seaside-hill.h"
 
 ModelInfo * SH_PLATFOR;
