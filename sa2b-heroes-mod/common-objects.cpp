@@ -21,7 +21,7 @@ void DashHoop_Perform(ObjectMaster *a1) {
 	EntityData1* player = MainCharObj1[entity->Index];
 	
 	entity->Rotation.z += 1;
-	float s = (float)entity->Rotation.z * 0.05f;
+	float s = (float)(entity->Rotation.z * 0.025f);
 
 	if (s >= 1) {
 		DeleteObject_(a1);

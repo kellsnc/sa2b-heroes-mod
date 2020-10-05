@@ -17,6 +17,7 @@ void njTranslateZ(Float f);
 
 int IsPlayerInsideSphere(Float x, Float y, Float z, Float radius);
 int IsPlayerInsideSphere(NJS_VECTOR* center, Float radius);
+bool IsPlayerIDInsideSphere(Float x, Float y, Float z, Float radius, Uint8 PlayerID);
 void TransformSpline(NJS_VECTOR* pos, NJS_VECTOR* orig, NJS_VECTOR* dest, float state);
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);

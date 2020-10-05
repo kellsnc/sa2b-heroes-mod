@@ -64,6 +64,18 @@ int IsPlayerInsideSphere(NJS_VECTOR *center, Float radius) {
 	return IsPlayerInsideSphere(center->x, center->y, center->z, radius);
 }
 
+bool IsPlayerIDInsideSphere(Float x, Float y, Float z, Float radius, Uint8 PlayerID) {
+	if (!MainCharObj1[PlayerID]) return false;
+
+	NJS_VECTOR* pos = &MainCharObj1[PlayerID]->Position;
+
+	if ((powf(pos->x - x, 2) + pow(pos->y - y, 2) + pow(pos->z - z, 2)) <= pow(radius, 2)) {
+		return true;
+	}
+
+	return false;
+}
+
 bool ClipSetObject(ObjectMaster *obj) {
 	if (obj->SETData == nullptr) {
 		return 1;

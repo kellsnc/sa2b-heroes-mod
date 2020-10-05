@@ -329,8 +329,15 @@ void OPFins(ObjectMaster* obj)
 
 void OPLandMove_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
+	int playerid = static_cast<int>(data->Scale.x);
 
-	if (CurrentScreen == static_cast<int>(data->Scale.x)) {
+	if (CurrentScreen == playerid) {
+		Sint32 chunk = CurrentChunk[playerid];
+
+		if (chunk > 6) {
+			return;
+		}
+
 		EntityData1* data = obj->Data1.Entity;
 		NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
 
@@ -358,7 +365,13 @@ void OPLandMove_Display(ObjectMaster* obj) {
 
 void OPLandMove_Main(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
-	Sint32 chunk = CurrentChunk[static_cast<int>(data->Scale.x)];
+	int playerid = static_cast<int>(data->Scale.x);
+	Sint32 chunk = CurrentChunk[playerid];
+
+	if (!MainCharObj1[playerid] || MainCharObj1[playerid]->Position.z < -31200.0f) {
+		DeleteObject_(obj);
+		return;
+	}
 
 	if (data->Action == 0) {
 		if (chunk == 5) {
@@ -366,15 +379,17 @@ void OPLandMove_Main(ObjectMaster* obj) {
 			data->Action = 1;
 		}
 	}
-	else {
-		if (chunk > 5) {
-			DeleteObject_(obj);
-			return;
+	else if (data->Action == 1) {
+		if (IsPlayerIDInsideSphere(2100.0f, 280.0f, -30300.0f, 100.0f, playerid)) {
+			data->Action = 2;
 		}
 
 		if (data->Scale.y < 8800.0f) {
 			data->Scale.y += 2.5f;
 		}
+	}
+	else {
+		CameraScreenArray[playerid]->pos = { 2360.0f, 112.0f, -31000.0f };
 	}
 }
 
@@ -595,16 +610,16 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, (ObjectFuncPtr)Robots },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)E_GOLD },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, ObjFan },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, OPPOLE },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, (ObjectFuncPtr)EFLENSF0 },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPPOLE },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, nullptr }, //(ObjectFuncPtr)EFLENSF0
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPFlowers },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 50000, BoulderCam },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5460000, OPWater },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 6460000, OPWater },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPPlant },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, OPPOLE },
-	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Common, DistObj_UseDist, 2360000, DashRampAdjust },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 10000, OPLandMove },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5460000, OPFins },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPPOLE },
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Common, DistObj_UseDist, 1360000, DashRampAdjust },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5460000, OPLandMove },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 6460000, OPFins },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5460000, OPFallingStructure },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
@@ -696,9 +711,10 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	MetalHarbor2PHeader.Init = OceanPalace_Load;
 	MetalHarbor2PHeader.subprgmanager = OceanPalace_Main;
 	MetalHarbor2PHeader.anonymous_2 = OceanPalaceDelete;
-	SetStartEndPoints(helperFunctions, &op_startpos, nullptr, &op_endpos, &op_endpos23);
+	SetStartEndPoints(helperFunctions, &op_startpos, &op_2pintro, &op_endpos, &op_endpos23);
 	op_startpos.Level = LevelIDs_MetalHarbor2P;
 	op_endpos.Level = LevelIDs_MetalHarbor2P;
 	op_endpos23.Level = LevelIDs_MetalHarbor2P;
+	op_2pintro.Level = LevelIDs_MetalHarbor2P;
 	SetStartEndPoints(helperFunctions, &op_startpos, &op_2pintro, &op_endpos, &op_endpos23);
 }
