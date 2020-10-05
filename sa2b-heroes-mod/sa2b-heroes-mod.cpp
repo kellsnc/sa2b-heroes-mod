@@ -101,6 +101,12 @@ void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* st
 	}
 }
 
+void FixCamera(int player) {
+	if (MainCharObj2[player] && MainCharObj2[player]->Speed.x > 0.5f) {
+		CameraScreenArray[player]->pos.y += 2;
+	}
+}
+
 extern "C"
 {
 	__declspec(dllexport) void Init(const char *path, const HelperFunctions &helperFunctions)
@@ -125,6 +131,11 @@ extern "C"
 		}
 		else if (GameState != GameStates_Pause) {
 			Timer = 0;
+		}
+
+		if (GameState == GameStates_Ingame) {
+			if (MainCharObj1[0]) FixCamera(0);
+			if (MainCharObj1[1]) FixCamera(1);
 		}
 	}
 
