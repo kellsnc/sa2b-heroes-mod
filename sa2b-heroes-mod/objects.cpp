@@ -159,3 +159,15 @@ void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs) {
 	vd->y += vs->y;
 	vd->z += vs->z;
 }
+
+void njTranslateX(Float f) {
+	njTranslate(_nj_current_matrix_ptr_, f, 0, 0);
+}
+
+void njTranslateY(Float f) {
+	njTranslate(_nj_current_matrix_ptr_, 0, f, 0);
+}
+
+void njTranslateZ(Float f) {
+	njTranslate(_nj_current_matrix_ptr_, 0, 0, f);
+}

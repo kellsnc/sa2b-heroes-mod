@@ -378,16 +378,7 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList_list) };
 
 void SeasideHill_Main(ObjectMaster* obj) {
-	EntityData1* entity = MainCharObj1[0];
-
-	if (CurrentChunk == 8) {
-		NJS_VECTOR center = { 900, 1846, -33745 };
-		uint8_t player = IsPlayerInsideSphere(&center, 100);
-		if (player) {
-			MainCharObj1[player - 1]->Position = { 900.2299f, 2255.505f, -34727.86f };
-			MainCharObj2[player - 1]->Speed = { 0, 0, 0 };
-		}
-	}
+	
 }
 
 void SeasideHill_Load() {

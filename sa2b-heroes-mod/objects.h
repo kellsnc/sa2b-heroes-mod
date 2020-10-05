@@ -11,6 +11,9 @@ void njTranslateV(float* matrix, NJS_VECTOR* pos);
 void njCalcPoint(NJS_VECTOR* transform, NJS_VECTOR* out, float* matrix, uint8_t somebool);
 void njScalef(Float f);
 void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs);
+void njTranslateX(Float f);
+void njTranslateY(Float f);
+void njTranslateZ(Float f);
 
 int IsPlayerInsideSphere(Float x, Float y, Float z, Float radius);
 int IsPlayerInsideSphere(NJS_VECTOR* center, Float radius);

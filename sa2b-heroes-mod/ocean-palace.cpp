@@ -9,6 +9,7 @@ ModelInfo * OP_BOULDER;
 ModelInfo * OP_POLFLAG;
 ModelInfo * OP_SKYMDLS;
 ModelInfo * OP_LNDFALL;
+ModelInfo * OP_SCENARY;
 ModelInfo * OP_LNDFALLCOL;
 
 NJS_TEXNAME_ oceanpalace_texname[]{
@@ -258,11 +259,13 @@ void OPFins_Display(ObjectMaster* obj) {
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y + 0x8000);
 
+	NJS_OBJECT* object = OP_TURFINS->getmodel();
+
 	njPushMatrix(0); {
 		njTranslate(_nj_current_matrix_ptr_, -60, -20, -90);
 		njRotateY(_nj_current_matrix_ptr_, data->Rotation.z - 0x7000);
 		njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-		DrawModel(OP_TURFINS->getmodel()->basicmodel);
+		DrawModel(object->basicmodel);
 		njPopMatrix(1u);
 	}
 
@@ -270,7 +273,7 @@ void OPFins_Display(ObjectMaster* obj) {
 		njTranslate(_nj_current_matrix_ptr_, 60, -20, -90);
 		njRotateY(_nj_current_matrix_ptr_, -data->Rotation.z + 0x7000);
 		njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-		DrawModel(OP_TURFINS->getmodel()->child->basicmodel);
+		DrawModel(object->child->basicmodel);
 		njPopMatrix(1u);
 	}
 
@@ -278,7 +281,7 @@ void OPFins_Display(ObjectMaster* obj) {
 		njTranslate(_nj_current_matrix_ptr_, -60, -15, 60);
 		njRotateY(_nj_current_matrix_ptr_, data->Rotation.z - 0x7000);
 		njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-		DrawModel(OP_TURFINS->getmodel()->child->child->basicmodel);
+		DrawModel(object->child->child->basicmodel);
 		njPopMatrix(1u);
 	}
 
@@ -286,7 +289,7 @@ void OPFins_Display(ObjectMaster* obj) {
 		njTranslate(_nj_current_matrix_ptr_, 60, -15, 60);
 		njRotateY(_nj_current_matrix_ptr_, -data->Rotation.z + 0x7000);
 		njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-		DrawModel(OP_TURFINS->getmodel()->child->child->child->basicmodel);
+		DrawModel(object->child->child->child->basicmodel);
 		njPopMatrix(1u);
 	}
 	
@@ -322,6 +325,71 @@ void OPFins(ObjectMaster* obj)
 {
 	obj->MainSub = OPFins_Main;
 	obj->DisplaySub = &OPFins_Display;
+}
+
+void OPLandMove_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+
+	if (CurrentScreen == static_cast<int>(data->Scale.x)) {
+		EntityData1* data = obj->Data1.Entity;
+		NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
+
+		RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+		njPushMatrix(0);
+		njTranslate(_nj_current_matrix_ptr_, 2100, 0, -44000);
+		njTranslateZ(data->Scale.y);
+
+		njPushMatrix(0); {
+			njRotateX(_nj_current_matrix_ptr_, 0x4000);
+			njScalef(2.0f);
+			DrawModel(model->child->basicmodel);
+			njPopMatrix(1);
+		}
+
+		njTranslate(_nj_current_matrix_ptr_, -2500, 0, 29000);
+		njRotateX(_nj_current_matrix_ptr_, 0x4000);
+		njScalef(2.0f);
+		DrawModel(model->child->sibling->basicmodel);
+		DrawModel(model->child->sibling->sibling->basicmodel);
+
+		njPopMatrix(1u);
+	}
+}
+
+void OPLandMove_Main(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	Sint32 chunk = CurrentChunk[static_cast<int>(data->Scale.x)];
+
+	if (data->Action == 0) {
+		if (chunk == 5) {
+			obj->DisplaySub = OPLandMove_Display;
+			data->Action = 1;
+		}
+	}
+	else {
+		if (chunk > 5) {
+			DeleteObject_(obj);
+			return;
+		}
+
+		if (data->Scale.y < 8800.0f) {
+			data->Scale.y += 2.5f;
+		}
+	}
+}
+
+void OPLandMove(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+
+	if (!MainCharObj1[static_cast<int>(data->Scale.x)]) {
+		DeleteObject_(obj);
+		return;
+	}
+
+	obj->EntityData2 = (UnknownData2*)OP_SCENARY->getmodel();
+
+	obj->DeleteSub = DeleteFunc_ResetVars;
+	obj->MainSub = OPLandMove_Main;
 }
 
 void BoulderPath(ObjectMaster *obj) {
@@ -383,7 +451,7 @@ void BoulderPath(ObjectMaster *obj) {
 }
 
 void OPBoulders_Display(ObjectMaster *obj) {
-	if (CurrentChunk < 6)
+	if (CurrentChunk[0] < 6)
 		return;
 
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
@@ -411,7 +479,7 @@ void OPBoulders_Display(ObjectMaster *obj) {
 }
 
 void OPBoulders(ObjectMaster *obj) {
-	if (CurrentChunk < 6)
+	if (CurrentChunk[0] < 6)
 		return;
 
 	EntityData1* data = obj->Data1.Entity;
@@ -535,7 +603,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPPlant },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, OPPOLE },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Common, DistObj_UseDist, 2360000, DashRampAdjust },
-	{ (LoadObj)0 }, // moveland
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 10000, OPLandMove },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5460000, OPFins },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5460000, OPFallingStructure },
 	{ (LoadObj)0 },
@@ -604,6 +672,7 @@ void OceanPalace_Load() {
 	OP_POLFLAG = LoadMDL("OP_POLFLAG");
 	OP_SKYMDLS = LoadMDL("OP_SKYMDLS");
 	OP_LNDFALL = LoadMDL("OP_LNDFALL");
+	OP_SCENARY = LoadMDL("OP_SCENARY");
 	OP_LNDFALLCOL = LoadCOLMDL("OP_LNDFALL");
 }
 

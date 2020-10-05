@@ -15,7 +15,7 @@ struct BLKEntry {
 #pragma pack(pop)
 
 BLKEntry ChunkInfos[64];
-Sint32 CurrentChunk = 0;
+Sint32 CurrentChunk[2] = { 0, 0 };
 
 bool CheckLandVisibility(Sint32 chunk, NJS_VECTOR* position) {
 	if (ChunkInfos[0].ChunkID == 0) {
@@ -27,7 +27,6 @@ bool CheckLandVisibility(Sint32 chunk, NJS_VECTOR* position) {
 			position->x >= ChunkInfos[i].MinX && position->x <= ChunkInfos[i].MaxX &&
 			position->y >= ChunkInfos[i].MinY && position->y <= ChunkInfos[i].MaxY &&
 			position->z >= ChunkInfos[i].MinZ && position->z <= ChunkInfos[i].MaxZ) {
-			CurrentChunk = chunk;
 			return true;
 		}
 	}
@@ -46,6 +45,7 @@ void __cdecl ListGroundForDrawing_r() {
 		for (Uint32 i = 0; i < CurrentLandTable->COLCount; ++i) {
 			if (CheckLandVisibility(CurrentLandTable->COLList[i].field_18, position)) {
 				LandTable_VisibleEntries[current] = &CurrentLandTable->COLList[i];
+				CurrentChunk[CurrentScreen] = CurrentLandTable->COLList[i].field_18;
 				current += 1;
 			}
 		}

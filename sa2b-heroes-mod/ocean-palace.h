@@ -2,7 +2,7 @@
 
 extern DeathZone SeasideHillDeathZones[];
 
-StartPosition op_startpos = { LevelIDs_MetalHarbor, 0xC000, 0xC000, 0xC000, { 2099.18457f, 268.657928 , -29939.0684 }, { 210.0f, 1340.0f, -20.0f  }, { 250.0f, 1340.0f, -20.0f } };
+StartPosition op_startpos = { LevelIDs_MetalHarbor, 0xC000, 0xC000, 0xC000, { 2400, 550, -23111.0684 }, { 210.0f, 1340.0f, -20.0f  }, { 250.0f, 1340.0f, -20.0f } };
 StartPosition op_endpos = { LevelIDs_MetalHarbor, 0xF000, 0xF000, 0xF000, { -1300.0f, 140.0f, -45450.0f }, { 2560.0f, 50.0f, -20900.0f }, { 2560.0f, 50.0f, -20900.0f } };
 LevelEndPosition op_2pintro = { LevelIDs_MetalHarbor2P, 0, 0, 0, { 230.0f, 1340.0f, -20.0f }, { 230.0f, 1340.0f, -20.0f } };
 LevelEndPosition op_endpos23 = { LevelIDs_MetalHarbor, 0, 0, 0, { 2560.0f, 50.0f, -20900.0f }, { 2560.0f, 50.0f, -20900.0f } };
