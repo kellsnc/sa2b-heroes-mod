@@ -1,5 +1,7 @@
 #pragma once
 
+extern NJS_TEXLIST_ HeroesWater_TexList;
+
 ModelInfo* LoadMDL(const char* name);
 ModelInfo* LoadCOLMDL(const char* name);
 void FreeMDL(ModelInfo* pointer);

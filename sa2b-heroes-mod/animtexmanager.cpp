@@ -23,6 +23,29 @@ struct AnimTexEntry {
 AnimTexEntry* AnimTexEntries = nullptr;
 Uint8           AnimTexCount = 0;
 
+NJS_TEXNAME_ backup = { 0, 0, 0 };
+Uint32 CurrentFrame = 0;
+
+void AnimateTexlist(NJS_TEXLIST_* list, Uint32 frame) {
+    if (backup.filename == NULL) {
+        backup.filename = "a";
+
+        backup.texaddr = list->textures[0].texaddr;
+    }
+
+    if (GetTimer() % frame == 0) {
+        CurrentFrame += 1;
+
+        if (CurrentFrame >= list->nbTexture) {
+            CurrentFrame = 0;
+            list->textures[0].texaddr = backup.texaddr;
+        }
+        else {
+            list->textures[0].texaddr = list->textures[CurrentFrame].texaddr;
+        }
+    }
+}
+
 void AnimTexManager(ObjectMaster* obj) {
     for (Uint8 i = 0; i < AnimTexCount; ++i) {
         AnimTexEntry* entry = &AnimTexEntries[i];
@@ -78,6 +101,9 @@ void UnloadTXCFile() {
     delete[] AnimTexEntries;
     AnimTexEntries = nullptr;
     AnimTexCount = 0;
+
+    backup.filename = NULL;
+    CurrentFrame = 0;
 }
 
 void LoadTXCFile(const char* path) {

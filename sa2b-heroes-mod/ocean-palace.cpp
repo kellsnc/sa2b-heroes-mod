@@ -73,7 +73,7 @@ void OPWater_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -135,10 +135,12 @@ void OPPOLE_Display(ObjectMaster *obj) {
 		
 	if (data->Scale.x == 1) {
 		DrawModel(OP_POLFLAG->getmodel()->child->basicmodel);
+		RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
 		DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->basicmodel);
 	}
 	else {
 		DrawModel(OP_POLFLAG->getmodel()->basicmodel);
+		RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
 		DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->basicmodel);
 	}
 		
@@ -563,7 +565,7 @@ void OceanPalace_SkyBox(ObjectMaster* obj) {
 }
 
 void OceanPalace_Main(ObjectMaster* obj) {
-	
+	AnimateTexlist(&HeroesWater_TexList, 2);
 }
 
 void OceanPalace_Load() {
@@ -587,6 +589,8 @@ void OceanPalace_Load() {
 	LoadObject((LoadObj)0, "SKYBOX", OceanPalace_SkyBox, 1)->DisplaySub = OceanPalace_SkyBox;
 	LoadObject(LoadObj_Data1, "OP BOULDERS", OPBoulders, 2);
 
+	LoadTextureList("heroeswater", (NJS_TEXLIST*)&HeroesWater_TexList);
+
 	OP_WATERFS = LoadMDL("OP_WATERFS");
 	OP_FLOWERS = LoadMDL("OP_FLOWERS");
 	OP_TURFINS = LoadMDL("OP_TURFINS");
@@ -608,6 +612,7 @@ void OceanPalaceDelete() {
 	FreeMDL(OP_LNDFALL);
 	FreeMDL(OP_LNDFALLCOL);
 
+	FreeTexList((NJS_TEXLIST*)&HeroesWater_TexList);
 	CommonLevelDelete();
 }
 

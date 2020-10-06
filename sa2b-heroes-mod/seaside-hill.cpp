@@ -41,7 +41,7 @@ void SHWaterfallLarge_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -62,7 +62,7 @@ void SHWaterfallSmall_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -291,7 +291,7 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList_list) };
 
 void SeasideHill_Main(ObjectMaster* obj) {
-	
+	AnimateTexlist(&HeroesWater_TexList, 2);
 }
 
 void SeasideHill_Load() {
@@ -311,6 +311,8 @@ void SeasideHill_Load() {
 	LoadStagePaths(SeasideHillPathList);
 	LoadDeathZones(SeasideHillDeathZones);
 	LoadFogData_Fogtask("stg13_fog.bin", (FogData*)0x1A280C8);
+
+	LoadTextureList("heroeswater", (NJS_TEXLIST*)&HeroesWater_TexList);
 	
 	SH_FLOWERS = LoadMDL("SH_FLOWERS");
 	SH_WATERFS = LoadMDL("SH_WATERFS");

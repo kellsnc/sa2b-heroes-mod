@@ -1,5 +1,8 @@
 #include "stdafx.h"
 
+NJS_TEXNAME_ HeroesWater_TexNames[16];
+NJS_TEXLIST_ HeroesWater_TexList = { arrayptrandlength(HeroesWater_TexNames) };
+
 //Load Object File
 ModelInfo* LoadMDL(const char *name) {
 	PrintDebug("[SHM] Loading model "); PrintDebug(name); PrintDebug("... ");
