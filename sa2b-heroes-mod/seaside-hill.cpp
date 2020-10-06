@@ -328,6 +328,7 @@ void SeasideHill_Delete() {
 	FreeMDL(SH_POLFLAG);
 	FreeMDL(SH_PLATFOR);
 
+	FreeTexList((NJS_TEXLIST*)&HeroesWater_TexList);
 	CommonLevelDelete();
 }
 
