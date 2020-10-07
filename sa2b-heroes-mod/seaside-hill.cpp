@@ -23,7 +23,7 @@ void SHFlowers_Display(ObjectMaster* obj) {
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njScalef(data->Scale.y);
-	DrawModel(model->basicmodel);
+	DrawChunkModel(model->basicmodel);
 	njPopMatrix(1u);
 }
 
@@ -46,7 +46,7 @@ void SHWaterfallLarge_Display(ObjectMaster* obj) {
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njScalef(data->Scale.x);
-	DrawModel(model->basicmodel);
+	DrawSA2BModel(model->sa2bmodel);
 	njPopMatrix(1u);
 }
 
@@ -67,7 +67,7 @@ void SHWaterfallSmall_Display(ObjectMaster* obj) {
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njScalef(data->Scale.y);
-	DrawModel(model->basicmodel);
+	DrawSA2BModel(model->sa2bmodel);
 	njPopMatrix(1u);
 }
 
@@ -89,9 +89,9 @@ void SHFlag_Display(ObjectMaster* obj) {
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njScalef(data->Scale.z);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
-	DrawModel(SH_POLFLAG->getmodel()->basicmodel);
+	DrawChunkModel(SH_POLFLAG->getmodel()->basicmodel);
 	njRotateY(_nj_current_matrix_ptr_, data->Scale.y + (-0x500 + (0x1000 * (1 - (sin(GetTimer()) / 10)))));
-	DrawModel(SH_POLFLAG->getmodel()->child->basicmodel);
+	DrawChunkModel(SH_POLFLAG->getmodel()->child->basicmodel);
 	njPopMatrix(1u);
 }
 
@@ -120,13 +120,13 @@ void SHMovingPltfrms_Display(ObjectMaster* a1) {
 
 	switch (a1->Data1.Entity->Action) {
 	case 0:
-		DrawModel(SH_MORUINS->getmodel()->basicmodel);
+		DrawSA2BModel(SH_MORUINS->getmodel()->sa2bmodel);
 		break;
 	case 1:
-		DrawModel(SH_MORUINS->getmodel()->child->basicmodel);
+		DrawSA2BModel(SH_MORUINS->getmodel()->child->sa2bmodel);
 		break;
 	case 2:
-		DrawModel(SH_MORUINS->getmodel()->child->child->basicmodel);
+		DrawSA2BModel(SH_MORUINS->getmodel()->child->child->sa2bmodel);
 		break;
 	}
 
@@ -203,7 +203,7 @@ void SHPlatforms_Display(ObjectMaster* a1) {
 	njTranslateV(_nj_current_matrix_ptr_, &a1->Data1.Entity->Position);
 	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y);
 	njScale(a1->Data1.Entity->Scale.x, a1->Data1.Entity->Scale.y, a1->Data1.Entity->Scale.z);
-	DrawModel(SH_PLATFOR->getmodel()->basicmodel);
+	DrawSA2BModel(SH_PLATFOR->getmodel()->sa2bmodel);
 	njPopMatrix(1u);
 }
 
@@ -314,11 +314,11 @@ void SeasideHill_Load() {
 
 	LoadTextureList("s01w", (NJS_TEXLIST*)&HeroesWater_TexList);
 	
-	SH_FLOWERS = LoadMDL("SH_FLOWERS");
-	SH_WATERFS = LoadMDL("SH_WATERFS");
-	SH_POLFLAG = LoadMDL("SH_POLFLAG");
-	SH_MORUINS = LoadMDL("SH_MORUINS");
-	SH_PLATFOR = LoadMDL("SH_PLATFOR");
+	SH_FLOWERS = LoadMDL("SH_FLOWERS", ModelFormat_Chunk);
+	SH_WATERFS = LoadMDL("SH_WATERFS", ModelFormat_SA2B);
+	SH_POLFLAG = LoadMDL("SH_POLFLAG", ModelFormat_Chunk);
+	SH_MORUINS = LoadMDL("SH_MORUINS", ModelFormat_SA2B);
+	SH_PLATFOR = LoadMDL("SH_PLATFOR", ModelFormat_SA2B);
 }
 
 void SeasideHill_Delete() {

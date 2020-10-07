@@ -167,8 +167,8 @@ void EggFleet_SkyBox(ObjectMaster* obj) {
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
 	njTranslate(_nj_current_matrix_ptr_, position->x, 0.0f, position->z);
-	DrawModel(EF_SKYMDLS->getmodel()->basicmodel);
-	DrawModel(EF_SKYMDLS->getmodel()->child->basicmodel);
+	DrawChunkModel(EF_SKYMDLS->getmodel()->basicmodel);
+	DrawChunkModel(EF_SKYMDLS->getmodel()->child->basicmodel);
 	njPopMatrix(1u);
 }
 
@@ -195,11 +195,11 @@ void EggFleet_Load() {
 	
 	LoadObject((LoadObj)0, "SKYBOX", EggFleet_SkyBox, 1)->DisplaySub = EggFleet_SkyBox;
 
-	EF_SKYMDLS = LoadMDL("EF_SKYMDLS");
-	EF_CANNON1 = LoadMDL("EF_CANNON1");
-	EF_BULLETS = LoadMDL("EF_BULLETS");
-	EF_PROPPLR = LoadMDL("EF_PROPPLR");
-	EF_BGSHIPS = LoadMDL("EF_BGSHIPS");
+	EF_SKYMDLS = LoadMDL("EF_SKYMDLS", ModelFormat_Chunk);
+	EF_CANNON1 = LoadMDL("EF_CANNON1", ModelFormat_Chunk);
+	EF_BULLETS = LoadMDL("EF_BULLETS", ModelFormat_Chunk);
+	EF_PROPPLR = LoadMDL("EF_PROPPLR", ModelFormat_Chunk);
+	EF_BGSHIPS = LoadMDL("EF_BGSHIPS", ModelFormat_Chunk);
 }
 
 void EggFleetDelete() {

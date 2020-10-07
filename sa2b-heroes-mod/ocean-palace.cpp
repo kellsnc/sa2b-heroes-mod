@@ -25,7 +25,7 @@ void OPFlowers_Display(ObjectMaster* obj) {
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njScalef(data->Scale.y);
-	DrawModel(model->basicmodel);
+	DrawChunkModel(model->basicmodel);
 	njPopMatrix(1u);
 }
 
@@ -49,10 +49,10 @@ void OPFlant_Display(ObjectMaster* obj) {
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njScalef(data->Scale.y);
-	DrawModel(model->basicmodel);
+	DrawChunkModel(model->basicmodel);
 
 	if (data->Scale.x == 0) {
-		DrawModel(shadow->basicmodel);
+		DrawChunkModel(shadow->basicmodel);
 	}
 	
 	njPopMatrix(1u);
@@ -77,7 +77,7 @@ void OPWater_Display(ObjectMaster* obj) {
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
-	DrawModel(model->basicmodel);
+	DrawChunkModel(model->basicmodel);
 	njPopMatrix(1u);
 }
 
@@ -99,7 +99,7 @@ void OPFallingStructure_Display(ObjectMaster* obj) {
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
-	DrawModel(model->basicmodel);
+	DrawChunkModel(model->basicmodel);
 	njPopMatrix(1u);
 }
 
@@ -134,14 +134,14 @@ void OPPOLE_Display(ObjectMaster *obj) {
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 		
 	if (data->Scale.x == 1) {
-		DrawModel(OP_POLFLAG->getmodel()->child->basicmodel);
+		DrawChunkModel(OP_POLFLAG->getmodel()->child->basicmodel);
 		RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
-		DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->basicmodel);
+		DrawChunkModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->basicmodel);
 	}
 	else {
-		DrawModel(OP_POLFLAG->getmodel()->basicmodel);
+		DrawChunkModel(OP_POLFLAG->getmodel()->basicmodel);
 		RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
-		DrawModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->basicmodel);
+		DrawChunkModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->basicmodel);
 	}
 		
 	njPopMatrix(1u);
@@ -174,7 +174,7 @@ void OPFins_Display(ObjectMaster* obj) {
 		njTranslate(_nj_current_matrix_ptr_, -60, -20, -90);
 		njRotateY(_nj_current_matrix_ptr_, data->Rotation.z - 0x7000);
 		njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-		DrawModel(object->basicmodel);
+		DrawChunkModel(object->basicmodel);
 		njPopMatrix(1u);
 	}
 
@@ -182,7 +182,7 @@ void OPFins_Display(ObjectMaster* obj) {
 		njTranslate(_nj_current_matrix_ptr_, 60, -20, -90);
 		njRotateY(_nj_current_matrix_ptr_, -data->Rotation.z + 0x7000);
 		njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-		DrawModel(object->child->basicmodel);
+		DrawChunkModel(object->child->basicmodel);
 		njPopMatrix(1u);
 	}
 
@@ -190,7 +190,7 @@ void OPFins_Display(ObjectMaster* obj) {
 		njTranslate(_nj_current_matrix_ptr_, -60, -15, 60);
 		njRotateY(_nj_current_matrix_ptr_, data->Rotation.z - 0x7000);
 		njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-		DrawModel(object->child->child->basicmodel);
+		DrawChunkModel(object->child->child->basicmodel);
 		njPopMatrix(1u);
 	}
 
@@ -198,7 +198,7 @@ void OPFins_Display(ObjectMaster* obj) {
 		njTranslate(_nj_current_matrix_ptr_, 60, -15, 60);
 		njRotateY(_nj_current_matrix_ptr_, -data->Rotation.z + 0x7000);
 		njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-		DrawModel(object->child->child->child->basicmodel);
+		DrawChunkModel(object->child->child->child->basicmodel);
 		njPopMatrix(1u);
 	}
 	
@@ -258,15 +258,15 @@ void OPLandMove_Display(ObjectMaster* obj) {
 		njPushMatrix(0); {
 			njRotateX(_nj_current_matrix_ptr_, 0x4000);
 			njScalef(2.0f);
-			DrawModel(model->child->basicmodel);
+			DrawChunkModel(model->child->basicmodel);
 			njPopMatrix(1);
 		}
 
 		njTranslate(_nj_current_matrix_ptr_, -2500, 0, 29000);
 		njRotateX(_nj_current_matrix_ptr_, 0x4000);
 		njScalef(2.0f);
-		DrawModel(model->child->sibling->basicmodel);
-		DrawModel(model->child->sibling->sibling->basicmodel);
+		DrawChunkModel(model->child->sibling->basicmodel);
+		DrawChunkModel(model->child->sibling->sibling->basicmodel);
 
 		njPopMatrix(1u);
 	}
@@ -365,7 +365,7 @@ void BoulderPath(ObjectMaster *obj) {
 			njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 			njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
 
-			DrawModel(OP_BOULDER->getmodel()->basicmodel);
+			DrawChunkModel(OP_BOULDER->getmodel()->basicmodel);
 			njPopMatrix(1u);
 		}
 		else {
@@ -398,7 +398,7 @@ void OPBoulders_Display(ObjectMaster *obj) {
 		break;
 	}
 
-	DrawModel(OP_BOULDER->getmodel()->basicmodel);
+	DrawChunkModel(OP_BOULDER->getmodel()->basicmodel);
 	njPopMatrix(1u);
 }
 
@@ -559,8 +559,8 @@ void OceanPalace_SkyBox(ObjectMaster* obj) {
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
 	njTranslate(_nj_current_matrix_ptr_, position->x, 0.0f, position->z);
-	DrawModel(OP_SKYMDLS->getmodel()->basicmodel);
-	DrawModel(OP_SKYMDLS->getmodel()->child->basicmodel);
+	DrawSA2BModel(OP_SKYMDLS->getmodel()->sa2bmodel);
+	DrawSA2BModel(OP_SKYMDLS->getmodel()->child->sa2bmodel);
 	njPopMatrix(1u);
 }
 
@@ -591,15 +591,15 @@ void OceanPalace_Load() {
 
 	LoadTextureList("s02w", (NJS_TEXLIST*)&HeroesWater_TexList);
 
-	OP_WATERFS = LoadMDL("OP_WATERFS");
-	OP_FLOWERS = LoadMDL("OP_FLOWERS");
-	OP_TURFINS = LoadMDL("OP_TURFINS");
-	OP_BOULDER = LoadMDL("OP_BOULDER");
-	OP_POLFLAG = LoadMDL("OP_POLFLAG");
-	OP_SKYMDLS = LoadMDL("OP_SKYMDLS");
-	OP_LNDFALL = LoadMDL("OP_LNDFALL");
-	OP_SCENARY = LoadMDL("OP_SCENARY");
-	OP_LNDFALLCOL = LoadCOLMDL("OP_LNDFALL");
+	OP_WATERFS = LoadMDL("OP_WATERFS", ModelFormat_Chunk);
+	OP_FLOWERS = LoadMDL("OP_FLOWERS", ModelFormat_Chunk);
+	OP_TURFINS = LoadMDL("OP_TURFINS", ModelFormat_Chunk);
+	OP_BOULDER = LoadMDL("OP_BOULDER", ModelFormat_Chunk);
+	OP_POLFLAG = LoadMDL("OP_POLFLAG", ModelFormat_Chunk);
+	OP_SKYMDLS = LoadMDL("OP_SKYMDLS", ModelFormat_SA2B);
+	OP_LNDFALL = LoadMDL("OP_LNDFALL", ModelFormat_Chunk);
+	OP_SCENARY = LoadMDL("OP_SCENARY", ModelFormat_Chunk);
+	OP_LNDFALLCOL = LoadMDL("OP_LNDFALL", ModelFormat_Basic);
 }
 
 void OceanPalaceDelete() {

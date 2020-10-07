@@ -43,7 +43,8 @@ void __cdecl ListGroundForDrawing_r() {
 		Uint16 current = 0;
 
 		for (Uint32 i = 0; i < CurrentLandTable->COLCount; ++i) {
-			if (CheckLandVisibility(CurrentLandTable->COLList[i].field_18, position)) {
+			if (CurrentLandTable->COLList[i].Flags & 0x80000000 &&
+				CheckLandVisibility(CurrentLandTable->COLList[i].field_18, position)) {
 				LandTable_VisibleEntries[current] = &CurrentLandTable->COLList[i];
 				CurrentChunk[CurrentScreen] = CurrentLandTable->COLList[i].field_18;
 				current += 1;

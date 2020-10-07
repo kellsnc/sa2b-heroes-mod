@@ -3,33 +3,47 @@
 NJS_TEXNAME_ HeroesWater_TexNames[16];
 NJS_TEXLIST_ HeroesWater_TexList = { arrayptrandlength(HeroesWater_TexNames) };
 
-//Load Object File
-ModelInfo* LoadMDL(const char *name) {
-	PrintDebug("[SHM] Loading model "); PrintDebug(name); PrintDebug("... ");
+const char* ModelFormatStrings[]{
+	"collision",
+	"chunk",
+	"battle"
+};
 
-	std::string fullPath = "resource\\gd_PC\\MODELS\\";
-	fullPath = fullPath + name + ".sa2mdl";
+//Load Object File
+ModelInfo* LoadMDL(const char *name, ModelFormat format) {
+	std::string fullPath;
+
+	if (format == ModelFormat_Basic) {
+		fullPath = "resource\\gd_PC\\COLLISIONS\\";
+	}
+	else {
+		fullPath = "resource\\gd_PC\\MODELS\\";
+	}
+
+	fullPath += name;
+	
+	switch (format) {
+	case ModelFormat_Basic:
+		fullPath += ".sa1mdl";
+		break;
+	case ModelFormat_Chunk:
+		fullPath += ".sa2mdl";
+		break;
+	case ModelFormat_SA2B:
+		fullPath += ".sa2bmdl";
+		break;
+	}
+	
 	const char *foo = fullPath.c_str();
 
 	ModelInfo * temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
 
-	if (temp->getformat() == ModelFormat_Chunk) PrintDebug("Done.\n");
-	else PrintDebug("Error.\n");
-
-	return temp;
-}
-
-ModelInfo* LoadCOLMDL(const char* name) {
-	PrintDebug("[SHM] Loading collision model "); PrintDebug(name); PrintDebug("... ");
-
-	std::string fullPath = "resource\\gd_PC\\COLLISIONS\\";
-	fullPath = fullPath + name + ".sa1mdl";
-	const char* foo = fullPath.c_str();
-
-	ModelInfo* temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
-
-	if (temp->getformat() == ModelFormat_Basic) PrintDebug("Done.\n");
-	else PrintDebug("Error.\n");
+	if (temp->getformat() == format) {
+		PrintDebug("[Heroes Mod] Loaded %s model: %s.", ModelFormatStrings[(int)format - 1], name);
+	}
+	else {
+		PrintDebug("[Heroes Mod] Failed loading %s model: %s.", ModelFormatStrings[(int)format - 1], name);
+	}
 
 	return temp;
 }
@@ -40,7 +54,7 @@ void FreeMDL(ModelInfo * pointer) {
 }
 
 //Draw a model
-void DrawModel(NJS_MODEL * model) {
+void DrawChunkModel(NJS_MODEL * model) {
 	ResetRenderSpace();
 	ProcessChunkModel((NJS_CNK_MODEL*)model);
 }

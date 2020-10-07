@@ -12,7 +12,7 @@ void DashHoop_Display(ObjectMaster* a1) {
 	njTranslateV(_nj_current_matrix_ptr_, &a1->Data1.Entity->Position);
 	njRotateX(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.x);
 	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y + 0x4000);
-	DrawModel(CO_DSHHOOP->getmodel()->basicmodel);
+	DrawChunkModel(CO_DSHHOOP->getmodel()->basicmodel);
 	njPopMatrix(1u);
 }
 
@@ -69,9 +69,9 @@ void ObjFan_Display(ObjectMaster *a1)
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &a1->Data1.Entity->Position);
 	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y + 0x4000);
-	DrawModel(CO_COMNFAN->getmodel()->basicmodel);
+	DrawChunkModel(CO_COMNFAN->getmodel()->basicmodel);
 	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Scale.z);
-	DrawModel(CO_COMNFAN->getmodel()->child->basicmodel);
+	DrawChunkModel(CO_COMNFAN->getmodel()->child->basicmodel);
 	njPopMatrix(1u);
 }
 
@@ -173,8 +173,8 @@ void Robots(ObjectMaster* a1) {
 
 void CommonObjects_LoadModels() {
 	LoadTextureList((char*)"heroescmn", &heroescmn_texlist);	
-	CO_DSHHOOP = LoadMDL("CO_DSHHOOP");
-	CO_COMNFAN = LoadMDL("CO_COMNFAN");
+	CO_DSHHOOP = LoadMDL("CO_DSHHOOP", ModelFormat_Chunk);
+	CO_COMNFAN = LoadMDL("CO_COMNFAN", ModelFormat_Chunk);
 }
 
 void CommonObjects_FreeModels() {

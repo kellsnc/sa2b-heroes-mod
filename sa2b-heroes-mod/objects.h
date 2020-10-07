@@ -2,11 +2,10 @@
 
 extern NJS_TEXLIST_ HeroesWater_TexList;
 
-ModelInfo* LoadMDL(const char* name);
-ModelInfo* LoadCOLMDL(const char* name);
+ModelInfo* LoadMDL(const char* name, ModelFormat format);
 void FreeMDL(ModelInfo* pointer);
 
-void DrawModel(NJS_MODEL* model);
+void DrawChunkModel(NJS_MODEL* model);
 bool ClipSetObject(ObjectMaster* a1);
 float* njPushUnitMatrix();
 void njTranslateV(float* matrix, NJS_VECTOR* pos);

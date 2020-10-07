@@ -122,6 +122,17 @@ static inline void DynCol_Add(int flags, ObjectMaster* obj, NJS_OBJECT* object)
 	}
 }
 
+//void __usercall DrawSA2BModel(SA2B_Model *model@<eax>)
+static const void* const DrawSA2BModelPtr = (void*)0x4932C0;
+static inline void DrawSA2BModel(SA2B_Model* model)
+{
+	__asm
+	{
+		mov eax, [model]
+		call DrawSA2BModelPtr
+	}
+}
+
 ObjectFunc(AutoLoop, 0x497B50);
 ObjectFunc(RailPath, 0x4980C0);
 ObjectFunc(CamPath, nullptr);
