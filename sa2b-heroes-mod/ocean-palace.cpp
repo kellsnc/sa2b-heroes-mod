@@ -565,7 +565,7 @@ void OceanPalace_SkyBox(ObjectMaster* obj) {
 }
 
 void OceanPalace_Main(ObjectMaster* obj) {
-	AnimateTexlist(&HeroesWater_TexList, 2);
+	AnimateTexlist(&HeroesWater_TexList, 2, (Uint32*)&obj->Data1.Entity->Scale.x, (void**)&obj->field_4C);
 }
 
 void OceanPalace_Load() {
@@ -589,7 +589,7 @@ void OceanPalace_Load() {
 	LoadObject((LoadObj)0, "SKYBOX", OceanPalace_SkyBox, 1)->DisplaySub = OceanPalace_SkyBox;
 	LoadObject(LoadObj_Data1, "OP BOULDERS", OPBoulders, 2);
 
-	LoadTextureList("heroeswater", (NJS_TEXLIST*)&HeroesWater_TexList);
+	LoadTextureList("s02w", (NJS_TEXLIST*)&HeroesWater_TexList);
 
 	OP_WATERFS = LoadMDL("OP_WATERFS");
 	OP_FLOWERS = LoadMDL("OP_FLOWERS");
