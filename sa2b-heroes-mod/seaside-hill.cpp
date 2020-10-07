@@ -300,7 +300,7 @@ void SeasideHill_Load() {
 	CommonLevelInit();
 
 	LoadChunkFile("resource\\gd_pc\\s01_blk.bin");
-	LoadLandTable("resource\\gd_pc\\s01.sa2lvl");
+	LoadLandTable("resource\\gd_pc\\s01.sa2lvl", LandTableFormat_SA2);
 	LoadLevelTex((NJS_TEXLIST*)&seasidehill_texlist, "s01");
 	LoadTXCFile("resource\\gd_pc\\s01.txc");
 	

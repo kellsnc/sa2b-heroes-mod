@@ -181,7 +181,7 @@ void EggFleet_Load() {
 	CommonLevelInit();
 	
 	LoadChunkFile("resource\\gd_pc\\s13_blk.bin");
-	LoadLandTable("resource\\gd_pc\\s13.sa2lvl");
+	LoadLandTable("resource\\gd_pc\\s13.sa2lvl", LandTableFormat_SA2);
 	LoadLevelTex((NJS_TEXLIST*)&eggfleet_texlist, "s13");
 	LoadTXCFile("resource\\gd_pc\\s13.txc");
 

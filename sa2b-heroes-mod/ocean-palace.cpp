@@ -574,7 +574,7 @@ void OceanPalace_Load() {
 	CommonLevelInit();
 	
 	LoadChunkFile("resource\\gd_pc\\s02_blk.bin");
-	LoadLandTable("resource\\gd_pc\\s02.sa2lvl");
+	LoadLandTable("resource\\gd_pc\\s02.sa2lvl", LandTableFormat_SA2);
 	LoadLevelTex((NJS_TEXLIST*)&oceanpalace_texlist, "s02");
 	LoadTXCFile("resource\\gd_pc\\s02.txc");
 	
