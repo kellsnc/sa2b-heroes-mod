@@ -26,8 +26,10 @@ void UnloadLandTable() {
 	}
 }
 
-void LoadLandTable(const char* path) {
+void LoadLandTable(const char* path, LandTableFormat format) {
 	CurrentHeroesLandTable = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(path));
 	LoadLandManager(CurrentHeroesLandTable->getlandtable());
 	FixColFlags(CurrentHeroesLandTable->getlandtable());
+
+	LandTableSA2BModels = format == LandTableFormat_SA2B ? 1 : 0;
 }
