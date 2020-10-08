@@ -8,6 +8,7 @@ ModelInfo * SH_MORUINS;
 ModelInfo * SH_POLFLAG;
 ModelInfo * SH_WATERFS;
 ModelInfo * SH_FLOWERS;
+ModelInfo * SH_BRBLOCK;
 
 NJS_TEXLIST_ seasidehill_texlist = { arrayptrandlength(seasidehill_texname) };
 
@@ -175,7 +176,7 @@ void SHMovingPltfrms(ObjectMaster* a1)
 		InitCollision(a1, Col_MvPltfrm1, 3, 4);
 		break;
 	case 1:
-		InitCollision(a1, Col_MvPltfrm2, 1, 4);
+		InitCollision(a1, &Col_MvPltfrm2, 1, 4);
 		break;
 	case 2:
 		InitCollision(a1, &Col_MvPltfrm3, 1, 4);
@@ -222,6 +223,54 @@ void SHPlatforms(ObjectMaster* a1)
 	a1->DisplaySub = &SHPlatforms_Display;
 }
 
+void SHBreakableBlock_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njRotateZ(_nj_current_matrix_ptr_, data->Rotation.z);
+	njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+	DrawSA2BModel(model->child->sa2bmodel);
+	njPopMatrix(1u);
+}
+
+void SHBreakableBlock_Main(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		EntityData1* entity = obj->Data1.Entity;
+		ObjectMaster* player = GetCollidingPlayer(obj);
+
+		if (player && player->Data1.Entity->Status & Status_Attack && player->Data1.Entity->Position.y < entity->Position.y + 30) {
+			NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+			model = model->child->sibling->child;
+
+			LoadBreaker(&entity->Position, &entity->Rotation, model, 15.0f, 30);
+
+			UpdateSetDateAndDelete(obj);
+		}
+
+		AddToCollisionList(obj);
+	}
+}
+
+void SHBreakableBlock(ObjectMaster* obj) {
+	EntityData1* entity = obj->Data1.Entity;
+
+	obj->field_4C = (ObjectFuncPtr)SH_BRBLOCK->getmodel();
+
+	obj->DeleteSub = DeleteFunc_ResetVars;
+	obj->MainSub = SHBreakableBlock_Main;
+	obj->DisplaySub = SHBreakableBlock_Display;
+
+	InitCollision(obj, &Col_BreakBlock, 1, 4);
+
+	entity->Collision->CollisionArray[0].field_24 = entity->Rotation.x;
+	entity->Collision->CollisionArray[0].field_28 = entity->Rotation.y;
+	entity->Collision->CollisionArray[0].field_2C = entity->Rotation.z;
+}
+
 ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1360000, (ObjectFuncPtr)SpringA_Main },
@@ -266,7 +315,7 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Common, DistObj_UseDist, 2360000, (ObjectFuncPtr)DashRamp_Main },
 	{ (LoadObj)0 }, // seagull
 	{ (LoadObj)0 }, // whale
-	{ (LoadObj)0 },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, SHBreakableBlock }, // 43
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
@@ -319,6 +368,7 @@ void SeasideHill_Load() {
 	SH_POLFLAG = LoadMDL("SH_POLFLAG", ModelFormat_Chunk);
 	SH_MORUINS = LoadMDL("SH_MORUINS", ModelFormat_SA2B);
 	SH_PLATFOR = LoadMDL("SH_PLATFOR", ModelFormat_SA2B);
+	SH_BRBLOCK = LoadMDL("SH_BRBLOCK", ModelFormat_SA2B);
 }
 
 void SeasideHill_Delete() {
@@ -327,6 +377,7 @@ void SeasideHill_Delete() {
 	FreeMDL(SH_WATERFS);
 	FreeMDL(SH_POLFLAG);
 	FreeMDL(SH_PLATFOR);
+	FreeMDL(SH_BRBLOCK);
 
 	FreeTexList((NJS_TEXLIST*)&HeroesWater_TexList);
 	CommonLevelDelete();

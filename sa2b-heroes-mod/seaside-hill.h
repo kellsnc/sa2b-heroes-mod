@@ -8,8 +8,11 @@ LevelEndPosition sh_endpos23 = { LevelIDs_CityEscape, 0, 0x4000, 0, { -4530.0f, 
 
 CollisionData Col_Pole = { 0x100, 0xE077, 0, { 0, 0, 0 }, 10, 80, 10, 0, 0, 0, 0 };
 CollisionData Col_Platform = { 0x300, 0xE077, 0, { 0, 0, 0 }, 25, 15, 25, 0, 0, 0, 0 };
+CollisionData Col_BreakBlock = { 0x300, 0xE077, 0, { 0, 17.5f, 0 }, 25.0f, 35.0f, 25.0f, 0, 0, 0, 0 };
+
 CollisionData Col_MvPltfrm3 = { 0x300, 0xE077, 0, { 0, 0, 0 }, 24, 200, 24, 0, 0, 0, 0 };
-CollisionData Col_MvPltfrm2[] = { 0x300, 0xE077, 0, { 0, 0, 0 }, 75, 200, 75, 0, 0, 0, 0 };
+CollisionData Col_MvPltfrm2 = { 0x300, 0xE077, 0, { 0, 0, 0 }, 75, 200, 75, 0, 0, 0, 0 };
+
 CollisionData Col_MvPltfrm1[] = {
 	{ 0x300, 0xE077, 0, { 0, 0, 0 }, 150, 300, 250, 0, 0, 0, 0 },
 	{ 0x300, 0xE077, 0, { 133, 300, 0 }, 15, 80, 250, 0, 0, 0, 0 },

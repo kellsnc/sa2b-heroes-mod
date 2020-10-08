@@ -133,6 +133,78 @@ static inline void DrawSA2BModel(SA2B_Model* model)
 	}
 }
 
+//ObjectMaster *__usercall GetCollidingPlayer@<eax>(ObjectMaster *obj@<eax>)
+static const void* const GetCollidingPlayerPtr = (void*)0x486500;
+static inline ObjectMaster* GetCollidingPlayer(ObjectMaster* obj)
+{
+	ObjectMaster* result;
+	__asm
+	{
+		mov eax, [obj]
+		call GetCollidingPlayerPtr
+		mov result, eax
+	}
+	return result;
+}
+
+//void __usercall UpdateSetDateAndDelete(ObjectMaster *obj@<eax>)
+static const void* const UpdateSetDateAndDeletePtr = (void*)0x488DA0;
+static inline ObjectMaster* UpdateSetDateAndDelete(ObjectMaster* obj)
+{
+	__asm
+	{
+		mov eax, [obj]
+		call UpdateSetDateAndDeletePtr
+	}
+}
+
+//void __usercall LoadCrash3DEffect(NJS_VECTOR *pos@<eax>, Rotation *rot, float unkfloat, Rotation *another_rot, NJS_VECTOR *some_vector, ModelPointers model, NJS_TEXLIST *texlist, int flags)
+static const void* const LoadCrash3DEffectPtr = (void*)0x6E1810;
+static inline ObjectMaster* LoadCrash3DEffect(NJS_VECTOR* pos, Rotation* rot, Float idk, NJS_VECTOR* dir, NJS_VECTOR* some_vector, NJS_MODEL* gc_or_cnk_mdl, NJS_TEXLIST* texlist, int flags)
+{
+	__asm
+	{
+		push[flags]
+		push[texlist]
+		push[gc_or_cnk_mdl]
+		push[some_vector]
+		push[dir]
+		push[idk]
+		push[rot]
+		mov eax, [pos]
+		call LoadCrash3DEffectPtr
+		add esp, 28
+	}
+}
+
+//void __usercall njCalcVector(NJS_VECTOR *transform@<eax>, NJS_VECTOR *out@<edx>, float *matrix@<ecx>)
+static const void* const njCalcVectorPtr = (void*)0x4273B0;
+static inline void njCalcVector(NJS_VECTOR* transform, NJS_VECTOR* out, float* matrix)
+{
+	__asm
+	{
+		mov ecx, [matrix]
+		mov edx, [out]
+		mov eax, [transform]
+		call njCalcVectorPtr
+	}
+}
+
+//void __usercall njCalcVector@<eax>(NJS_MATRIX* result@<eax>, NJS_VECTOR* out@<edx>, NJS_VECTOR* a3@<ecx>, char a4)
+static const void* const njCalcPointPtr = (void*)0x426CC0;
+static inline void njCalcPoint(float* matrix, NJS_VECTOR* out, NJS_VECTOR* transform, bool something)
+{
+	__asm
+	{
+		push[something]
+		mov ecx, [transform]
+		mov edx, [out]
+		mov eax, [matrix]
+		call njCalcPointPtr
+		add esp, 4;
+	}
+}
+
 ObjectFunc(AutoLoop, 0x497B50);
 ObjectFunc(RailPath, 0x4980C0);
 ObjectFunc(CamPath, nullptr);

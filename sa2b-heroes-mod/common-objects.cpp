@@ -124,7 +124,7 @@ void RingGroup(ObjectMaster* obj) {
 	njRotateZ(matrix, data->Rotation.z);
 	njRotateY(matrix, data->Rotation.y);
 	njRotateX(matrix, data->Rotation.x);
-	njCalcPoint(&dir, &data->Position, matrix, 0);
+	njCalcPoint(matrix, &data->Position, &dir, false);
 	njPopMatrix(1u);
 
 	obj->MainSub = (ObjectFuncPtr)RingLinearMain;
@@ -169,6 +169,86 @@ void Robots(ObjectMaster* a1) {
 	entity->Rotation.z = 0x100;
 	entity->Scale = { 0, 1, 126 };
 	a1->MainSub = (ObjectFuncPtr)E_AI;
+}
+
+void Breaker_GetPoint(NJS_VECTOR* orig, Rotation* rot, NJS_VECTOR* dir) {
+	njPushUnitMatrix();
+	njRotateZ(_nj_current_matrix_ptr_, rot->z);
+	njRotateX(_nj_current_matrix_ptr_, rot->x);
+	njRotateY(_nj_current_matrix_ptr_, rot->y);
+	njCalcPoint(_nj_current_matrix_ptr_, dir, dir, true);
+	njAddVector(dir, orig);
+	njPopMatrix(1u);
+}
+
+void ObjectBreaker_Display(ObjectMaster* obj) {
+	EntityData1* pdata = obj->Parent->Data1.Entity;
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+
+	njPushMatrix(0);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njTranslateY(pdata->Scale.x - (pdata->Scale.z * 4));
+
+	njRotateZ(_nj_current_matrix_ptr_, pdata->Rotation.z);
+	njRotateX(_nj_current_matrix_ptr_, pdata->Rotation.x);
+	njRotateY(_nj_current_matrix_ptr_, pdata->Rotation.y);
+	
+	njRotateZ(_nj_current_matrix_ptr_, data->Rotation.z);
+	njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+
+	DrawSA2BModel(model->sa2bmodel);
+	njPopMatrix(1);
+}
+
+void ObjectBreaker_Main(ObjectMaster* obj) {
+	EntityData1* pdata = obj->Parent->Data1.Entity;
+	EntityData1* data = obj->Data1.Entity;
+
+	data->Rotation.x += 0x100 + rand() % 0x100;
+	data->Rotation.y += 0x100 + rand() % 0x100;
+	data->Rotation.z += 0x100 + rand() % 0x100;
+
+	data->Position = GetPathPosition(&pdata->Position, &data->Scale, 1.0f + pdata->Scale.z / 10);
+}
+
+void ObjBreaker(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+
+	data->Scale.z += 1;
+
+	if (data->Scale.z > data->Scale.y) {
+		DeleteObject_(obj);
+	}
+}
+
+void LoadBreaker(NJS_VECTOR* pos, Rotation* rot, NJS_OBJECT* object, Float Yoff, Float time) {
+	ObjectMaster* obj = LoadObject(5, "OBJ_BRK", ObjBreaker, LoadObj_Data1);
+	EntityData1* data = obj->Data1.Entity;
+
+	data->Position = *pos;
+	data->Rotation = *rot;
+	data->Scale.x = Yoff;
+	data->Scale.y = time;
+
+	while (object) {
+		ObjectMaster* part = LoadChildObject(LoadObj_Data1, ObjectBreaker_Main, obj);
+		EntityData1* partdata = part->Data1.Entity;
+
+		part->DisplaySub = ObjectBreaker_Display;
+		part->field_4C = object;
+
+		NJS_VECTOR dir = { object->pos[0], object->pos[1], object->pos[2] };
+
+		Breaker_GetPoint(&data->Position, &data->Rotation, &dir);
+
+		partdata->Scale = dir;
+
+		object = object->sibling;
+	}
 }
 
 void CommonObjects_LoadModels() {
