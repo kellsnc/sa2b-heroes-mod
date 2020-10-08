@@ -149,7 +149,7 @@ static inline ObjectMaster* GetCollidingPlayer(ObjectMaster* obj)
 
 //void __usercall UpdateSetDateAndDelete(ObjectMaster *obj@<eax>)
 static const void* const UpdateSetDateAndDeletePtr = (void*)0x488DA0;
-static inline ObjectMaster* UpdateSetDateAndDelete(ObjectMaster* obj)
+static inline void UpdateSetDateAndDelete(ObjectMaster* obj)
 {
 	__asm
 	{
@@ -160,7 +160,7 @@ static inline ObjectMaster* UpdateSetDateAndDelete(ObjectMaster* obj)
 
 //void __usercall LoadCrash3DEffect(NJS_VECTOR *pos@<eax>, Rotation *rot, float unkfloat, Rotation *another_rot, NJS_VECTOR *some_vector, ModelPointers model, NJS_TEXLIST *texlist, int flags)
 static const void* const LoadCrash3DEffectPtr = (void*)0x6E1810;
-static inline ObjectMaster* LoadCrash3DEffect(NJS_VECTOR* pos, Rotation* rot, Float idk, NJS_VECTOR* dir, NJS_VECTOR* some_vector, NJS_MODEL* gc_or_cnk_mdl, NJS_TEXLIST* texlist, int flags)
+static inline void LoadCrash3DEffect(NJS_VECTOR* pos, Rotation* rot, Float idk, NJS_VECTOR* dir, NJS_VECTOR* some_vector, NJS_MODEL* gc_or_cnk_mdl, NJS_TEXLIST* texlist, int flags)
 {
 	__asm
 	{
