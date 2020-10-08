@@ -247,7 +247,7 @@ void SHBreakableBlock_Main(ObjectMaster* obj) {
 			model = model->child->sibling->child;
 
 			LoadBreaker(&entity->Position, &entity->Rotation, model, 15.0f, 30);
-
+			PlaySoundProbably(4112, 0, 1, 127);
 			UpdateSetDateAndDelete(obj);
 		}
 
