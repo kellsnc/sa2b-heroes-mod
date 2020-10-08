@@ -5,6 +5,7 @@ NJS_TEXLIST heroescmn_texlist = { arrayptrandlengthT(heroescmn_texname, Uint32) 
 
 ModelInfo * CO_DSHHOOP;
 ModelInfo * CO_COMNFAN;
+ModelInfo * CO_COMNFANCOL;
 
 void DashHoop_Display(ObjectMaster* a1) {
 	RenderInfo->CurrentTexlist = &heroescmn_texlist;
@@ -63,46 +64,91 @@ void DashHoop(ObjectMaster* a1) {
 	a1->MainSub = DashHoop_Main;
 }
 
-void ObjFan_Display(ObjectMaster *a1)
+bool Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center, float radius, float height) {
+	NJS_VECTOR* pos = &entity->Position;
+
+	if ((powf(pos->x - center->x, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2) &&
+		pos->y > center->y && pos->y < center->y + height * 40) {
+		return true;
+	}
+
+	return false;
+}
+
+void ObjFan_Display(ObjectMaster *obj)
 {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+
 	RenderInfo->CurrentTexlist = &heroescmn_texlist;
 	njPushMatrix(0);
-	njTranslateV(_nj_current_matrix_ptr_, &a1->Data1.Entity->Position);
-	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y + 0x4000);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y + 0x4000);
 	DrawChunkModel(CO_COMNFAN->getmodel()->basicmodel);
-	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Scale.z);
+	njRotateY(_nj_current_matrix_ptr_, data->Scale.z);
 	DrawChunkModel(CO_COMNFAN->getmodel()->child->basicmodel);
 	njPopMatrix(1u);
 }
 
-void ObjFan(ObjectMaster *obj)
-{
+void ObjFan_Main(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
-	
-	if (data->Action == 0) {
-		obj->DisplaySub = ObjFan_Display;
-		data->Action = 1;
-	}
 
 	if (ClipSetObject(obj)) {
 		data->Scale.z += data->Scale.y;
 
-		int slot = IsPlayerInsideSphere(&data->Position, 45.0f);
-		if (slot > 0) {
-			EntityData1 *entity = MainCharObj1[slot - 1];
-			CharObj2Base *co2 = MainCharObj2[slot - 1];
-			if (co2 != NULL) {
-				co2->Speed.x = 0; co2->Speed.z = 0;
-				entity->Rotation.x = 0;
-				entity->Rotation.z = 0;
-				co2->Speed.y = data->Scale.x;
+		if (MainCharObj1[0]) {
+			if (Fans_IsSpecificPlayerInCylinder(MainCharObj1[0], &data->Position, 45.5f, data->Scale.x)) {
+				data->Index = 1;
+			}
+			else {
+				data->Index = 0;
+			}
+
+			if (data->Index == 1) {
+				CharObj2Base* co2 = MainCharObj2[0];
 				co2->AnimInfo.Current = 23;
+				co2->Speed.y = 2;
+			}
+		}
+
+		if (MainCharObj1[1]) {
+			if (Fans_IsSpecificPlayerInCylinder(MainCharObj1[1], &data->Position, 45.5f, data->Scale.x)) {
+				data->field_2 = 1;
+			}
+			else {
+				data->field_2 = 0;
+			}
+
+			if (data->field_2 == 1) {
+				CharObj2Base* co2 = MainCharObj2[1];
+				co2->AnimInfo.Current = 23;
+				co2->Speed.y = 2;
 			}
 		}
 	}
 }
 
+void ObjFan(ObjectMaster *obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* dynobj = GetFreeDynObject();
 
+	memcpy(dynobj, CO_COMNFANCOL->getmodel(), sizeof(NJS_OBJECT));
+
+	dynobj->pos[0] = data->Position.x;
+	dynobj->pos[1] = data->Position.y;
+	dynobj->pos[2] = data->Position.z;
+	dynobj->ang[1] = data->Rotation.y;
+	dynobj->evalflags = 0xFFFFFFF8;
+
+	DynCol_Add(0x1, obj, dynobj);
+
+	obj->EntityData2 = (UnknownData2*)dynobj;
+	obj->field_4C = (void*)CO_COMNFAN->getmodel();
+
+	obj->DeleteSub = ObjectFunc_DynColDelete;
+	obj->MainSub = ObjFan_Main;
+	obj->DisplaySub = ObjFan_Display;
+}
 
 void RingGroup(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
@@ -255,6 +301,7 @@ void CommonObjects_LoadModels() {
 	LoadTextureList((char*)"heroescmn", &heroescmn_texlist);	
 	CO_DSHHOOP = LoadMDL("CO_DSHHOOP", ModelFormat_Chunk);
 	CO_COMNFAN = LoadMDL("CO_COMNFAN", ModelFormat_Chunk);
+	CO_COMNFANCOL = LoadMDL("CO_COMNFAN", ModelFormat_Basic);
 }
 
 void CommonObjects_FreeModels() {
@@ -262,4 +309,5 @@ void CommonObjects_FreeModels() {
 
 	FreeMDL(CO_DSHHOOP);
 	FreeMDL(CO_COMNFAN);
+	FreeMDL(CO_COMNFANCOL);
 }
