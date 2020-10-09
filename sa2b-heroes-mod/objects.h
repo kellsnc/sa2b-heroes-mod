@@ -38,4 +38,4 @@ void Beetle_Stationary(ObjectMaster* a1);
 void Beetle_Attack(ObjectMaster* a1);
 void Beetle_Electric(ObjectMaster* a1);
 
-void LoadBreaker(NJS_VECTOR* pos, Rotation* rot, NJS_OBJECT* object, Float Yoff, Float time);
+void LoadBreaker(NJS_VECTOR* pos, Rotation* rot, NJS_OBJECT* object, Float Xoff, Float Yoff, Float Zoff, Float time);

@@ -11,9 +11,23 @@ ModelInfo * OP_SKYMDLS;
 ModelInfo * OP_LNDFALL;
 ModelInfo * OP_SCENARY;
 ModelInfo * OP_BRBLOCK;
+ModelInfo * OP_BRKBARS;
 ModelInfo * OP_LNDFALLCOL;
 
 NJS_TEXLIST_ oceanpalace_texlist = { arrayptrandlength(oceanpalace_texname) };
+
+CollisionData Col_OPBreakBlock = { 0x300, 0xE077, 0, { 10.0f, 17.5f, 0 }, 30.0f, 30.0f, 20.0f, 0, 0, 0, 0 };
+
+CollisionData Col_OPBlocks[] = {
+	{ 0x300, 0xE077, 0, { -50, 0, 0 }, 50, 35, 20, 0, 0, 0, 0 },
+	{ 0x300, 0xE077, 0, { 50, 0, 0 }, 50, 35, 20, 0, 0, 0, 0 },
+	{ 0x300, 0xE077, 0, { 0, 0, 0 }, 50, 35, 20, 0, 0, 0, 0 }
+};
+
+CollisionData Col_OPPillar[] = {
+	{ 0x300, 0xE077, 0, { 60.0f, 25.0f, 0 }, 12.5f, 25.0f, 12.5f, 0, 0, 0, 0 },
+	{ 0x300, 0xE077, 0, { -60.0f, 25.0f, 0 }, 12.5f, 25.0f, 12.5f, 0, 0, 0, 0 }
+};
 
 extern CollisionData Col_Pole;
 
@@ -486,7 +500,144 @@ void BoulderCam(ObjectMaster* obj) {
 	}
 }
 
-CollisionData Col_OPBreakBlock = { 0x300, 0xE077, 0, { 10.0f, 17.5f, 0 }, 30.0f, 30.0f, 20.0f, 0, 0, 0, 0 };
+void OPPillarBlock_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+	Uint16 id = data->Rotation.x;
+
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+
+	njPushMatrix(0);
+	njTranslateX(model->sibling->sibling->pos[0]);
+	DrawSA2BModel(model->sibling->sibling->sa2bmodel);
+	njPopMatrix(1u);
+
+	njTranslateY(data->Scale.y);
+	DrawSA2BModel(model->sa2bmodel);
+	njPopMatrix(1u);
+}
+
+void OPPillarBlock_Main(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	EntityData1* pdata = obj->Parent->Data1.Entity;
+
+	if (data->Action == 0) {
+		if (pdata->Action == 1) {
+			data->Scale.y -= 1.0f;
+
+			if (data->Scale.y <= 7.8f) {
+				data->Scale.y = 7.8f;
+				data->Action = 1;
+			}
+
+			AddToCollisionList(obj);
+		}
+	}
+	else {
+		ObjectMaster* player = GetCollidingPlayer(obj);
+
+		if (player && player->Data1.Entity->Status & Status_Attack && player->Data1.Entity->Position.y < data->Position.y + 30) {
+			NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+			model = model->sibling->child;
+
+			LoadBreaker(&data->Position, &data->Rotation, model, 0.0f, 0.0f, 0.0f, 120);
+			PlaySoundProbably(4112, 0, 1, 127);
+			DeleteObject_(obj);
+			return;
+		}
+
+		AddToCollisionList(obj);
+	}
+}
+
+void LoadPillarBlock(ObjectMaster* obj, NJS_OBJECT* object, Uint8 id) {
+	ObjectMaster* child = LoadChildObject(LoadObj_Data1, OPPillarBlock_Main, obj);
+	child->field_4C = object;
+	child->Data1.Entity->Scale.y = object->pos[1];
+	child->DisplaySub = OPPillarBlock_Display;
+
+	InitCollision(child, &Col_OPBlocks[id], 1, 4);
+}
+
+void OPPillar_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+	Uint16 id = data->Rotation.x;
+
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njTranslateY(7.8f);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+
+	if (id == 2 || id == 0) {
+		DrawSA2BModel(model->sa2bmodel);
+	}
+
+	if (id == 2 || id == 1) {
+		DrawSA2BModel(model->sibling->sa2bmodel);
+	}
+	
+	njPopMatrix(1u);
+}
+
+void OPPillar_Main(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		EntityData1* entity = obj->Data1.Entity;
+		
+		if (entity->Action == 0) {
+			if (IsPlayerInsideSphere(&entity->Position, 300.0f)) {
+				NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+				model = model->sibling->sibling->child;
+
+				NJS_VECTOR pos = entity->Position;
+
+				LoadBreaker(&pos, &entity->Rotation, model, -60.0f, 25.0f, 0.0f, 120);
+				LoadBreaker(&pos, &entity->Rotation, model, 60.0f, 25.0f, 0.0f, 120);
+
+				PlaySoundProbably(4112, 0, 1, 127);
+
+				obj->DisplaySub = nullptr;
+				entity->Action = 1;
+			}
+
+			AddToCollisionList(obj);
+		}
+		else {
+			if (obj->Child == nullptr) {
+				UpdateSetDateAndDelete(obj);
+			}
+		}
+	}
+}
+
+void OPPillar(ObjectMaster* obj) {
+	EntityData1* entity = obj->Data1.Entity;
+	Uint16 id = entity->Rotation.x;
+
+	if (id == 0) {
+		InitCollision(obj, &Col_OPPillar[0], 1, 4);
+		LoadPillarBlock(obj, OP_BRBLOCK->getmodel()->child->sibling->child, id);
+	}
+	else if (id == 1) {
+		InitCollision(obj, &Col_OPPillar[1], 1, 4);
+		LoadPillarBlock(obj, OP_BRBLOCK->getmodel()->child->sibling->sibling->child, id);
+	}
+	else {
+		InitCollision(obj, Col_OPPillar, 2, 4);
+		LoadPillarBlock(obj, OP_BRBLOCK->getmodel()->child->child, id);
+	}
+
+	obj->field_4C = OP_BRKBARS->getmodel()->child;
+
+	obj->MainSub = OPPillar_Main;
+	obj->DisplaySub = OPPillar_Display;
+
+	entity->Collision->CollisionArray[0].field_28 = entity->Rotation.y;
+}
 
 void OPBreakableBlock_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
@@ -509,7 +660,7 @@ void OPBreakableBlock_Main(ObjectMaster* obj) {
 			NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 			model = model->sibling->child;
 
-			LoadBreaker(&entity->Position, &entity->Rotation, model, 15.0f, 30);
+			LoadBreaker(&entity->Position, &entity->Rotation, model, 0.0f, 15.0f, 0.0f, 30);
 			PlaySoundProbably(4112, 0, 1, 127);
 			UpdateSetDateAndDelete(obj);
 		}
@@ -584,7 +735,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 6460000, OPFins },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5460000, OPFallingStructure },
 	{ (LoadObj)0 }, // 44 Small platform
-	{ (LoadObj)0 }, // 45 stone pillar
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPPillar },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPBreakableBlock },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Big_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, WoodenCrate_Main },
@@ -653,6 +804,7 @@ void OceanPalace_Load() {
 	OP_LNDFALL = LoadMDL("OP_LNDFALL", ModelFormat_Chunk);
 	OP_SCENARY = LoadMDL("OP_SCENARY", ModelFormat_Chunk);
 	OP_BRBLOCK = LoadMDL("OP_BRBLOCK", ModelFormat_SA2B);
+	OP_BRKBARS = LoadMDL("OP_BRKBARS", ModelFormat_SA2B);
 	OP_LNDFALLCOL = LoadMDL("OP_LNDFALL", ModelFormat_Basic);
 }
 
@@ -665,6 +817,7 @@ void OceanPalaceDelete() {
 	FreeMDL(OP_SKYMDLS);
 	FreeMDL(OP_LNDFALL);
 	FreeMDL(OP_BRBLOCK);
+	FreeMDL(OP_BRKBARS);
 	FreeMDL(OP_LNDFALLCOL);
 
 	FreeTexList((NJS_TEXLIST*)&HeroesWater_TexList);

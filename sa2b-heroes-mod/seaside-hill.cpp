@@ -246,7 +246,7 @@ void SHBreakableBlock_Main(ObjectMaster* obj) {
 			NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 			model = model->child->sibling->child;
 
-			LoadBreaker(&entity->Position, &entity->Rotation, model, 15.0f, 30);
+			LoadBreaker(&entity->Position, &entity->Rotation, model, 0.0f, 15.0f, 0.0f, 30);
 			PlaySoundProbably(4112, 0, 1, 127);
 			UpdateSetDateAndDelete(obj);
 		}
