@@ -10,6 +10,7 @@ ModelInfo * OP_POLFLAG;
 ModelInfo * OP_SKYMDLS;
 ModelInfo * OP_LNDFALL;
 ModelInfo * OP_SCENARY;
+ModelInfo * OP_BRBLOCK;
 ModelInfo * OP_LNDFALLCOL;
 
 NJS_TEXLIST_ oceanpalace_texlist = { arrayptrandlength(oceanpalace_texname) };
@@ -485,6 +486,58 @@ void BoulderCam(ObjectMaster* obj) {
 	}
 }
 
+CollisionData Col_OPBreakBlock = { 0x300, 0xE077, 0, { 10.0f, 17.5f, 0 }, 30.0f, 30.0f, 20.0f, 0, 0, 0, 0 };
+
+void OPBreakableBlock_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+	DrawSA2BModel(model->sa2bmodel);
+	njPopMatrix(1u);
+}
+
+void OPBreakableBlock_Main(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		EntityData1* entity = obj->Data1.Entity;
+		ObjectMaster* player = GetCollidingPlayer(obj);
+
+		if (player && player->Data1.Entity->Status & Status_Attack && player->Data1.Entity->Position.y < entity->Position.y + 30) {
+			NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+			model = model->sibling->child;
+
+			LoadBreaker(&entity->Position, &entity->Rotation, model, 15.0f, 30);
+			PlaySoundProbably(4112, 0, 1, 127);
+			UpdateSetDateAndDelete(obj);
+		}
+
+		AddToCollisionList(obj);
+	}
+}
+
+void OPBreakableBlock(ObjectMaster* obj) {
+	EntityData1* entity = obj->Data1.Entity;
+	Uint8 id = static_cast<Uint8>(entity->Scale.x);
+	
+	InitCollision(obj, &Col_OPBreakBlock, 1, 4);
+
+	if (id == 0) {
+		obj->field_4C = OP_BRBLOCK->getmodel()->child->sibling->sibling->sibling->child;
+	}
+	else {
+		obj->field_4C = OP_BRBLOCK->getmodel()->child->sibling->sibling->sibling->sibling->child;
+		entity->Collision->CollisionArray[0].some_vector.x = -10.0f;
+	}
+	
+	obj->MainSub = OPBreakableBlock_Main;
+	obj->DisplaySub = OPBreakableBlock_Display;
+
+	entity->Collision->CollisionArray[0].field_28 = entity->Rotation.y;
+}
+
 ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1360000, (ObjectFuncPtr)SpringA_Main },
@@ -519,7 +572,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, (ObjectFuncPtr)Robots },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)E_GOLD },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, ObjFan },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPPOLE },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, nullptr }, // Door
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, nullptr }, //(ObjectFuncPtr)EFLENSF0
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPFlowers },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 50000, BoulderCam },
@@ -530,9 +583,9 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5460000, OPLandMove },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 6460000, OPFins },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5460000, OPFallingStructure },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
-	{ (LoadObj)0 },
+	{ (LoadObj)0 }, // 44 Small platform
+	{ (LoadObj)0 }, // 45 stone pillar
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPBreakableBlock },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Big_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, WoodenCrate_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, IronCrate_Main },
@@ -599,6 +652,7 @@ void OceanPalace_Load() {
 	OP_SKYMDLS = LoadMDL("OP_SKYMDLS", ModelFormat_SA2B);
 	OP_LNDFALL = LoadMDL("OP_LNDFALL", ModelFormat_Chunk);
 	OP_SCENARY = LoadMDL("OP_SCENARY", ModelFormat_Chunk);
+	OP_BRBLOCK = LoadMDL("OP_BRBLOCK", ModelFormat_SA2B);
 	OP_LNDFALLCOL = LoadMDL("OP_LNDFALL", ModelFormat_Basic);
 }
 
@@ -610,6 +664,7 @@ void OceanPalaceDelete() {
 	FreeMDL(OP_WATERFS);
 	FreeMDL(OP_SKYMDLS);
 	FreeMDL(OP_LNDFALL);
+	FreeMDL(OP_BRBLOCK);
 	FreeMDL(OP_LNDFALLCOL);
 
 	FreeTexList((NJS_TEXLIST*)&HeroesWater_TexList);

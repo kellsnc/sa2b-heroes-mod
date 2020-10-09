@@ -154,6 +154,22 @@ NJS_OBJECT* GetChildModelByIndex(NJS_OBJECT* object, int index) {
 	return nullptr;
 }
 
+NJS_OBJECT* GetSiblingModelByIndex(NJS_OBJECT* object, int index) {
+	int i = 0;
+	NJS_OBJECT* sibling = object;
+
+	while (sibling) {
+		if (i == index) {
+			return sibling;
+		}
+
+		sibling = sibling->sibling;
+		i += 1;
+	}
+
+	return nullptr;
+}
+
 // Ninja stuff
 float* njPushUnitMatrix() {
 	float *v8 = _nj_current_matrix_ptr_;
