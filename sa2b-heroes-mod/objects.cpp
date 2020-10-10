@@ -170,6 +170,12 @@ NJS_OBJECT* GetSiblingModelByIndex(NJS_OBJECT* object, int index) {
 	return nullptr;
 }
 
+void MainSub_Collision(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		AddToCollisionList(obj);
+	}
+}
+
 // Ninja stuff
 float* njPushUnitMatrix() {
 	float *v8 = _nj_current_matrix_ptr_;

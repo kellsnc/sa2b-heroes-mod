@@ -24,6 +24,7 @@ float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
 NJS_OBJECT* GetChildModelByIndex(NJS_OBJECT* object, int index);
 NJS_OBJECT* GetSiblingModelByIndex(NJS_OBJECT* object, int index);
+void MainSub_Collision(ObjectMaster* obj);
 
 void CommonObjects_LoadModels();
 void CommonObjects_FreeModels();

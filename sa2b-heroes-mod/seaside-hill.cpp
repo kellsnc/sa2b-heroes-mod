@@ -208,19 +208,12 @@ void SHPlatforms_Display(ObjectMaster* a1) {
 	njPopMatrix(1u);
 }
 
-void SHPlatforms_Main(ObjectMaster* a1)
-{
-	if (ClipSetObject(a1)) {
-		AddToCollisionList(a1);
-	}
-}
-
 void SHPlatforms(ObjectMaster* a1)
 {
 	InitCollision(a1, &Col_Platform, 1, 4);
 
-	a1->MainSub = &SHPlatforms_Main;
-	a1->DisplaySub = &SHPlatforms_Display;
+	a1->MainSub = MainSub_Collision;
+	a1->DisplaySub = SHPlatforms_Display;
 }
 
 void SHBreakableBlock_Display(ObjectMaster* obj) {
@@ -246,7 +239,7 @@ void SHBreakableBlock_Main(ObjectMaster* obj) {
 			NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 			model = model->child->sibling->child;
 
-			LoadBreaker(&entity->Position, &entity->Rotation, model, 0.0f, 15.0f, 0.0f, 30);
+			LoadBreaker(&entity->Position, &entity->Rotation, model, 0.0f, 15.0f, 0.0f, 60);
 			PlaySoundProbably(4112, 0, 1, 127);
 			UpdateSetDateAndDelete(obj);
 		}

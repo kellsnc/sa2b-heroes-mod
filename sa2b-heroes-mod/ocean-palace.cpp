@@ -12,6 +12,7 @@ ModelInfo * OP_LNDFALL;
 ModelInfo * OP_SCENARY;
 ModelInfo * OP_BRBLOCK;
 ModelInfo * OP_BRKBARS;
+ModelInfo * OP_PLATFOR;
 ModelInfo * OP_LNDFALLCOL;
 
 NJS_TEXLIST_ oceanpalace_texlist = { arrayptrandlength(oceanpalace_texname) };
@@ -30,6 +31,7 @@ CollisionData Col_OPPillar[] = {
 };
 
 extern CollisionData Col_Pole;
+extern CollisionData Col_Platform;
 
 void OPFlowers_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
@@ -692,6 +694,34 @@ void OPBreakableBlock(ObjectMaster* obj) {
 	entity->Collision->CollisionArray[0].field_28 = entity->Rotation.y;
 }
 
+void OPPlatforms_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+	njScalef(data->Scale.x);
+	DrawSA2BModel(model->sa2bmodel);
+	DrawSA2BModel(model->sibling->sa2bmodel);
+	njPopMatrix(1u);
+}
+
+void OPPlatforms(ObjectMaster* obj)
+{
+	EntityData1* data = obj->Data1.Entity;
+	InitCollision(obj, &Col_Platform, 1, 4);
+
+	obj->field_4C = OP_PLATFOR->getmodel()->child;
+	data->Collision->CollisionArray[0].anonymous_1 *= data->Scale.x;
+	data->Collision->CollisionArray[0].anonymous_2 *= data->Scale.x;
+	data->Collision->CollisionArray[0].anonymous_3 *= data->Scale.x;
+
+	obj->MainSub = MainSub_Collision;
+	obj->DisplaySub = OPPlatforms_Display;
+}
+
 ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1360000, (ObjectFuncPtr)SpringA_Main },
@@ -737,7 +767,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5460000, OPLandMove },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 6460000, OPFins },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5460000, OPFallingStructure },
-	{ (LoadObj)0 }, // 44 Small platform
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPPlatforms },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPPillar },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPBreakableBlock },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Big_Main },
@@ -808,6 +838,7 @@ void OceanPalace_Load() {
 	OP_SCENARY = LoadMDL("OP_SCENARY", ModelFormat_Chunk);
 	OP_BRBLOCK = LoadMDL("OP_BRBLOCK", ModelFormat_SA2B);
 	OP_BRKBARS = LoadMDL("OP_BRKBARS", ModelFormat_SA2B);
+	OP_PLATFOR = LoadMDL("OP_PLATFOR", ModelFormat_SA2B);
 	OP_LNDFALLCOL = LoadMDL("OP_LNDFALL", ModelFormat_Basic);
 }
 
@@ -821,6 +852,7 @@ void OceanPalaceDelete() {
 	FreeMDL(OP_LNDFALL);
 	FreeMDL(OP_BRBLOCK);
 	FreeMDL(OP_BRKBARS);
+	FreeMDL(OP_PLATFOR);
 	FreeMDL(OP_LNDFALLCOL);
 
 	FreeTexList((NJS_TEXLIST*)&HeroesWater_TexList);
