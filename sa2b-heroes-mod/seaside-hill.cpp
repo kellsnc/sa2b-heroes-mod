@@ -234,11 +234,14 @@ void SHPlatforms_Display(ObjectMaster* obj) {
 	njPopMatrix(1u);
 }
 
-void SHPlatforms(ObjectMaster* obj)
-{
+void SHPlatforms(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
 	InitCollision(obj, &Col_Platform, 1, 4);
 
 	obj->field_4C = SH_PLATFOR->getmodel();
+	data->Collision->CollisionArray[0].anonymous_1 *= data->Scale.x;
+	data->Collision->CollisionArray[0].anonymous_2 *= data->Scale.y;
+	data->Collision->CollisionArray[0].anonymous_3 *= data->Scale.z;
 
 	obj->MainSub = MainSub_Collision;
 	obj->DisplaySub = SHPlatforms_Display;
