@@ -19,9 +19,9 @@ NJS_TEXLIST_ oceanpalace_texlist = { arrayptrandlength(oceanpalace_texname) };
 CollisionData Col_OPBreakBlock = { 0x300, 0xE077, 0, { 10.0f, 17.5f, 0 }, 30.0f, 30.0f, 20.0f, 0, 0, 0, 0 };
 
 CollisionData Col_OPBlocks[] = {
-	{ 0x300, 0xE077, 0, { -50, 0, 0 }, 50, 35, 20, 0, 0, 0, 0 },
-	{ 0x300, 0xE077, 0, { 50, 0, 0 }, 50, 35, 20, 0, 0, 0, 0 },
-	{ 0x300, 0xE077, 0, { 0, 0, 0 }, 50, 35, 20, 0, 0, 0, 0 }
+	{ 0x300, 0xE077, 0, { -40.0f, 25.0f , 0 }, 30.0f, 30.0f, 20.0f, 0, 0, 0, 0 },
+	{ 0x300, 0xE077, 0, { 40.0f, 25.0f, 0 }, 30.0f, 30.0f, 20.0f, 0, 0, 0, 0 },
+	{ 0x300, 0xE077, 0, { 0, 25.0f, 0 }, 70.0f, 30.0f, 20.0f, 0, 0, 0, 0 }
 };
 
 CollisionData Col_OPPillar[] = {
@@ -510,11 +510,14 @@ void OPPillarBlock_Display(ObjectMaster* obj) {
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 
+	// Shadow
 	njPushMatrix(0);
 	njTranslateX(model->sibling->sibling->pos[0]);
 	DrawSA2BModel(model->sibling->sibling->sa2bmodel);
 	njPopMatrix(1u);
 
+	// Block
+	njTranslateX(model->pos[0]);
 	njTranslateY(data->Scale.y);
 	DrawSA2BModel(model->sa2bmodel);
 	njPopMatrix(1u);
@@ -589,14 +592,14 @@ void OPPillar_Main(ObjectMaster* obj) {
 		EntityData1* entity = obj->Data1.Entity;
 		
 		if (entity->Action == 0) {
-			if (IsPlayerInsideSphere(&entity->Position, 300.0f)) {
+			if (IsPlayerInsideSphere(&entity->Scale, 300.0f)) {
 				NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 				model = model->sibling->sibling->child;
 
 				NJS_VECTOR pos = entity->Position;
 
-				LoadBreaker(&pos, &entity->Rotation, model, -60.0f, 25.0f, 0.0f, 120);
-				LoadBreaker(&pos, &entity->Rotation, model, 60.0f, 25.0f, 0.0f, 120);
+				LoadBreaker(&pos, &entity->Rotation, model, -60.0f, 35.0f, 0.0f, 120);
+				LoadBreaker(&pos, &entity->Rotation, model, 60.0f, 35.0f, 0.0f, 120);
 
 				PlaySoundProbably(4112, 0, 1, 127);
 
@@ -790,8 +793,8 @@ void OceanPalace_Load() {
 	LoadDeathZones(SeasideHillDeathZones);
 	LoadFogData_Fogtask("stg13_fog.bin", (FogData*)0x1A280C8);
 
-	LoadObject((LoadObj)0, "SKYBOX", OceanPalace_SkyBox, 1)->DisplaySub = OceanPalace_SkyBox;
-	LoadObject(LoadObj_Data1, "OP BOULDERS", OPBoulders, 2);
+	LoadObject(0, "SKYBOX", OceanPalace_SkyBox, 0)->DisplaySub = OceanPalace_SkyBox;
+	LoadObject(0, "OP BOULDERS", OPBoulders, LoadObj_Data1);
 
 	LoadTextureList("s02w", (NJS_TEXLIST*)&HeroesWater_TexList);
 

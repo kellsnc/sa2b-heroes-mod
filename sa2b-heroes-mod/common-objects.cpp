@@ -258,6 +258,7 @@ void ObjectBreaker_Display(ObjectMaster* obj) {
 	njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 
+	njScalef(pdata->Scale.x);
 	DrawSA2BModel(model->sa2bmodel);
 	njPopMatrix(1);
 }
@@ -277,6 +278,7 @@ void ObjBreaker(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 
 	data->Scale.z += 1;
+	data->Scale.x = fmax(0.0f, fabs(1 - (data->Scale.z / data->Scale.y)));
 
 	if (data->Scale.z > data->Scale.y) {
 		DeleteObject_(obj);
@@ -289,6 +291,7 @@ void LoadBreaker(NJS_VECTOR* pos, Rotation* rot, NJS_OBJECT* object, Float Xoff,
 
 	data->Position = *pos;
 	data->Rotation = *rot;
+	data->Scale.y = 1.0f;
 	data->Scale.y = time;
 
 	while (object) {
