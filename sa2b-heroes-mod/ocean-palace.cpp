@@ -13,21 +13,23 @@ ModelInfo * OP_SCENARY;
 ModelInfo * OP_BRBLOCK;
 ModelInfo * OP_BRKBARS;
 ModelInfo * OP_PLATFOR;
+ModelInfo * OP_BRKDOOR;
 ModelInfo * OP_LNDFALLCOL;
 
 NJS_TEXLIST_ oceanpalace_texlist = { arrayptrandlength(oceanpalace_texname) };
 
 CollisionData Col_OPBreakBlock = { 0x300, 0xE077, 0, { 10.0f, 17.5f, 0 }, 30.0f, 30.0f, 20.0f, 0, 0, 0, 0 };
+CollisionData Col_OPBreakDoor = { 0x300, 0xE077, 0, { 0, 50.0f, -43.75f }, 40.0f, 100.0f, 10.0f, 0, 0, 0, 0 };
 
 CollisionData Col_OPBlocks[] = {
 	{ 0x300, 0xE077, 0, { -40.0f, 25.0f , 0 }, 30.0f, 30.0f, 20.0f, 0, 0, 0, 0 },
 	{ 0x300, 0xE077, 0, { 40.0f, 25.0f, 0 }, 30.0f, 30.0f, 20.0f, 0, 0, 0, 0 },
-	{ 0x300, 0xE077, 0, { 0, 25.0f, 0 }, 70.0f, 30.0f, 20.0f, 0, 0, 0, 0 }
+	{ 0x300, 0xE077, 0, { 0, 25.0f, 0 }, 80.0f, 30.0f, 20.0f, 0, 0, 0, 0 }
 };
 
 CollisionData Col_OPPillar[] = {
-	{ 0x300, 0xE077, 0, { 60.0f, 25.0f, 0 }, 12.5f, 25.0f, 12.5f, 0, 0, 0, 0 },
-	{ 0x300, 0xE077, 0, { -60.0f, 25.0f, 0 }, 12.5f, 25.0f, 12.5f, 0, 0, 0, 0 }
+	{ 0x300, 0xE077, 0, { 60.0f, 32.8f, 0 }, 12.5f, 25.0f, 12.5f, 0, 0, 0, 0 },
+	{ 0x300, 0xE077, 0, { -60.0f, 32.8f, 0 }, 12.5f, 25.0f, 12.5f, 0, 0, 0, 0 }
 };
 
 extern CollisionData Col_Pole;
@@ -538,7 +540,7 @@ void OPPillarBlock_Main(ObjectMaster* obj) {
 				data->Action = 1;
 			}
 
-			AddToCollisionList(obj);
+			data->Collision->CollisionArray[0].some_vector.y = Col_OPPillar[0].some_vector.y + data->Scale.y - 7.8f;
 		}
 	}
 	else {
@@ -553,9 +555,9 @@ void OPPillarBlock_Main(ObjectMaster* obj) {
 			DeleteObject_(obj);
 			return;
 		}
-
-		AddToCollisionList(obj);
 	}
+
+	AddToCollisionList(obj);
 }
 
 void LoadPillarBlock(ObjectMaster* obj, NJS_OBJECT* object, Uint8 id) {
@@ -565,6 +567,7 @@ void LoadPillarBlock(ObjectMaster* obj, NJS_OBJECT* object, Uint8 id) {
 	child->DisplaySub = OPPillarBlock_Display;
 
 	InitCollision(child, &Col_OPBlocks[id], 1, 4);
+	child->Data1.Entity->Collision->CollisionArray[0].some_vector.y += child->Data1.Entity->Scale.y - 7.8f;
 }
 
 void OPPillar_Display(ObjectMaster* obj) {
@@ -594,7 +597,9 @@ void OPPillar_Main(ObjectMaster* obj) {
 		EntityData1* entity = obj->Data1.Entity;
 		
 		if (entity->Action == 0) {
-			if (IsPlayerInsideSphere(&entity->Scale, 300.0f)) {
+			ObjectMaster* player = GetCollidingPlayer(obj);
+
+			if (IsPlayerInsideSphere(&entity->Scale, 150.0f) || (player && player->Data1.Entity->Status & Status_Attack)) {
 				NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 				model = model->sibling->sibling->child;
 
@@ -624,11 +629,11 @@ void OPPillar(ObjectMaster* obj) {
 	Uint16 id = entity->Rotation.x;
 
 	if (id == 0) {
-		InitCollision(obj, &Col_OPPillar[0], 1, 4);
+		InitCollision(obj, &Col_OPPillar[1], 1, 4);
 		LoadPillarBlock(obj, OP_BRBLOCK->getmodel()->child->sibling->child, id);
 	}
 	else if (id == 1) {
-		InitCollision(obj, &Col_OPPillar[1], 1, 4);
+		InitCollision(obj, &Col_OPPillar[0], 1, 4);
 		LoadPillarBlock(obj, OP_BRBLOCK->getmodel()->child->sibling->sibling->child, id);
 	}
 	else {
@@ -640,8 +645,6 @@ void OPPillar(ObjectMaster* obj) {
 
 	obj->MainSub = OPPillar_Main;
 	obj->DisplaySub = OPPillar_Display;
-
-	entity->Collision->CollisionArray[0].field_28 = entity->Rotation.y;
 }
 
 void OPBreakableBlock_Display(ObjectMaster* obj) {
@@ -690,8 +693,6 @@ void OPBreakableBlock(ObjectMaster* obj) {
 	
 	obj->MainSub = OPBreakableBlock_Main;
 	obj->DisplaySub = OPBreakableBlock_Display;
-
-	entity->Collision->CollisionArray[0].field_28 = entity->Rotation.y;
 }
 
 void OPPlatforms_Display(ObjectMaster* obj) {
@@ -720,6 +721,121 @@ void OPPlatforms(ObjectMaster* obj)
 
 	obj->MainSub = MainSub_Collision;
 	obj->DisplaySub = OPPlatforms_Display;
+}
+
+enum DoorActions {
+	DOOR_STAGE1,
+	DOOR_MOVE,
+	DOOR_STAGE2,
+	DOOR_OPEN,
+	DOOR_END
+};
+
+void OPDoor_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+
+	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njPushMatrix(0);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+	njTranslateZ(-data->Scale.y);
+
+	if (data->Action == DOOR_STAGE1) {
+		DrawSA2BModel(model->sa2bmodel);
+	}
+	else if (data->Action < DOOR_OPEN) {
+		njTranslate(_nj_current_matrix_ptr_, model->sibling->child->pos[0], 0, model->sibling->child->pos[2]);
+		DrawSA2BModel(model->sibling->child->sa2bmodel);
+
+		njTranslateX(model->sibling->child->sibling->pos[0] * 2);
+		DrawSA2BModel(model->sibling->child->sibling->sa2bmodel);
+	}
+	else {
+		njPushMatrix(0);
+		njTranslate(_nj_current_matrix_ptr_, model->sibling->child->pos[0], 0, model->sibling->child->pos[2]);
+		njRotateY(_nj_current_matrix_ptr_, data->field_6);
+		DrawSA2BModel(model->sibling->child->sa2bmodel);
+		njPopMatrix(1u);
+
+		njTranslate(_nj_current_matrix_ptr_, model->sibling->child->sibling->pos[0], 0, model->sibling->child->sibling->pos[2]);
+		njRotateY(_nj_current_matrix_ptr_, -data->field_6);
+		DrawSA2BModel(model->sibling->child->sibling->sa2bmodel);
+	}
+	
+	njPopMatrix(1u);
+}
+
+inline bool Door_GetCollision(ObjectMaster* obj) {
+	ObjectMaster* player = GetCollidingPlayer(obj);
+
+	return player && player->Data1.Entity->Status & Status_Attack;
+}
+
+void OPDoor_Main(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		EntityData1* entity = obj->Data1.Entity;
+		NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+		
+		switch (entity->Action) {
+		case DOOR_STAGE1:
+			if (Door_GetCollision(obj)) {
+				model = model->sibling->sibling->child;
+
+				LoadBreaker(&entity->Position, &entity->Rotation, model, 0.0f, 30.0f, -43.0f, 90);
+				LoadBreaker(&entity->Position, &entity->Rotation, model->sibling, -6.0f, 25.0f, -41.0f, 90);
+				LoadBreaker(&entity->Position, &entity->Rotation, model->sibling, 11.0f, 20.0f, -40.0f, 90);
+
+				PlaySoundProbably(4112, 0, 1, 127);
+
+				entity->Action = DOOR_MOVE;
+			}
+
+			AddToCollisionList(obj);
+			break;
+		case DOOR_MOVE:
+			if (entity->Scale.y < 60.0f) {
+				entity->Scale.y += 2.5f;
+			}
+			else {
+				entity->Scale.y = 60.0f;
+				entity->Action = DOOR_STAGE2;
+			}
+			
+			entity->Collision->CollisionArray[0].some_vector.z = Col_OPBreakDoor.some_vector.z - entity->Scale.y;
+			AddToCollisionList(obj);
+			break;
+		case DOOR_STAGE2:
+			if (Door_GetCollision(obj)) {
+				PlaySoundProbably(4112, 0, 1, 127);
+				entity->Action = DOOR_OPEN;
+			}
+
+			AddToCollisionList(obj);
+			break;
+		case DOOR_OPEN:
+			if (entity->field_6 < 0x3500) {
+				entity->field_6 += 0x300;
+			}
+			else {
+				entity->field_6 = 0x3500;
+				entity->Action = DOOR_END;
+			}
+
+			break;
+		}
+	}
+}
+
+void OPDoor(ObjectMaster* obj) {
+	EntityData1* entity = obj->Data1.Entity;
+	
+	obj->field_4C = OP_BRKDOOR->getmodel()->child;
+
+	InitCollision(obj, &Col_OPBreakDoor, 1, 4);
+
+	obj->MainSub = OPDoor_Main;
+	obj->DisplaySub = OPDoor_Display;
 }
 
 ObjectListEntry OceanPalaceObjectList_list[] = {
@@ -756,7 +872,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, (ObjectFuncPtr)Robots },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)E_GOLD },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, ObjFan },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, nullptr }, // Door
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 6460000, OPDoor },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, nullptr }, //(ObjectFuncPtr)EFLENSF0
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, OPFlowers },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 50000, BoulderCam },
@@ -839,6 +955,7 @@ void OceanPalace_Load() {
 	OP_BRBLOCK = LoadMDL("OP_BRBLOCK", ModelFormat_SA2B);
 	OP_BRKBARS = LoadMDL("OP_BRKBARS", ModelFormat_SA2B);
 	OP_PLATFOR = LoadMDL("OP_PLATFOR", ModelFormat_SA2B);
+	OP_BRKDOOR = LoadMDL("OP_BRKDOOR", ModelFormat_SA2B);
 	OP_LNDFALLCOL = LoadMDL("OP_LNDFALL", ModelFormat_Basic);
 }
 
@@ -853,6 +970,7 @@ void OceanPalaceDelete() {
 	FreeMDL(OP_BRBLOCK);
 	FreeMDL(OP_BRKBARS);
 	FreeMDL(OP_PLATFOR);
+	FreeMDL(OP_BRKDOOR);
 	FreeMDL(OP_LNDFALLCOL);
 
 	FreeTexList((NJS_TEXLIST*)&HeroesWater_TexList);

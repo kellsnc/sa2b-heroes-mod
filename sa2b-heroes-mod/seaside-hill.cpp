@@ -260,7 +260,6 @@ void SHBreakableBlock(ObjectMaster* obj) {
 	InitCollision(obj, &Col_BreakBlock, 1, 4);
 
 	entity->Collision->CollisionArray[0].field_24 = entity->Rotation.x;
-	entity->Collision->CollisionArray[0].field_28 = entity->Rotation.y;
 	entity->Collision->CollisionArray[0].field_2C = entity->Rotation.z;
 }
 

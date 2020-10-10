@@ -237,6 +237,10 @@ void Breaker_GetPoint(NJS_VECTOR* orig, Rotation* rot, NJS_VECTOR* dir) {
 	njPopMatrix(1u);
 }
 
+void ObjectBreaker_Delete(ObjectMaster* obj) {
+	obj->Data1.Entity->Collision = nullptr;
+}
+
 void ObjectBreaker_Display(ObjectMaster* obj) {
 	EntityData1* pdata = obj->Parent->Data1.Entity;
 	breakerData1* data = (breakerData1*)obj->Data1.Entity;
@@ -299,6 +303,7 @@ void LoadBreaker(NJS_VECTOR* pos, Rotation* rot, NJS_OBJECT* object, Float Xoff,
 		breakerData1* partdata = (breakerData1*)part->Data1.Entity;
 
 		part->DisplaySub = ObjectBreaker_Display;
+		part->DeleteSub = ObjectBreaker_Delete;
 		part->field_4C = object;
 
 		NJS_VECTOR dir = { object->pos[0], object->pos[1], object->pos[2] };
