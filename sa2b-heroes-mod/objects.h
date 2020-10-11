@@ -19,6 +19,7 @@ void njTranslateZ(Float f);
 void DrawChunkModel(NJS_MODEL* model);
 void njCnkAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame);
 void njSA2BAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame);
+void DrawObject(NJS_OBJECT* obj, ModelFormat format);
 
 int IsPlayerInsideSphere(Float x, Float y, Float z, Float radius);
 int IsPlayerInsideSphere(NJS_VECTOR* center, Float radius);

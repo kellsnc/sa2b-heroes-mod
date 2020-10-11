@@ -98,31 +98,32 @@ void ObjFan_Main(ObjectMaster* obj) {
 
 		if (MainCharObj1[0]) {
 			if (Fans_IsSpecificPlayerInCylinder(MainCharObj1[0], &data->Position, 45.5f, data->Scale.x)) {
-				data->Index = 1;
-			}
-			else {
-				data->Index = 0;
+				data->Index = 20;
 			}
 
-			if (data->Index == 1) {
-				CharObj2Base* co2 = MainCharObj2[0];
-				co2->AnimInfo.Current = 23;
-				co2->Speed.y = 2;
+			if (data->Index != 0) {
+				MainCharObj2[0]->Speed.y = 0.3f;
+				MainCharObj1[0]->Status |= 0x1000;
+				MainCharObj1[0]->NextAction = 8;
+				MainCharObj1[0]->Position.y += 2.0f;
+				data->Index -= 1;
 			}
 		}
 
 		if (MainCharObj1[1]) {
 			if (Fans_IsSpecificPlayerInCylinder(MainCharObj1[1], &data->Position, 45.5f, data->Scale.x)) {
-				data->field_2 = 1;
+				data->field_2 = 20;
 			}
 			else {
 				data->field_2 = 0;
 			}
 
-			if (data->field_2 == 1) {
-				CharObj2Base* co2 = MainCharObj2[1];
-				co2->AnimInfo.Current = 23;
-				co2->Speed.y = 2;
+			if (data->field_2 != 0) {
+				MainCharObj2[1]->Speed.y = 0.3f;
+				MainCharObj1[1]->Status |= 0x1000;
+				MainCharObj1[1]->NextAction = 8;
+				MainCharObj1[1]->Position.y += 2.0f;
+				data->field_2 -= 1;
 			}
 		}
 	}

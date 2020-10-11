@@ -249,3 +249,24 @@ void njSA2BAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame) {
 	MotionDrawCallback = DrawSA2BModel;
 	DrawObjMotion(obj);
 }
+
+void DrawObject(NJS_OBJECT* obj, ModelFormat format) {
+	if (obj->model) {
+		njPushMatrix(0);
+		njTranslate(_nj_current_matrix_ptr_, obj->pos[0], obj->pos[1], obj->pos[2]);
+		njRotateX(_nj_current_matrix_ptr_, obj->ang[0]);
+		njRotateY(_nj_current_matrix_ptr_, obj->ang[1]);
+		njRotateZ(_nj_current_matrix_ptr_, obj->ang[2]);
+		njScale(obj->scl[0], obj->scl[1], obj->scl[2]);
+		format == ModelFormat_Chunk ? DrawChunkModel(obj->basicmodel) : DrawSA2BModel(obj->sa2bmodel);
+		njPopMatrix(1);
+	}
+	
+	if (obj->sibling) {
+		DrawObject(obj->sibling, format);
+	}
+
+	if (obj->child) {
+		DrawObject(obj->child, format);
+	}
+}

@@ -37,41 +37,39 @@ extern CollisionData Col_Platform;
 
 void OPFlowers_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njScalef(data->Scale.y);
-	DrawChunkModel(model->basicmodel);
+	DrawSA2BModel(model->sa2bmodel);
 	njPopMatrix(1u);
 }
 
 void OPFlowers(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 
-	obj->EntityData2 = (UnknownData2*)OP_FLOWERS->getmodel()->child;
+	obj->field_4C = OP_FLOWERS->getmodel()->child;
 
-	obj->DeleteSub = DeleteFunc_ResetVars;
 	obj->MainSub = ClipObjectObjFunc;
 	obj->DisplaySub = OPFlowers_Display;
 }
 
 void OPFlant_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
-	NJS_OBJECT* shadow = (NJS_OBJECT*)obj->UnknownA_ptr;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njScalef(data->Scale.y);
-	DrawChunkModel(model->basicmodel);
+	DrawSA2BModel(model->sa2bmodel);
 
 	if (data->Scale.x == 0) {
-		DrawChunkModel(shadow->basicmodel);
+		DrawSA2BModel(model->child->sa2bmodel);
 	}
 	
 	njPopMatrix(1u);
@@ -80,10 +78,8 @@ void OPFlant_Display(ObjectMaster* obj) {
 void OPPlant(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 
-	obj->EntityData2 = (UnknownData2*)GetChildModelByIndex(OP_FLOWERS->getmodel()->child->child, data->Scale.x);
-	obj->UnknownA_ptr = (ObjUnknownA*)OP_FLOWERS->getmodel();
+	obj->field_4C = OP_FLOWERS->getmodel()->child->sibling;
 
-	obj->DeleteSub = DeleteFunc_ResetVars;
 	obj->MainSub = ClipObjectObjFunc;
 	obj->DisplaySub = OPFlant_Display;
 }
@@ -117,7 +113,7 @@ void OPFallingStructure_Display(ObjectMaster* obj) {
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
-	DrawChunkModel(model->basicmodel);
+	DrawObject(model, ModelFormat_SA2B);
 	njPopMatrix(1u);
 }
 
@@ -136,7 +132,7 @@ void OPFallingStructure(ObjectMaster* obj) {
 	DynCol_Add(0x1, obj, dynobj);
 
 	obj->EntityData2 = (UnknownData2*)dynobj;
-	obj->field_4C = (void*)OP_LNDFALL->getmodel();
+	obj->field_4C = OP_LNDFALL->getmodel();
 
 	obj->DeleteSub = ObjectFunc_DynColDelete;
 	obj->MainSub = ClipObjectObjFunc;
@@ -254,7 +250,7 @@ void OPLandMove_Display(ObjectMaster* obj) {
 		}
 
 		EntityData1* data = obj->Data1.Entity;
-		NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
+		NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
 		RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 		njPushMatrix(0);
@@ -262,17 +258,15 @@ void OPLandMove_Display(ObjectMaster* obj) {
 		njTranslateZ(data->Scale.y);
 
 		njPushMatrix(0); {
-			njRotateX(_nj_current_matrix_ptr_, 0x4000);
 			njScalef(2.0f);
-			DrawChunkModel(model->child->basicmodel);
+			DrawSA2BModel(model->sa2bmodel);
 			njPopMatrix(1);
 		}
 
 		njTranslate(_nj_current_matrix_ptr_, -2500, 0, 29000);
-		njRotateX(_nj_current_matrix_ptr_, 0x4000);
 		njScalef(2.0f);
-		DrawChunkModel(model->child->sibling->basicmodel);
-		DrawChunkModel(model->child->sibling->sibling->basicmodel);
+		DrawSA2BModel(model->sibling->sa2bmodel);
+		DrawSA2BModel(model->sibling->sibling->sa2bmodel);
 
 		njPopMatrix(1u);
 	}
@@ -316,14 +310,13 @@ void OPLandMove(ObjectMaster* obj) {
 		return;
 	}
 
-	obj->EntityData2 = (UnknownData2*)OP_SCENARY->getmodel();
-
-	obj->DeleteSub = DeleteFunc_ResetVars;
+	obj->field_4C = OP_SCENARY->getmodel()->child;
 	obj->MainSub = OPLandMove_Main;
 }
 
 void BoulderPath(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->Parent->field_4C;
 	LoopHead * loopdata = &OP_BoulderPaths[data->Index];
 
 	if (data->Action == 0) {
@@ -371,7 +364,7 @@ void BoulderPath(ObjectMaster *obj) {
 			njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 			njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
 
-			DrawChunkModel(OP_BOULDER->getmodel()->basicmodel);
+			DrawSA2BModel(model->sa2bmodel);
 			njPopMatrix(1u);
 		}
 		else {
@@ -381,15 +374,16 @@ void BoulderPath(ObjectMaster *obj) {
 }
 
 void OPBoulders_Display(ObjectMaster *obj) {
-	if (CurrentChunk[0] < 6)
-		return;
+	if (CurrentChunk[0] < 6) return;
+
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
-
 	njTranslate(_nj_current_matrix_ptr_, 9000, -1.8f, 2900);
 
-	switch (obj->Data1.Entity->Action) {
+	switch (data->Action) {
 	case 1:
 		njTranslate(_nj_current_matrix_ptr_, -8200.3408f, 2030, -39259.3);
 		njRotateY(_nj_current_matrix_ptr_, 32768);
@@ -404,13 +398,12 @@ void OPBoulders_Display(ObjectMaster *obj) {
 		break;
 	}
 
-	DrawChunkModel(OP_BOULDER->getmodel()->basicmodel);
+	DrawSA2BModel(model->sa2bmodel);
 	njPopMatrix(1u);
 }
 
 void OPBoulders(ObjectMaster *obj) {
-	if (CurrentChunk[0] < 6)
-		return;
+	if (CurrentChunk[0] < 6) return;
 
 	EntityData1* data = obj->Data1.Entity;
 
@@ -418,6 +411,7 @@ void OPBoulders(ObjectMaster *obj) {
 	{
 	case 0:
 		obj->DisplaySub = OPBoulders_Display;
+		obj->field_4C = OP_BOULDER->getmodel();
 		data->Action = 1;
 		break;
 	case 1:
@@ -932,13 +926,13 @@ void OceanPalace_Load() {
 	LoadTextureList("s02w", (NJS_TEXLIST*)&HeroesWater_TexList);
 
 	OP_WATERFS = LoadMDL("OP_WATERFS", ModelFormat_SA2B);
-	OP_FLOWERS = LoadMDL("OP_FLOWERS", ModelFormat_Chunk);
+	OP_FLOWERS = LoadMDL("OP_FLOWERS", ModelFormat_SA2B);
 	OP_TURFINS = LoadMDL("OP_TURFINS", ModelFormat_SA2B);
-	OP_BOULDER = LoadMDL("OP_BOULDER", ModelFormat_Chunk);
+	OP_BOULDER = LoadMDL("OP_BOULDER", ModelFormat_SA2B);
 	OP_POLFLAG = LoadMDL("OP_POLFLAG", ModelFormat_SA2B);
 	OP_SKYMDLS = LoadMDL("OP_SKYMDLS", ModelFormat_SA2B);
-	OP_LNDFALL = LoadMDL("OP_LNDFALL", ModelFormat_Chunk);
-	OP_SCENARY = LoadMDL("OP_SCENARY", ModelFormat_Chunk);
+	OP_LNDFALL = LoadMDL("OP_LNDFALL", ModelFormat_SA2B);
+	OP_SCENARY = LoadMDL("OP_SCENARY", ModelFormat_SA2B);
 	OP_BRBLOCK = LoadMDL("OP_BRBLOCK", ModelFormat_SA2B);
 	OP_BRKBARS = LoadMDL("OP_BRKBARS", ModelFormat_SA2B);
 	OP_PLATFOR = LoadMDL("OP_PLATFOR", ModelFormat_SA2B);
