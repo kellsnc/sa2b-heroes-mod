@@ -90,22 +90,21 @@ void OPPlant(ObjectMaster* obj) {
 
 void OPWater_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
 	RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
-	DrawChunkModel(model->basicmodel);
+	DrawSA2BModel(model->sa2bmodel);
 	njPopMatrix(1u);
 }
 
 void OPWater(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 
-	obj->EntityData2 = (UnknownData2*)GetChildModelByIndex(OP_WATERFS->getmodel(), data->Scale.x);
+	obj->field_4C = GetChildModelByIndex(OP_WATERFS->getmodel(), static_cast<int>(data->Scale.x));
 
-	obj->DeleteSub = DeleteFunc_ResetVars;
 	obj->MainSub = ClipObjectObjFunc;
 	obj->DisplaySub = OPWater_Display;
 }
@@ -146,36 +145,28 @@ void OPFallingStructure(ObjectMaster* obj) {
 
 void OPPOLE_Display(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
-		
-	if (data->Scale.x == 1) {
-		DrawChunkModel(OP_POLFLAG->getmodel()->child->basicmodel);
-		RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
-		DrawChunkModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->basicmodel);
-	}
-	else {
-		DrawChunkModel(OP_POLFLAG->getmodel()->basicmodel);
-		RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
-		DrawChunkModel(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->basicmodel);
-	}
-		
+	DrawSA2BModel(model->sa2bmodel);
+
+	RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
+	DrawSA2BModel(model->child->sa2bmodel);
+
 	njPopMatrix(1u);
 }
 
-void OPPOLE_Main(ObjectMaster *obj) {
-	if (ClipSetObject(obj)) {
-		AddToCollisionList(obj);
-	}
-}
-
 void OPPOLE(ObjectMaster *obj) {
+	EntityData1* data = obj->Data1.Entity;
+
 	InitCollision(obj, &Col_Pole, 1, 4);
 
-	obj->MainSub = OPPOLE_Main;
+	obj->field_4C = GetSiblingModelByIndex(OP_POLFLAG->getmodel()->child, static_cast<int>(data->Scale.x));
+
+	obj->MainSub = MainSub_Collision;
 	obj->DisplaySub = &OPPOLE_Display;
 }
 
@@ -944,11 +935,11 @@ void OceanPalace_Load() {
 
 	LoadTextureList("s02w", (NJS_TEXLIST*)&HeroesWater_TexList);
 
-	OP_WATERFS = LoadMDL("OP_WATERFS", ModelFormat_Chunk);
+	OP_WATERFS = LoadMDL("OP_WATERFS", ModelFormat_SA2B);
 	OP_FLOWERS = LoadMDL("OP_FLOWERS", ModelFormat_Chunk);
 	OP_TURFINS = LoadMDL("OP_TURFINS", ModelFormat_Chunk);
 	OP_BOULDER = LoadMDL("OP_BOULDER", ModelFormat_Chunk);
-	OP_POLFLAG = LoadMDL("OP_POLFLAG", ModelFormat_Chunk);
+	OP_POLFLAG = LoadMDL("OP_POLFLAG", ModelFormat_SA2B);
 	OP_SKYMDLS = LoadMDL("OP_SKYMDLS", ModelFormat_SA2B);
 	OP_LNDFALL = LoadMDL("OP_LNDFALL", ModelFormat_Chunk);
 	OP_SCENARY = LoadMDL("OP_SCENARY", ModelFormat_Chunk);
