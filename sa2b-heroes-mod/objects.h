@@ -3,9 +3,11 @@
 extern NJS_TEXLIST_ HeroesWater_TexList;
 
 ModelInfo* LoadMDL(const char* name, ModelFormat format);
+AnimationFile* LoadAnim(const char* name);
 void FreeMDL(ModelInfo* pointer);
+void FreeAnim(AnimationFile* pointer);
 
-void DrawChunkModel(NJS_MODEL* model);
+
 bool ClipSetObject(ObjectMaster* a1);
 float* njPushUnitMatrix();
 void njTranslateV(float* matrix, NJS_VECTOR* pos);
@@ -14,6 +16,9 @@ void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs);
 void njTranslateX(Float f);
 void njTranslateY(Float f);
 void njTranslateZ(Float f);
+void DrawChunkModel(NJS_MODEL* model);
+void njCnkAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame);
+void njSA2BAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame);
 
 int IsPlayerInsideSphere(Float x, Float y, Float z, Float radius);
 int IsPlayerInsideSphere(NJS_VECTOR* center, Float radius);

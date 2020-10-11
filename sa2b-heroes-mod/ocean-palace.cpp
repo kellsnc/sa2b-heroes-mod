@@ -170,80 +170,76 @@ void OPPOLE(ObjectMaster *obj) {
 	obj->DisplaySub = &OPPOLE_Display;
 }
 
+inline void DrawFin(NJS_OBJECT* object, Uint32 Yrot, Uint32 Xrot) {
+	njPushMatrix(0); {
+		njTranslate(_nj_current_matrix_ptr_, object->pos[0], object->pos[1], object->pos[2]);
+
+		if (object->ang[1] > 0) {
+			njRotateY(_nj_current_matrix_ptr_, Yrot + (object->ang[1] - 0x3000));
+		}
+		else {
+			njRotateY(_nj_current_matrix_ptr_, Yrot + (object->ang[1] + 0x3000));
+		}
+		
+		njRotateX(_nj_current_matrix_ptr_, Xrot);
+		DrawSA2BModel(object->sa2bmodel);
+		njPopMatrix(1u);
+	}
+}
+
 void OPFins_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* object = (NJS_OBJECT*)obj->field_4C;
 
 	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
-	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y + 0x8000);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+	njScalef(data->Scale.x);
 
-	NJS_OBJECT* object = OP_TURFINS->getmodel();
+	DrawFin(object, data->Rotation.z, data->Rotation.x);
+	DrawFin(object->sibling, -data->Rotation.z, data->Rotation.x);
+	DrawFin(object->sibling->sibling, data->Rotation.z, data->Rotation.x);
+	DrawFin(object->sibling->sibling->sibling, -data->Rotation.z, data->Rotation.x);
 
-	njPushMatrix(0); {
-		njTranslate(_nj_current_matrix_ptr_, -60, -20, -90);
-		njRotateY(_nj_current_matrix_ptr_, data->Rotation.z - 0x7000);
-		njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-		DrawChunkModel(object->basicmodel);
-		njPopMatrix(1u);
-	}
-
-	njPushMatrix(0); {
-		njTranslate(_nj_current_matrix_ptr_, 60, -20, -90);
-		njRotateY(_nj_current_matrix_ptr_, -data->Rotation.z + 0x7000);
-		njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-		DrawChunkModel(object->child->basicmodel);
-		njPopMatrix(1u);
-	}
-
-	njPushMatrix(0); {
-		njTranslate(_nj_current_matrix_ptr_, -60, -15, 60);
-		njRotateY(_nj_current_matrix_ptr_, data->Rotation.z - 0x7000);
-		njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-		DrawChunkModel(object->child->child->basicmodel);
-		njPopMatrix(1u);
-	}
-
-	njPushMatrix(0); {
-		njTranslate(_nj_current_matrix_ptr_, 60, -15, 60);
-		njRotateY(_nj_current_matrix_ptr_, -data->Rotation.z + 0x7000);
-		njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-		DrawChunkModel(object->child->child->child->basicmodel);
-		njPopMatrix(1u);
-	}
-	
 	njPopMatrix(1u);
 }
 
 void OPFins_Main(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
-
+	
 	if (ClipSetObject(obj)) {
 		data->field_6++;
 
-		if (data->field_6 > 300) {
-			data->field_6 = 0;
-			data->Rotation.x = 0;
-			data->Rotation.z = 0;
-		}
+		if (data->Action == 0) {
+			data->Scale.z += data->Scale.y / 2;
 
-		short finsstate = data->field_6;
+			if (data->Scale.z >= 1.0f) {
+				data->Action = 1;
+			}
 
-		if (finsstate <= 100) {
-			data->Rotation.z -= 100;
-			data->Rotation.x += 10;
+			data->Rotation.z = 10000 - static_cast<Angle>(data->Scale.z * 20000.0f);
+			data->Rotation.x = 5000 - static_cast<Angle>(data->Scale.z * 10000.0f);
 		}
-		if (finsstate > 100) {
-			data->Rotation.z += 50.5f;
-			data->Rotation.x -= 5;
+		else {
+			data->Scale.z -= data->Scale.y / 2;
+
+			data->Rotation.z = 10000 - static_cast<Angle>(data->Scale.z * 20000.0f);
+			data->Rotation.x = 5000 - static_cast<Angle>(data->Scale.z * 10000.0f);
+
+			if (data->Scale.z <= 0.0f) {
+				data->Action = 0;
+				data->Scale.z = 0.0f;
+			}
 		}
 	}
 }
 
 void OPFins(ObjectMaster* obj)
 {
+	obj->field_4C = OP_TURFINS->getmodel()->child;
 	obj->MainSub = OPFins_Main;
-	obj->DisplaySub = &OPFins_Display;
+	obj->DisplaySub = OPFins_Display;
 }
 
 void OPLandMove_Display(ObjectMaster* obj) {
@@ -937,7 +933,7 @@ void OceanPalace_Load() {
 
 	OP_WATERFS = LoadMDL("OP_WATERFS", ModelFormat_SA2B);
 	OP_FLOWERS = LoadMDL("OP_FLOWERS", ModelFormat_Chunk);
-	OP_TURFINS = LoadMDL("OP_TURFINS", ModelFormat_Chunk);
+	OP_TURFINS = LoadMDL("OP_TURFINS", ModelFormat_SA2B);
 	OP_BOULDER = LoadMDL("OP_BOULDER", ModelFormat_Chunk);
 	OP_POLFLAG = LoadMDL("OP_POLFLAG", ModelFormat_SA2B);
 	OP_SKYMDLS = LoadMDL("OP_SKYMDLS", ModelFormat_SA2B);

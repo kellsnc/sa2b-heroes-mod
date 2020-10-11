@@ -11,6 +11,7 @@
 #include "SA2ModLoader.h"
 #include "LandTableInfo.h"
 #include "ModelInfo.h"
+#include "AnimationFile.h"
 #include "Trampoline.h"
 
 #include "mod.h"

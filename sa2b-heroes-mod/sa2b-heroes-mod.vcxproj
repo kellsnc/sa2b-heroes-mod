@@ -164,6 +164,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\sa2-mod-loader\libmodutils\AnimationFile.cpp" />
     <ClCompile Include="..\sa2-mod-loader\libmodutils\LandTableInfo.cpp" />
     <ClCompile Include="..\sa2-mod-loader\libmodutils\ModelInfo.cpp" />
     <ClCompile Include="..\sa2-mod-loader\libmodutils\Trampoline.cpp" />

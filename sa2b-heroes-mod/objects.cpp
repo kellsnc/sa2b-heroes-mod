@@ -48,15 +48,30 @@ ModelInfo* LoadMDL(const char *name, ModelFormat format) {
 	return temp;
 }
 
+AnimationFile* LoadAnim(const char* name) {
+	std::string fullPath = "resource\\gd_PC\\ANIMATIONS\\";
+
+	fullPath = fullPath + name + ".saanim";
+
+	AnimationFile* file = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
+
+	if (file->getmotion() != nullptr) {
+		PrintDebug("[Heroes Mod] Loaded animation: %s.", name);
+	}
+	else {
+		PrintDebug("[Heroes Mod] Failed loading animation: %s.", name);
+	}
+
+	return file;
+}
+
 //Free Object File
 void FreeMDL(ModelInfo * pointer) {
 	if (pointer) delete(pointer);
 }
 
-//Draw a model
-void DrawChunkModel(NJS_MODEL * model) {
-	ResetRenderSpace();
-	ProcessChunkModel((NJS_CNK_MODEL*)model);
+void FreeAnim(AnimationFile* pointer) {
+	if (pointer) delete pointer;
 }
 
 // Math stuff
@@ -214,4 +229,23 @@ void njTranslateY(Float f) {
 
 void njTranslateZ(Float f) {
 	njTranslate(_nj_current_matrix_ptr_, 0, 0, f);
+}
+
+void DrawChunkModel(NJS_MODEL* model) {
+	ResetRenderSpace();
+	ProcessChunkModel((NJS_CNK_MODEL*)model);
+}
+
+void njCnkAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame) {
+	*(int*)0x25EFE54 = 0x25EFE60;
+	njSetMotion(mot, frame);
+	MotionDrawCallback = DrawChunkModel;
+	DrawObjMotion(obj);
+}
+
+void njSA2BAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame) {
+	*(int*)0x25EFE54 = 0x25EFE60;
+	njSetMotion(mot, frame);
+	MotionDrawCallback = DrawSA2BModel;
+	DrawObjMotion(obj);
 }

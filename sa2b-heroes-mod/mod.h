@@ -205,6 +205,19 @@ static inline void njCalcPoint(float* matrix, NJS_VECTOR* out, NJS_VECTOR* trans
 	}
 }
 
+// void __usercall njSetMotion(NJS_MOTION *motion@<ecx>, float frame);
+static const void* const njSetMotionPtr = (void*)0x7819A0;
+static inline void njSetMotion(NJS_MOTION* motion, float frame)
+{
+	__asm
+	{
+		push[frame]
+		mov ecx, [motion]
+		call njSetMotionPtr
+		add esp, 4
+	}
+}
+
 ObjectFunc(AutoLoop, 0x497B50);
 ObjectFunc(RailPath, 0x4980C0);
 ObjectFunc(CamPath, nullptr);
@@ -231,3 +244,5 @@ ObjectFunc(DeleteFunc_ResetVars, 0x5BCCF0);
 ObjectFunc(ObjectFunc_DynColDelete, 0x5F12B0);
 FastcallFunctionPointer(float, njSin, (Angle angle), 0x42AAB0);
 FunctionPointer(NJS_OBJECT*, GetFreeDynObject, (), 0x47D7F0);
+FunctionPointer(void, DrawObjMotion, (NJS_OBJECT* a1), 0x782420);
+DataPointer(void*, MotionDrawCallback, 0x1D19C0C);
