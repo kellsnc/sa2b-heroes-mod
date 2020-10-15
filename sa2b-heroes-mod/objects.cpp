@@ -140,10 +140,10 @@ Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point) {
 	dist.y = point->y - orig->y;
 	dist.z = point->z - orig->z;
 
-	result.x = atan2(dist.y, dist.z) * 65536.0 * -0.1591549762031479;
-	result.y = atan2(dist.x, dist.z) * 65536.0 * 0.1591549762031479;
+	result.x = static_cast<Angle>(atan2f(dist.y, dist.z) * -10430.38f);
+	result.y = static_cast<Angle>(atan2f(dist.x, sqrtf(dist.z * dist.z + dist.y * dist.y)) * 10430.38f) - 0x8000;
+	result.z = 0;
 
-	result.y = -result.y - 0x4000;
 	return result;
 }
 

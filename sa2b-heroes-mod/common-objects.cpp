@@ -1,19 +1,24 @@
 #include "stdafx.h"
 
-NJS_TEXNAME heroescmn_texname[41];
+NJS_TEXNAME heroescmn_texname[91];
 NJS_TEXLIST heroescmn_texlist = { arrayptrandlengthT(heroescmn_texname, Uint32) };
 
 ModelInfo * CO_DSHHOOP;
 ModelInfo * CO_COMNFAN;
 ModelInfo * CO_COMNFANCOL;
 
-void DashHoop_Display(ObjectMaster* a1) {
+void DashHoop_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+
 	RenderInfo->CurrentTexlist = &heroescmn_texlist;
 	njPushMatrix(0);
-	njTranslateV(_nj_current_matrix_ptr_, &a1->Data1.Entity->Position);
-	njRotateX(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.x);
-	njRotateY(_nj_current_matrix_ptr_, a1->Data1.Entity->Rotation.y + 0x4000);
-	DrawChunkModel(CO_DSHHOOP->getmodel()->basicmodel);
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+	DrawSA2BModel(model->sa2bmodel);
+	DrawSA2BModel(model->child->sa2bmodel);
+	DrawSA2BModel(model->child->sibling->sa2bmodel);
 	njPopMatrix(1u);
 }
 
@@ -58,10 +63,12 @@ void DashHoop_Main(ObjectMaster* a1) {
 	}
 }
 
-void DashHoop(ObjectMaster* a1) {
-	a1->Data1.Entity->Rotation = fPositionToRotation(&a1->Data1.Entity->Position, &a1->Data1.Entity->Scale);
-	a1->DisplaySub = DashHoop_Display;
-	a1->MainSub = DashHoop_Main;
+void DashHoop(ObjectMaster* obj) {
+	obj->Data1.Entity->Rotation = fPositionToRotation(&obj->Data1.Entity->Position, &obj->Data1.Entity->Scale);
+	obj->DisplaySub = DashHoop_Display;
+	obj->MainSub = DashHoop_Main;
+
+	obj->field_4C = CO_DSHHOOP->getmodel();
 }
 
 bool Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center, float radius, float height) {
@@ -84,9 +91,9 @@ void ObjFan_Display(ObjectMaster *obj)
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y + 0x4000);
-	DrawChunkModel(CO_COMNFAN->getmodel()->basicmodel);
+	DrawSA2BModel(CO_COMNFAN->getmodel()->sa2bmodel);
 	njRotateY(_nj_current_matrix_ptr_, data->Scale.z);
-	DrawChunkModel(CO_COMNFAN->getmodel()->child->basicmodel);
+	DrawSA2BModel(CO_COMNFAN->getmodel()->child->sa2bmodel);
 	njPopMatrix(1u);
 }
 
@@ -322,8 +329,8 @@ void LoadBreaker(NJS_VECTOR* pos, Rotation* rot, NJS_OBJECT* object, Float Xoff,
 
 void CommonObjects_LoadModels() {
 	LoadTextureList((char*)"heroescmn", &heroescmn_texlist);	
-	CO_DSHHOOP = LoadMDL("CO_DSHHOOP", ModelFormat_Chunk);
-	CO_COMNFAN = LoadMDL("CO_COMNFAN", ModelFormat_Chunk);
+	CO_DSHHOOP = LoadMDL("CO_DSHHOOP", ModelFormat_SA2B);
+	CO_COMNFAN = LoadMDL("CO_COMNFAN", ModelFormat_SA2B);
 	CO_COMNFANCOL = LoadMDL("CO_COMNFAN", ModelFormat_Basic);
 }
 

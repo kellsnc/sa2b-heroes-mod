@@ -422,7 +422,7 @@ void OPBoulders(ObjectMaster *obj) {
 
 		break;
 	case 2:
-		if (obj->Child->Data1.Entity->Position.z < -44954) {
+		if (obj->Child->Data1.Entity->Position.z < -42054) {
 			data->Action = 3;
 
 			LoadChildObject(LoadObj_Data1, BoulderPath, obj)->Data1.Entity->Index = 1;
@@ -430,7 +430,7 @@ void OPBoulders(ObjectMaster *obj) {
 
 		break;
 	case 3:
-		if (obj->Child->Data1.Entity->Position.z < -46583) {
+		if (obj->Child->Data1.Entity->Position.z < -43683) {
 			data->Action = 0;
 
 			LoadChildObject(LoadObj_Data1, BoulderPath, obj)->Data1.Entity->Index = 2;
