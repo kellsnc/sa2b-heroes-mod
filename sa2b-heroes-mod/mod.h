@@ -218,6 +218,25 @@ static inline void njSetMotion(NJS_MOTION* motion, float frame)
 	}
 }
 
+//char __usercall Play3DSound_Vector@<al>(int id@<edi>, NJS_VECTOR *pos@<esi>, int unk, char bank, char volume)
+static const void* const Play3DSound_VectorPtr = (void*)0x4372E0;
+static inline char Play3DSound_Vector(int id, NJS_VECTOR* pos, int unk, char bank, char volume)
+{
+	char result;
+	__asm
+	{
+		push[volume]
+		push[bank]
+		push[unk]
+		mov esi, [pos]
+		mov edi, [id]
+		call Play3DSound_VectorPtr
+		mov result, al
+		add esp, 12
+	}
+	return result;
+}
+
 ObjectFunc(AutoLoop, 0x497B50);
 ObjectFunc(RailPath, 0x4980C0);
 ObjectFunc(CamPath, nullptr);
