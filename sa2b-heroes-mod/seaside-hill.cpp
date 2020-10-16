@@ -158,7 +158,7 @@ void SHMovingPltfrms_Main(ObjectMaster* obj) {
 					}
 
 					if (entity->Position.y == entity->Scale.x - 2) {
-						PlaySoundProbably(13, 0, 0, 0);
+						PlaySoundProbably(4100, 0, 1, 127);
 					}
 				}
 				else if (entity->Scale.x <= entity->Scale.z) {
@@ -171,11 +171,11 @@ void SHMovingPltfrms_Main(ObjectMaster* obj) {
 					}
 
 					if (entity->Position.y == entity->Scale.x + 2) {
-						PlaySoundProbably(13, 0, 0, 0);
+						PlaySoundProbably(4100, 0, 1, 127);
 					}
 
 					if (entity->Position.y <= entity->Scale.z - 1 && entity->Position.y >= entity->Scale.z - 3) {
-						PlaySoundProbably(13, 0, 0, 0);
+						PlaySoundProbably(4100, 0, 1, 127);
 					}
 				}
 			}
@@ -271,7 +271,7 @@ void SHBreakableBlock_Main(ObjectMaster* obj) {
 			model = model->child->sibling->child;
 
 			LoadBreaker(&entity->Position, &entity->Rotation, model, 0.0f, 15.0f, 0.0f, 60);
-			PlaySoundProbably(4112, 0, 1, 127);
+			PlaySoundProbably(4100, 0, 1, 127);
 			UpdateSetDateAndDelete(obj);
 		}
 

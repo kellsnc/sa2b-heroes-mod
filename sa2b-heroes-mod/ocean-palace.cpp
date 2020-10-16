@@ -532,7 +532,7 @@ void OPPillarBlock_Main(ObjectMaster* obj) {
 			model = model->sibling->child;
 
 			LoadBreaker(&data->Position, &data->Rotation, model, 0.0f, 0.0f, 0.0f, 120);
-			PlaySoundProbably(4112, 0, 1, 127);
+			PlaySoundProbably(4100, 0, 1, 127);
 			DeleteObject_(obj);
 			return;
 		}
@@ -589,7 +589,7 @@ void OPPillar_Main(ObjectMaster* obj) {
 				LoadBreaker(&pos, &entity->Rotation, model, -60.0f, 35.0f, 0.0f, 120);
 				LoadBreaker(&pos, &entity->Rotation, model, 60.0f, 35.0f, 0.0f, 120);
 
-				PlaySoundProbably(4112, 0, 1, 127);
+				PlaySoundProbably(4100, 0, 1, 127);
 
 				obj->DisplaySub = nullptr;
 				entity->Action = 1;
@@ -650,7 +650,7 @@ void OPBreakableBlock_Main(ObjectMaster* obj) {
 			model = model->sibling->child;
 
 			LoadBreaker(&entity->Position, &entity->Rotation, model, 0.0f, 15.0f, 0.0f, 30);
-			PlaySoundProbably(4112, 0, 1, 127);
+			PlaySoundProbably(4100, 0, 1, 127);
 			UpdateSetDateAndDelete(obj);
 		}
 
@@ -767,7 +767,7 @@ void OPDoor_Main(ObjectMaster* obj) {
 				LoadBreaker(&entity->Position, &entity->Rotation, model->sibling, -6.0f, 25.0f, -41.0f, 90);
 				LoadBreaker(&entity->Position, &entity->Rotation, model->sibling, 11.0f, 20.0f, -40.0f, 90);
 
-				PlaySoundProbably(4112, 0, 1, 127);
+				PlaySoundProbably(4100, 0, 1, 127);
 
 				entity->Action = DOOR_MOVE;
 			}
@@ -788,7 +788,7 @@ void OPDoor_Main(ObjectMaster* obj) {
 			break;
 		case DOOR_STAGE2:
 			if (Door_GetCollision(obj)) {
-				PlaySoundProbably(4112, 0, 1, 127);
+				PlaySoundProbably(4100, 0, 1, 127);
 				entity->Action = DOOR_OPEN;
 			}
 
