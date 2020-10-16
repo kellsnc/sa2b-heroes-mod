@@ -912,7 +912,12 @@ void OceanPalace_Load() {
 	LoadLevelTex((NJS_TEXLIST*)&oceanpalace_texlist, "s02");
 	LoadTXCFile("resource\\gd_pc\\s02.txc");
 	
-	LoadLevelLayout(&OceanPalaceObjectList, "s02_P1.bin", "s02_DB.bin");
+	if (TwoPlayerMode == 1) {
+		LoadLevelLayout(&OceanPalaceObjectList, "s02_2P.bin", "s02_DB.bin");
+	}
+	else {
+		LoadLevelLayout(&OceanPalaceObjectList, "s02_P1.bin", "s02_DB.bin");
+	}
 	
 	LoadStageLight("stg13_light.bin");
 	LoadStagePaths(OceanPalacePathList);
