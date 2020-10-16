@@ -237,6 +237,44 @@ static inline char Play3DSound_Vector(int id, NJS_VECTOR* pos, int unk, char ban
 	return result;
 }
 
+// void __usercall LoadStageSounds(char *filename@<esi>, void *address)
+static const void* const LoadStageSoundsPtr = (void*)0x4355A0;
+static inline void LoadStageSounds(const char* filename, void* address)
+{
+	__asm
+	{
+		push[address]
+		mov esi, [filename]
+		call LoadStageSoundsPtr
+		add esp, 4
+	}
+}
+
+//char __usercall Play3DSound_EntityAndPos@<al>(EntityData1* entity@<ebx>, int id@<edi>, int pos@<esi>, char volume)
+static const void* const Play3DSound_EntityAndPosPtr = (void*)0x437420;
+static inline char Play3DSound_EntityAndPos(EntityData1* entity, int id, NJS_VECTOR* pos, char volume)
+{
+	char result;
+	__asm
+	{
+		push[volume]
+		mov esi, [pos]
+		mov edi, [id]
+		mov ebx, [entity]
+		call Play3DSound_EntityAndPosPtr
+		mov result, al
+		add esp, 4
+	}
+	return result;
+}
+
+static char Play3DSound_EntityPosBank(EntityData1* entity, int id, NJS_VECTOR* pos, char volume, char bank) {
+	WriteData<1>((void*)0x43746F, bank);
+	char index = Play3DSound_EntityAndPos(entity, id, pos, volume);
+	WriteData<1>((void*)0x43746F, 0x01);
+	return index;
+}
+
 ObjectFunc(AutoLoop, 0x497B50);
 ObjectFunc(RailPath, 0x4980C0);
 ObjectFunc(CamPath, nullptr);

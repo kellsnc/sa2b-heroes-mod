@@ -100,6 +100,8 @@ void OPWater(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 
 	obj->field_4C = GetChildModelByIndex(OP_WATERFS->getmodel(), static_cast<int>(data->Scale.x));
+	
+	Play3DSound_EntityPosBank(obj->Data1.Entity, 7, &obj->Data1.Entity->Position, 50, 7);
 
 	obj->MainSub = ClipObjectObjFunc;
 	obj->DisplaySub = OPWater_Display;
@@ -924,6 +926,7 @@ void OceanPalace_Load() {
 	LoadLevelMusic((char*)"oceanpalace.adx");
 	LoadDeathZones(SeasideHillDeathZones);
 	LoadFogData_Fogtask("stg13_fog.bin", (FogData*)0x1A280C8);
+	LoadStageSounds("se_ac_gf.mlt", (void*)0x8A0F60);
 
 	LoadObject(0, "SKYBOX", OceanPalace_SkyBox, 0)->DisplaySub = OceanPalace_SkyBox;
 	LoadObject(0, "OP BOULDERS", OPBoulders, LoadObj_Data1);

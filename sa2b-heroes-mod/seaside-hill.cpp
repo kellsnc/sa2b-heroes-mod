@@ -55,6 +55,8 @@ void SHWaterfallLarge(ObjectMaster* obj) {
 	obj->EntityData2 = (UnknownData2*)model;
 	model->sa2bmodel->Radius = 100000.0f;
 
+	Play3DSound_EntityPosBank(obj->Data1.Entity, 7, &obj->Data1.Entity->Position, 60, 7);
+
 	obj->DeleteSub = DeleteFunc_ResetVars;
 	obj->MainSub = ClipObjectObjFunc;
 	obj->DisplaySub = SHWaterfallLarge_Display;
@@ -78,6 +80,8 @@ void SHWaterfallSmall(ObjectMaster* obj) {
 
 	obj->EntityData2 = (UnknownData2*)GetChildModelByIndex(SH_WATERFS->getmodel(), data->Scale.x);
 
+	Play3DSound_EntityPosBank(data, 7, &data->Position, 30, 7);
+
 	obj->DeleteSub = DeleteFunc_ResetVars;
 	obj->MainSub = ClipObjectObjFunc;
 	obj->DisplaySub = SHWaterfallSmall_Display;
@@ -93,7 +97,8 @@ void SHFlag_Display(ObjectMaster* obj) {
 	njScalef(data->Scale.z);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	DrawSA2BModel(model->sa2bmodel);
-	njRotateY(_nj_current_matrix_ptr_, data->Scale.y + (-0x500 + (0x1000 * (1 - (sin(GetTimer()) / 10)))));
+	njRotateY(_nj_current_matrix_ptr_, -data->Rotation.y);
+	njRotateY(_nj_current_matrix_ptr_, /*data->Scale.y*/ 0x2000 + (-0x500 + (0x1000 * (1 - (sin(GetTimer()) / 10)))));
 	DrawSA2BModel(model->child->sa2bmodel);
 	njPopMatrix(1u);
 }
@@ -395,6 +400,7 @@ void SeasideHill_Load() {
 	LoadStagePaths(SeasideHillPathList);
 	LoadDeathZones(SeasideHillDeathZones);
 	LoadFogData_Fogtask("stg13_fog.bin", (FogData*)0x1A280C8);
+	LoadStageSounds("se_ac_gf.mlt", (void*)0x8A0F60);
 
 	LoadTextureList("s01w", (NJS_TEXLIST*)&HeroesWater_TexList);
 	
