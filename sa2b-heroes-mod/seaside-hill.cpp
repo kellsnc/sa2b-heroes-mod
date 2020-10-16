@@ -364,6 +364,18 @@ ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList
 
 void SeasideHill_Main(ObjectMaster* obj) {
 	AnimateTexlist(&HeroesWater_TexList, 2, (Uint32*)&obj->Data1.Entity->Scale.x, (void**)&obj->field_4C);
+
+	// Temporary camera for SH
+	for (Uint8 i = 0; i < 2; ++i) {
+		camera_screen* s = CameraScreenArray[i];
+		EntityData1* d = MainCharObj1[i];
+
+		if (d && s) {
+			if (d->Position.z < -31317 && d->Position.z > -32873) {
+				s->pos = { 1295, 2300, -32873 };
+			}
+		}
+	}
 }
 
 void SeasideHill_Load() {
