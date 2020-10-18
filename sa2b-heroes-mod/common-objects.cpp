@@ -217,12 +217,26 @@ void Beetle_Electric(ObjectMaster* a1) {
 	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
 }
 
-void Robots(ObjectMaster* a1) {
-	EntityData1* entity = a1->Data1.Entity;
-	entity->Rotation.x = 0x1;
-	entity->Rotation.z = 0x100;
-	entity->Scale = { 0, 1, 126 };
-	a1->MainSub = (ObjectFuncPtr)E_AI;
+void Robots(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		EntityData1* entity = obj->Data1.Entity;
+		Float height = GetGroundHeight(entity->Position.x, entity->Position.y + 10.0f, entity->Position.z, &entity->Rotation);
+
+		if (height > -999999.0f) {
+			entity->Position.y = height;
+			entity->Rotation.x = 0x1;
+			entity->Rotation.z = 0x100;
+			entity->Scale = { 0, 1, 126 };
+			obj->MainSub = (ObjectFuncPtr)E_AI;
+
+			if (MainCharObj1[1] && GetDistance(&entity->Position, &MainCharObj1[0]->Position) > GetDistance(&entity->Position, &MainCharObj1[1]->Position)) {
+				entity->Rotation.y = fPositionToRotation(&entity->Position, &MainCharObj1[1]->Position).y + 0x4000;
+			}
+			else {
+				entity->Rotation.y = fPositionToRotation(&entity->Position, &MainCharObj1[0]->Position).y + 0x4000;
+			}
+		}
+	}
 }
 
 struct breakerData1
@@ -325,6 +339,30 @@ void LoadBreaker(NJS_VECTOR* pos, Rotation* rot, NJS_OBJECT* object, Float Xoff,
 
 		object = object->sibling;
 	}
+}
+
+void __cdecl ObjCannon(ObjectMaster* obj) {
+
+}
+
+void __cdecl OBJCASE(ObjectMaster* obj) {
+
+}
+
+void __cdecl e2000_Init(ObjectMaster* obj) {
+
+}
+
+void __cdecl Flyer_Init(ObjectMaster* obj) {
+
+}
+
+void __cdecl Flyer_Trigger(ObjectMaster* obj) {
+
+}
+
+void __cdecl Laserdoor(ObjectMaster* obj) {
+
 }
 
 void CommonObjects_LoadModels() {

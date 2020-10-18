@@ -21,6 +21,8 @@ void CommonLevelInit() {
 
 	CommonObjects_LoadModels();
 
+	SetDrawingPlanes(-3.0f, -65535.0f);
+
 	//Chaos Drive Function Pointers
 	dword_1DE4680 = (void*)0x6B6C20;
 	dword_1DE4684 = (void*)0x6BBAE0;

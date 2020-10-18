@@ -39,7 +39,7 @@ void OPFlowers_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexlist(CurrentLevelTexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -61,7 +61,7 @@ void OPFlant_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexlist(CurrentLevelTexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -111,7 +111,7 @@ void OPFallingStructure_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexlist(CurrentLevelTexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -145,7 +145,7 @@ void OPPOLE_Display(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexlist(CurrentLevelTexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -189,7 +189,7 @@ void OPFins_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* object = (NJS_OBJECT*)obj->field_4C;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexlist(CurrentLevelTexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -254,7 +254,7 @@ void OPLandMove_Display(ObjectMaster* obj) {
 		EntityData1* data = obj->Data1.Entity;
 		NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-		RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+		njSetTexlist(CurrentLevelTexList);
 		njPushMatrix(0);
 		njTranslate(_nj_current_matrix_ptr_, 2100, 0, -44000);
 		njTranslateZ(data->Scale.y);
@@ -359,7 +359,7 @@ void BoulderPath(ObjectMaster *obj) {
 				}
 			}
 
-			RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+			njSetTexlist(CurrentLevelTexList);
 			njPushMatrix(0);
 
 			njTranslateV(_nj_current_matrix_ptr_, &data->Position);
@@ -381,7 +381,7 @@ void OPBoulders_Display(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexlist(CurrentLevelTexList);
 	njPushMatrix(0);
 	njTranslate(_nj_current_matrix_ptr_, 9000, -1.8f, 2900);
 
@@ -492,7 +492,7 @@ void OPPillarBlock_Display(ObjectMaster* obj) {
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 	Uint16 id = data->Rotation.x;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexlist(CurrentLevelTexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -558,7 +558,7 @@ void OPPillar_Display(ObjectMaster* obj) {
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 	Uint16 id = data->Rotation.x;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexlist(CurrentLevelTexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njTranslateY(7.8f);
@@ -634,7 +634,7 @@ void OPBreakableBlock_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexlist(CurrentLevelTexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -682,7 +682,7 @@ void OPPlatforms_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexlist(CurrentLevelTexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -718,7 +718,7 @@ void OPDoor_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexlist(CurrentLevelTexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -892,7 +892,7 @@ ObjectListHead OceanPalaceObjectList = { arraylengthandptr(OceanPalaceObjectList
 void OceanPalace_SkyBox(ObjectMaster* obj) {
 	NJS_VECTOR* position = &CameraScreenArray[CurrentScreen]->pos;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexlist(CurrentLevelTexList);
 	njPushMatrix(0);
 	njTranslate(_nj_current_matrix_ptr_, position->x, 0.0f, position->z);
 	DrawSA2BModel(OP_SKYMDLS->getmodel()->sa2bmodel);

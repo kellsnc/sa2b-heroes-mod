@@ -303,3 +303,7 @@ FastcallFunctionPointer(float, njSin, (Angle angle), 0x42AAB0);
 FunctionPointer(NJS_OBJECT*, GetFreeDynObject, (), 0x47D7F0);
 FunctionPointer(void, DrawObjMotion, (NJS_OBJECT* a1), 0x782420);
 DataPointer(void*, MotionDrawCallback, 0x1D19C0C);
+FunctionPointer(Float, GetGroundHeight, (float x, float y, float z, Rotation* rot), 0x494C30);
+ThiscallFunctionPointer(void, njSetTexlist, (NJS_TEXLIST* texlist), 0x42ED20);
+FastcallFunctionPointer(void, njSetTexture, (int id), 0x42ED30);
+FunctionPointer(void, SetDrawingPlanes, (Float _min, Float _max), 0x77E700);

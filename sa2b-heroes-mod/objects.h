@@ -7,7 +7,6 @@ AnimationFile* LoadAnim(const char* name);
 void FreeMDL(ModelInfo* pointer);
 void FreeAnim(AnimationFile* pointer);
 
-
 bool ClipSetObject(ObjectMaster* a1);
 float* njPushUnitMatrix();
 void njTranslateV(float* matrix, NJS_VECTOR* pos);
@@ -44,5 +43,11 @@ void Robots(ObjectMaster* a1);
 void Beetle_Stationary(ObjectMaster* a1);
 void Beetle_Attack(ObjectMaster* a1);
 void Beetle_Electric(ObjectMaster* a1);
+void __cdecl ObjCannon(ObjectMaster* obj);
+void __cdecl OBJCASE(ObjectMaster* obj);
+void __cdecl e2000_Init(ObjectMaster* obj);
+void __cdecl Flyer_Init(ObjectMaster* obj);
+void __cdecl Flyer_Trigger(ObjectMaster* obj);
+void __cdecl Laserdoor(ObjectMaster* obj);
 
 void LoadBreaker(NJS_VECTOR* pos, Rotation* rot, NJS_OBJECT* object, Float Xoff, Float Yoff, Float Zoff, Float time);

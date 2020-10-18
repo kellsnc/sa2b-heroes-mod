@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "egg-fleet.h"
+#include "egg-fleet-paths.h"
+#include "egg-fleet-deathzones.h"
 
 ModelInfo* EF_SKYMDLS;
 ModelInfo* EF_CANNON1;
@@ -7,156 +9,114 @@ ModelInfo* EF_BULLETS;
 ModelInfo* EF_PROPPLR;
 ModelInfo* EF_BGSHIPS;
 
-NJS_TEXNAME_ eggfleet_texname[]{
-	{ "d_130001", 0, 0 },
-	{ "d_130002", 0, 0 },
-	{ "d_130003", 0, 0 },
-	{ "d_130004", 0, 0 },
-	{ "d_130005", 0, 0 },
-	{ "d_130006", 0, 0 },
-	{ "d_130007", 0, 0 },
-	{ "d_130009", 0, 0 },
-	{ "d_130010", 0, 0 },
-	{ "d_130011", 0, 0 },
-	{ "d_130012", 0, 0 },
-	{ "d_130013", 0, 0 },
-	{ "d_130014", 0, 0 },
-	{ "d_130015", 0, 0 },
-	{ "d_130016", 0, 0 },
-	{ "d_130017", 0, 0 },
-	{ "d_130018", 0, 0 },
-	{ "d_130021", 0, 0 },
-	{ "d_130022", 0, 0 },
-	{ "d_130024", 0, 0 },
-	{ "d_130025", 0, 0 },
-	{ "d_130028", 0, 0 },
-	{ "d_130029", 0, 0 },
-	{ "d_130030", 0, 0 },
-	{ "d_130031", 0, 0 },
-	{ "d_130033", 0, 0 },
-	{ "d_130036", 0, 0 },
-	{ "d_130037", 0, 0 },
-	{ "d_130038", 0, 0 },
-	{ "d_130039", 0, 0 },
-	{ "d_130042", 0, 0 },
-	{ "d_130043", 0, 0 },
-	{ "d_130044", 0, 0 },
-	{ "d_130045", 0, 0 },
-	{ "d_140020", 0, 0 },
-	{ "ef_flash1", 0, 0 },
-	{ "ef_flash4red", 0, 0 },
-	{ "ef_smog4A", 0, 0 },
-	{ "ef_smoke4wh", 0, 0 },
-	{ "kumo64", 0, 0 },
-	{ "kumo512", 0, 0 },
-	{ "n1_1301", 0, 0 },
-	{ "n1_1302", 0, 0 },
-	{ "n1_1303", 0, 0 },
-	{ "n1_1304", 0, 0 },
-	{ "n1_1305", 0, 0 },
-	{ "n1_1306", 0, 0 },
-	{ "n1_1307", 0, 0 },
-	{ "n1_1308", 0, 0 },
-	{ "n1_1309", 0, 0 },
-	{ "n1_1310", 0, 0 },
-	{ "n1_1311", 0, 0 },
-	{ "n1_1312", 0, 0 },
-	{ "n1_1313", 0, 0 },
-	{ "n1_1314", 0, 0 },
-	{ "n1_1315", 0, 0 },
-	{ "n1_1316", 0, 0 },
-	{ "n1_1317", 0, 0 },
-	{ "n1_1318", 0, 0 },
-	{ "n1_1319", 0, 0 },
-	{ "n1_1320", 0, 0 },
-	{ "n1_1321", 0, 0 },
-	{ "n1_1322", 0, 0 },
-	{ "n1_1323", 0, 0 },
-	{ "n1_1324", 0, 0 },
-	{ "n1_1325", 0, 0 },
-	{ "n1_1326", 0, 0 },
-	{ "n1_1327", 0, 0 },
-	{ "n1_1328", 0, 0 },
-	{ "n1_1329", 0, 0 },
-	{ "n1_1330", 0, 0 },
-	{ "n1_1331", 0, 0 },
-	{ "n1_1332", 0, 0 },
-	{ "n1_1333", 0, 0 },
-	{ "n1_1334", 0, 0 },
-	{ "n1_1335", 0, 0 },
-	{ "n1_1336", 0, 0 },
-	{ "n1_1337", 0, 0 },
-	{ "n1_1338", 0, 0 },
-	{ "n1_1339", 0, 0 },
-	{ "n1_1340", 0, 0 },
-	{ "n1_1341", 0, 0 },
-	{ "n1_1342", 0, 0 },
-	{ "n13_a1.1", 0, 0 },
-	{ "n13_a1.2", 0, 0 },
-	{ "n13_a1.3", 0, 0 },
-	{ "n13_a1.4", 0, 0 },
-	{ "n13_a1.5", 0, 0 },
-	{ "n13_a1.6", 0, 0 },
-	{ "n13_a1.7", 0, 0 },
-	{ "n13_a1.8", 0, 0 },
-	{ "pn_1301", 0, 0 },
-	{ "pn_1302", 0, 0 },
-	{ "pn_1303", 0, 0 },
-	{ "stg07_exproA", 0, 0 },
-	{ "tn_1301", 0, 0 },
-};
-
 NJS_TEXLIST_ eggfleet_texlist = { arrayptrandlength(eggfleet_texname) };
+
+void __cdecl EFBigFans(ObjectMaster* obj) {
+
+}
+
+void __cdecl EFCannon(ObjectMaster* obj) {
+
+}
+
+void __cdecl EFPlatforms(ObjectMaster* obj) {
+
+}
+
+void __cdecl EFPipeline(ObjectMaster* obj) {
+
+}
+
+void __cdecl EFShipDoor(ObjectMaster* obj) {
+
+}
+
+void __cdecl EFShipConveyor(ObjectMaster* obj) {
+
+}
+
+void __cdecl EFAntenna(ObjectMaster* obj) {
+
+}
+
+void __cdecl EFRailSign(ObjectMaster* obj) {
+
+}
+
+void __cdecl EFMissilePods(ObjectMaster* obj) {
+
+}
+
+void __cdecl EFHelice(ObjectMaster* obj) {
+
+}
+
+void __cdecl ECBarrier(ObjectMaster* obj) {
+
+}
 
 ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
-	{ LoadObj_Data1, ObjIndex_Stage, 0x10, 1060000, nullptr }
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1360000, (ObjectFuncPtr)SpringA_Main },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1360000, SpringB_Main },
+	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1), ObjIndex_Stage, DistObj_UseDist, 1360000, DashPanel_Main },
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Stage, DistObj_UseDist, 1360000, (ObjectFuncPtr)LongSpring_Main },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, Omochao_Main },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)SKULL },
+	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1), ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)EmeraldPiece_Load },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, GoalRing_Main },
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)ORI },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 560000, CONTCHAO },
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Stage, DistObj_UseDist, 1360000, DashHoop },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, ItemBoxBalloon },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, ItemBox_Main },
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKET },
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKETMISSILE },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, (ObjectFuncPtr)CHAOPIPE },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, (ObjectFuncPtr)MINIMAL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, (ObjectFuncPtr)E_GOLD},
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_Default, 0, Checkpoint_Main },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)CWALL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, RingGroup },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)SPHERE },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)CCYL },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)CCUBE },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, nullptr }, //ottotto
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)HINTBOX },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Robots },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Robots }, //rhino
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Robots }, //sweep
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Common, DistObj_UseDist, 2360000, DashRampAdjust },
+	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Stage, DistObj_UseDist, 160000, ItemBoxAir_Main },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Stationary },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Electric },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Attack },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, ItemBoxBalloon },
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Stage, DistObj_UseDist, 1360000, (ObjectFuncPtr)LongSpring_Main },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Robots }, // uni A
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Robots }, // uni B
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Robots }, // uni C
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Attack },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, WoodenCrate_Main },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, ObjCannon },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, nullptr },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, OBJCASE },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, (ObjectFuncPtr)UDREEL }, //45
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 4060000, EFBigFans },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, EFCannon },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, EFPlatforms },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, EFPipeline },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, EFShipDoor }, //50
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5060000, EFShipConveyor },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, EFAntenna },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, EFRailSign },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, EFMissilePods },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, EFHelice }, //55
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, ECBarrier },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, e2000_Init },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 10000000, Flyer_Init },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, Flyer_Trigger },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, Laserdoor }
 };
 
 ObjectListHead EggFleetObjectList = { arraylengthandptr(EggFleetObjectList_list) };
@@ -164,11 +124,12 @@ ObjectListHead EggFleetObjectList = { arraylengthandptr(EggFleetObjectList_list)
 void EggFleet_SkyBox(ObjectMaster* obj) {
 	NJS_VECTOR* position = &CameraScreenArray[CurrentScreen]->pos;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
 	njPushMatrix(0);
-	njTranslate(_nj_current_matrix_ptr_, position->x, 0.0f, position->z);
-	DrawChunkModel(EF_SKYMDLS->getmodel()->basicmodel);
-	DrawChunkModel(EF_SKYMDLS->getmodel()->child->basicmodel);
+	njSetTexlist(CurrentLevelTexList);
+	njTranslate(_nj_current_matrix_ptr_, position->x, position->y, position->z);
+	njScalef(0.25f);
+	DrawSA2BModel(EF_SKYMDLS->getmodel()->sa2bmodel);
+	DrawSA2BModel(EF_SKYMDLS->getmodel()->child->sa2bmodel);
 	njPopMatrix(1u);
 }
 
@@ -195,7 +156,7 @@ void EggFleet_Load() {
 	
 	LoadObject((LoadObj)0, "SKYBOX", EggFleet_SkyBox, 1)->DisplaySub = EggFleet_SkyBox;
 
-	EF_SKYMDLS = LoadMDL("EF_SKYMDLS", ModelFormat_Chunk);
+	EF_SKYMDLS = LoadMDL("EF_SKYMDLS", ModelFormat_SA2B);
 	EF_CANNON1 = LoadMDL("EF_CANNON1", ModelFormat_Chunk);
 	EF_BULLETS = LoadMDL("EF_BULLETS", ModelFormat_Chunk);
 	EF_PROPPLR = LoadMDL("EF_PROPPLR", ModelFormat_Chunk);

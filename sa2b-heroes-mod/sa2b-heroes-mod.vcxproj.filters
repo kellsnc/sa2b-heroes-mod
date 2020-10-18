@@ -16,6 +16,9 @@
     <Filter Include="Fichiers sources\Extern">
       <UniqueIdentifier>{05e0b4de-94b1-4ea5-af1a-d10c7ae9423d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\Levels">
+      <UniqueIdentifier>{823df8e5-9c0e-455a-b4ad-e38097d2504e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -24,19 +27,7 @@
     <ClInclude Include="targetver.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="seaside-hill.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="level.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="seaside-hill-deathzones.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ocean-palace.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="egg-fleet.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="byteswap.h">
@@ -57,14 +48,32 @@
     <ClInclude Include="objects.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="seaside-hill-paths.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ocean-palace-paths.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="paths.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="egg-fleet.h">
+      <Filter>Fichiers d%27en-tête\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="egg-fleet-paths.h">
+      <Filter>Fichiers d%27en-tête\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="ocean-palace.h">
+      <Filter>Fichiers d%27en-tête\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="ocean-palace-paths.h">
+      <Filter>Fichiers d%27en-tête\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="seaside-hill-deathzones.h">
+      <Filter>Fichiers d%27en-tête\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="seaside-hill-paths.h">
+      <Filter>Fichiers d%27en-tête\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="seaside-hill.h">
+      <Filter>Fichiers d%27en-tête\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="egg-fleet-deathzones.h">
+      <Filter>Fichiers d%27en-tête\Levels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
