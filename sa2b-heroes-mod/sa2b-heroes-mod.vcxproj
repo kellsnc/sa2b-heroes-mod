@@ -157,6 +157,7 @@
     <ClInclude Include="objects.h" />
     <ClInclude Include="ocean-palace-paths.h" />
     <ClInclude Include="ocean-palace.h" />
+    <ClInclude Include="paths.h" />
     <ClInclude Include="seaside-hill-deathzones.h" />
     <ClInclude Include="seaside-hill.h" />
     <ClInclude Include="seaside-hill-paths.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="landmanager.cpp" />
     <ClCompile Include="objects.cpp" />
     <ClCompile Include="ocean-palace.cpp" />
+    <ClCompile Include="paths.cpp" />
     <ClCompile Include="sa2b-heroes-mod.cpp" />
     <ClCompile Include="seaside-hill.cpp" />
     <ClCompile Include="stdafx.cpp">

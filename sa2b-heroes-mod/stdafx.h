@@ -16,6 +16,7 @@
 
 #include "mod.h"
 #include "level.h"
+#include "paths.h"
 #include "objects.h"
 #include "byteswap.h"
 #include "landmanager.h"
