@@ -9,6 +9,8 @@ extern HelperFunctions HelperFunctionsGlobal;
 
 Uint32 GetTimer();
 
+#pragma pack(push, 1)
+
 typedef struct {
 	const char* filename;	/* texture filename strings     */
 	Uint32			attr;		/* texture attribute            */
@@ -53,6 +55,22 @@ struct camera_struct {
 	char gap1AC[9000];
 	int field_24D4;
 };
+
+struct PathControl
+{
+	Uint8 Action;
+	Uint8 Player;
+	Uint16 Unknown;
+	Uint16 CounterA;
+	Uint16 CounterB;
+	Sint32 padding[3];
+	NJS_VECTOR minimum;
+	NJS_VECTOR maximum;
+	NJS_VECTOR direction;
+	LoopHead* loophead;
+};
+
+#pragma pack(pop)
 
 enum IndexObj : Sint8 {
 	ObjIndex_NoDisplay = 0,

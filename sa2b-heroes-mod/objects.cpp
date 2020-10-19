@@ -219,6 +219,14 @@ void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs) {
 	vd->z += vs->z;
 }
 
+void njTranslateEx(NJS_VECTOR* v) {
+	njTranslate(_nj_current_matrix_ptr_, v->x, v->y, v->z);
+}
+
+void njTranslateEx(Float x, Float y, Float z) {
+	njTranslate(_nj_current_matrix_ptr_, x, y, z);
+}
+
 void njTranslateX(Float f) {
 	njTranslate(_nj_current_matrix_ptr_, f, 0, 0);
 }
@@ -229,6 +237,36 @@ void njTranslateY(Float f) {
 
 void njTranslateZ(Float f) {
 	njTranslate(_nj_current_matrix_ptr_, 0, 0, f);
+}
+
+void njRotateX_(Angle x) {
+	if (x) {
+		njRotateX(_nj_current_matrix_ptr_, x);
+	}
+}
+
+void njRotateY_(Angle y) {
+	if (y) {
+		njRotateY(_nj_current_matrix_ptr_, y);
+	}
+}
+
+void njRotateZ_(Angle z) {
+	if (z) {
+		njRotateZ(_nj_current_matrix_ptr_, z);
+	}
+}
+
+void njRotateZXY(Angle x, Angle y, Angle z) {
+	njRotateZ_(z);
+	njRotateX_(x);
+	njRotateY_(y);
+}
+
+void njRotateZXY(Rotation* rot) {
+	njRotateZ_(rot->z);
+	njRotateX_(rot->x);
+	njRotateY_(rot->y);
 }
 
 void DrawChunkModel(NJS_MODEL* model) {
@@ -259,14 +297,15 @@ void DrawObject(NJS_OBJECT* obj, ModelFormat format) {
 		njRotateZ(_nj_current_matrix_ptr_, obj->ang[2]);
 		njScale(obj->scl[0], obj->scl[1], obj->scl[2]);
 		format == ModelFormat_Chunk ? DrawChunkModel(obj->basicmodel) : DrawSA2BModel(obj->sa2bmodel);
+		
+		if (obj->child) {
+			DrawObject(obj->child, format);
+		}
+		
 		njPopMatrix(1);
 	}
 	
 	if (obj->sibling) {
 		DrawObject(obj->sibling, format);
-	}
-
-	if (obj->child) {
-		DrawObject(obj->child, format);
 	}
 }

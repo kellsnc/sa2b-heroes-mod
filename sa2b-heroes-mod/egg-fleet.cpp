@@ -157,10 +157,12 @@ void EggFleet_Load() {
 	LoadObject((LoadObj)0, "SKYBOX", EggFleet_SkyBox, 1)->DisplaySub = EggFleet_SkyBox;
 
 	EF_SKYMDLS = LoadMDL("EF_SKYMDLS", ModelFormat_SA2B);
+	EF_PROPPLR = LoadMDL("EF_PROPPLR", ModelFormat_SA2B);
 	EF_CANNON1 = LoadMDL("EF_CANNON1", ModelFormat_Chunk);
 	EF_BULLETS = LoadMDL("EF_BULLETS", ModelFormat_Chunk);
-	EF_PROPPLR = LoadMDL("EF_PROPPLR", ModelFormat_Chunk);
 	EF_BGSHIPS = LoadMDL("EF_BGSHIPS", ModelFormat_Chunk);
+
+	SetPropellerModel(EF_PROPPLR->getmodel());
 }
 
 void EggFleetDelete() {
