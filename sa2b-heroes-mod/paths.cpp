@@ -35,6 +35,13 @@ NJS_VECTOR Propeller_GetHandlePoint(EntityData1* data, CharObj2Base* co2) {
 	return point;
 }
 
+void Propeller_SetAnimation(EntityData1* data, CharObj2Base* co2) {
+	data->Action = 33;
+	co2->field_28 = 75;
+	co2->AnimInfo.Current = 75;
+	co2->AnimInfo.field_8 = 42;
+}
+
 void Propeller_Delete(ObjectMaster* obj) {
 	PathControl* ctrl = (PathControl*)obj->Parent->Data2.Undefined;
 	EntityData1* data = obj->Data1.Entity;
@@ -58,6 +65,7 @@ void Propeller_Display(ObjectMaster* obj) {
 		njRotateZ(0, data->Rotation.z);
 		njRotateX(0, data->Rotation.x);
 		DrawSA2BModel(model->sa2bmodel);
+		njRotateY_(data->Status);
 		DrawSA2BModel(model->child->sa2bmodel);
 		njPopMatrix(1);
 	}
@@ -76,8 +84,12 @@ void Propeller_Run(EntityData1* data, LoopHead* path) {
 		PlayerData->Position = Propeller_GetHandlePoint(data, co2);
 		PlayerData->Rotation = data->Rotation;
 
+		data->Status += 0x500;
+
+		Propeller_SetAnimation(PlayerData, co2);
+
 		if (Jump_Pressed[data->field_2]) {
-			data->Action == PropellerAction_FadeAway;
+			data->Action = PropellerAction_FadeAway;
 		}
 	}
 	else {
@@ -101,6 +113,8 @@ void Propeller_CheckForPlayer(ObjectMaster* obj, PathControl* ctrl, EntityData1*
 		data->Action = PropellerAction_Run;
 		data->field_2 = player - 1;
 		ctrl->Player |= 1 << player - 1;
+
+		Propeller_SetAnimation(MainCharObj1[player - 1], MainCharObj2[player - 1]);
 	}
 
 	AddToCollisionList(obj);
