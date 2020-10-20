@@ -23,21 +23,20 @@ struct PropellerData {
 };
 
 NJS_VECTOR Propeller_GetHandlePoint(EntityData1* data, CharObj2Base* co2) {
-	NJS_VECTOR point = { 0, -co2->PhysData.CollisionSize + data->Scale.z, 0 };
+	NJS_VECTOR point = { 0, -co2->PhysData.CollisionSize + data->Scale.y, 0 };
 
 	njPushUnitMatrix();
 	njTranslateEx(&data->Position);
 	njRotateY(0, -data->Rotation.y + 0x4000);
 	njRotateZ(0, data->Rotation.z);
 	njRotateX(0, data->Rotation.x);
-	njTranslateY(data->Scale.y);
 	njCalcPoint(_nj_current_matrix_ptr_, &point, &point, false);
 	njPopMatrix(1u);
 	return point;
 }
 
 void Propeller_SetAnimation(EntityData1* data, CharObj2Base* co2) {
-	data->Action = 33;
+	data->Action = CHAR_MIN;
 	co2->field_28 = 75;
 	co2->AnimInfo.Current = 75;
 	co2->AnimInfo.field_8 = 42;
@@ -79,7 +78,7 @@ void Propeller_Run(EntityData1* data, LoopHead* path) {
 
 	if (data->field_6 < path->Count - 2) {
 		if (data->Scale.x > 1) { data->Scale.x = 0; data->field_6++; };
-		data->Scale.x = data->Scale.x + (path->TotalDistance / path->Points[data->field_6].Distance) / path->TotalDistance * 5.0f;
+		data->Scale.x = data->Scale.x + (path->TotalDistance / path->Points[data->field_6].Distance) / path->TotalDistance * 8.0f;
 		TransformSpline(&data->Position, &path->Points[data->field_6].Position, &path->Points[data->field_6 + 1].Position, data->Scale.x);
 		data->Rotation.y = fPositionToRotation(&path->Points[data->field_6].Position, &path->Points[data->field_6 + 1].Position).y;
 
@@ -114,7 +113,7 @@ void Propeller_Run(EntityData1* data, LoopHead* path) {
 		}
 	}
 	else {
-		data->Action == PropellerAction_FadeAway;
+		data->Action = PropellerAction_FadeAway;
 	}
 }
 
