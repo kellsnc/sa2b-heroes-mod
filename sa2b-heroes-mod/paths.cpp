@@ -91,6 +91,7 @@ void Propeller_Run(EntityData1* data, LoopHead* path) {
 
 		if (Jump_Pressed[data->field_2]) {
 			data->Action = PropellerAction_FadeAway;
+			PlayerData->Action = 0;
 		}
 
 		if (Controllers[data->field_2].on & Buttons_Up) {
@@ -114,6 +115,7 @@ void Propeller_Run(EntityData1* data, LoopHead* path) {
 	}
 	else {
 		data->Action = PropellerAction_FadeAway;
+		PlayerData->Action = 0;
 	}
 }
 

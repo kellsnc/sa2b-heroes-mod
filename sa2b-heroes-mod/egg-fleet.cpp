@@ -4,10 +4,8 @@
 #include "egg-fleet-deathzones.h"
 
 ModelInfo* EF_SKYMDLS;
-ModelInfo* EF_CANNON1;
-ModelInfo* EF_BULLETS;
 ModelInfo* EF_PROPPLR;
-ModelInfo* EF_BGSHIPS;
+ModelInfo* EF_EHELICE;
 
 NJS_TEXLIST_ eggfleet_texlist = { arrayptrandlength(eggfleet_texname) };
 
@@ -47,8 +45,35 @@ void __cdecl EFMissilePods(ObjectMaster* obj) {
 
 }
 
-void __cdecl EFHelice(ObjectMaster* obj) {
+void __cdecl EFHelice_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
+	njSetTexlist(CurrentLevelTexList);
+	njPushMatrix(0);
+	njTranslateEx(&data->Position);
+	njRotateY_(data->Rotation.y);
+	njRotateX_(data->Rotation.x);
+	DrawSA2BModel(model->sa2bmodel);
+	njRotateZ_(data->Scale.z);
+	DrawSA2BModel(model->child->sa2bmodel);
+	DrawSA2BModel(model->child->child->sa2bmodel);
+	njPopMatrix(1u);
+}
+
+void __cdecl EFHelice_Main(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		EntityData1* data = obj->Data1.Entity;
+
+		data->Scale.z -= 1200.0f;
+	}
+}
+
+void __cdecl EFHelice(ObjectMaster* obj) {
+	obj->MainSub = EFHelice_Main;
+	obj->DisplaySub = EFHelice_Display;
+	obj->field_4C = EF_EHELICE->getmodel();
+	Play3DSound_EntityPosBank(obj->Data1.Entity, 8, &obj->Data1.Entity->Position, 100, 5);
 }
 
 void __cdecl ECBarrier(ObjectMaster* obj) {
@@ -158,19 +183,15 @@ void EggFleet_Load() {
 
 	EF_SKYMDLS = LoadMDL("EF_SKYMDLS", ModelFormat_SA2B);
 	EF_PROPPLR = LoadMDL("EF_PROPPLR", ModelFormat_SA2B);
-	EF_CANNON1 = LoadMDL("EF_CANNON1", ModelFormat_Chunk);
-	EF_BULLETS = LoadMDL("EF_BULLETS", ModelFormat_Chunk);
-	EF_BGSHIPS = LoadMDL("EF_BGSHIPS", ModelFormat_Chunk);
+	EF_EHELICE = LoadMDL("EF_EHELICE", ModelFormat_SA2B);
 
 	SetPropellerModel(EF_PROPPLR->getmodel());
 }
 
 void EggFleetDelete() {
 	FreeMDL(EF_SKYMDLS);
-	FreeMDL(EF_CANNON1);
-	FreeMDL(EF_BULLETS);
 	FreeMDL(EF_PROPPLR);
-	FreeMDL(EF_BGSHIPS);
+	FreeMDL(EF_EHELICE);
 
 	CommonLevelDelete();
 }
