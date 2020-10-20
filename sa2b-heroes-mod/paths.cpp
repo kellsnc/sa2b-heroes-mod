@@ -30,6 +30,7 @@ NJS_VECTOR Propeller_GetHandlePoint(EntityData1* data, CharObj2Base* co2) {
 	njRotateY(0, -data->Rotation.y + 0x4000);
 	njRotateZ(0, data->Rotation.z);
 	njRotateX(0, data->Rotation.x);
+	njTranslateY(data->Scale.y);
 	njCalcPoint(_nj_current_matrix_ptr_, &point, &point, false);
 	njPopMatrix(1u);
 	return point;
@@ -64,6 +65,7 @@ void Propeller_Display(ObjectMaster* obj) {
 		njRotateY(0, -data->Rotation.y - 0x4000);
 		njRotateZ(0, data->Rotation.z);
 		njRotateX(0, data->Rotation.x);
+		njTranslateY(data->Scale.y);
 		DrawSA2BModel(model->sa2bmodel);
 		njRotateY_(data->Status);
 		DrawSA2BModel(model->child->sa2bmodel);
@@ -90,6 +92,25 @@ void Propeller_Run(EntityData1* data, LoopHead* path) {
 
 		if (Jump_Pressed[data->field_2]) {
 			data->Action = PropellerAction_FadeAway;
+		}
+
+		if (Controllers[data->field_2].on & Buttons_Up) {
+			if (data->Scale.y < 20.0f) {
+				data->Scale.y += 2.0f;
+			}
+		}
+		else if (Controllers[data->field_2].on & Buttons_Down) {
+			if (data->Scale.y > -20.0f) {
+				data->Scale.y -= 2.0f;
+			}
+		}
+		else {
+			if (data->Scale.y < 0.0f) {
+				data->Scale.y += 2.0f;
+			}
+			else if (data->Scale.y > 0.0f) {
+				data->Scale.y -= 2.0f;
+			}
 		}
 	}
 	else {
