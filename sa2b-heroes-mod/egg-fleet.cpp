@@ -12,8 +12,11 @@ ModelInfo* EF_BARRIER;
 ModelInfo* EF_ENDRAIL;
 ModelInfo* EF_PIPLINE;
 ModelInfo* EF_PLTFRMS;
+ModelInfo* EF_DIRSGNS;
+ModelInfo* EF_OBJDOOR;
 ModelInfo* EF_EBIGFANCOL;
 ModelInfo* EF_PIPLINECOL;
+ModelInfo* EF_DIRSGNSCOL;
 
 NJS_TEXLIST_ eggfleet_texlist = { arrayptrandlength(eggfleet_texname) };
 
@@ -26,10 +29,23 @@ CollisionData_ EFPlatforms_Col[] = {
 	{ 0, CollisionShape_Cube2, 0x77, 0, 0x800400, {0, 15.0f, -41.0f}, 150.0f, 15.0f, 1.0f, 0, { 0 } }
 };
 
+CollisionData_ EFDoor_Col[] = {
+	{ 0, CollisionShape_Cube2, 0x77, 0, 0x800400, {-85.0f, 85.0f, -10.0f}, 10.0f, 85.0f, 10.0f, 0, { 0 } },
+	{ 0, CollisionShape_Cube2, 0x77, 0, 0x800400, {85.0f, 85.0f, -10.0f}, 10.0f, 85.0f, 10.0f, 0, { 0 } },
+	{ 0, CollisionShape_Cube2, 0x77, 0, 0x800400, {0, 80.0f, -10.0F}, 75.0f, 80.0f, 10.0f, 0, { 0 } }
+};
+
 enum EFPlatformsActs {
 	EFPlatformAct_Move,
 	EFPlatformAct_Reach,
 	EFPlatformAct_Still
+};
+
+enum EFDoorActs {
+	EFDoorAction_CloseDoor,
+	EFDoorAction_Closed,
+	EFDoorAction_OpenDoor,
+	EFDoorAction_Opened
 };
 
 bool Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center, float radius, float height);
@@ -235,8 +251,6 @@ void __cdecl EFPipeline_Display(ObjectMaster* obj) {
 
 void __cdecl EFPipeline_Main(ObjectMaster* obj) {
 	if (ClipSetObject(obj)) {
-		EntityData1* data = obj->Data1.Entity;
-
 		// UV Stuff to figure out
 	}
 }
@@ -266,8 +280,116 @@ void __cdecl EFPipeline(ObjectMaster* obj) {
 	obj->field_4C = EF_PIPLINE->getmodel();
 }
 
-void __cdecl EFShipDoor(ObjectMaster* obj) {
+inline bool EFShip_IsDoorOpened(Uint8 id) {
+	return (SwitchPressedStates[id % 9] == true || EnemySwitchStates[id] || Action_Held[0]);
+}
 
+inline void EFShip_UpdateCollision(EntityData1* data) {
+	CollisionData_* col = (CollisionData_*)&data->Collision->CollisionArray[2];
+	
+	col->center.y = EFDoor_Col[2].center.y - data->Scale.y;
+}
+
+inline void SetCollisionInfoRotations(CollisionInfo* colinfo, Rotation* rotation) {
+	for (int i = 0; i < colinfo->Count; ++i) {
+		CollisionData_* col = (CollisionData_*)&colinfo->CollisionArray[i];
+
+		col->rotation.x = rotation->x;
+		col->rotation.z = rotation->z;
+	}
+}
+
+void __cdecl EFShipDoor_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+
+	njSetTexlist(CurrentLevelTexList);
+	njPushMatrix(0);
+	njTranslateEx(&data->Position);
+	njRotateZXY(&data->Rotation);
+	DrawSA2BModel(model->sa2bmodel);
+	njTranslateY(data->Scale.y);
+	DrawSA2BModel(model->child->sa2bmodel);
+	njPopMatrix(1u);
+}
+
+void __cdecl EFShipDoor_Main(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		EntityData1* data = obj->Data1.Entity;
+		NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+		Uint8 id = static_cast<Uint8>(data->Scale.x);
+
+		switch (data->Action) {
+		case EFDoorAction_CloseDoor:
+			if (data->NextAction == 0) {
+				if (IsPlayerInsideSphere(&data->Position, 800) != 0) {
+					data->NextAction = 1;
+					//PlaySound
+				}
+				else {
+					break;
+				}
+			}
+
+			if (data->Scale.y < 0) {
+				data->Scale.y += 3;
+			}
+			else {
+				data->Action = EFDoorAction_Closed;
+				data->Scale.y = 0;
+			}
+
+			EFShip_UpdateCollision(data);
+
+			break;
+		case EFDoorAction_Closed:
+			if (EFShip_IsDoorOpened(id)) {
+				data->Action = EFDoorAction_OpenDoor;
+				//PlaySound
+
+				if (obj->SETData) {
+					obj->SETData->Flags |= 0x100;
+				}
+			}
+
+			break;
+		case EFDoorAction_OpenDoor:
+			if (data->Scale.y > model->child->pos[1]) {
+				data->Scale.y -= 3;
+			}
+			else {
+				data->Action = EFDoorAction_Opened;
+				data->Scale.y = model->child->pos[1];
+			}
+
+			EFShip_UpdateCollision(data);
+
+			break;
+		}
+		
+		AddToCollisionList(obj);
+	}
+}
+
+void __cdecl EFShipDoor(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	Uint8 id = static_cast<Uint8>(data->Scale.x);
+
+	obj->MainSub = EFShipDoor_Main;
+	obj->DisplaySub = EFShipDoor_Display;
+
+	NJS_OBJECT* model = EF_OBJDOOR->getmodel();
+
+	data->Scale.y = model->child->pos[1];
+	obj->field_4C = model;
+
+	InitCollision(obj, (CollisionData*)EFDoor_Col, 3, 4);
+	SetCollisionInfoRotations(data->Collision, &data->Rotation);
+	EFShip_UpdateCollision(data);
+
+	if (EFShip_IsDoorOpened(id) || (obj->SETData && obj->SETData->Flags & 0x100)) {
+		data->Action = EFDoorAction_Opened;
+	}
 }
 
 void __cdecl EFShipConveyor(ObjectMaster* obj) {
@@ -311,8 +433,60 @@ void __cdecl EFAntenna(ObjectMaster* obj) {
 	InitCollision(obj, (CollisionData*)&AntennaCol, 1, 4);
 }
 
-void __cdecl EFRailSign(ObjectMaster* obj) {
+void __cdecl EFRailSign_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
+	njSetTexlist(CurrentLevelTexList);
+	njPushMatrix(0);
+	njTranslateEx(&data->Position);
+	njRotateZXY(&data->Rotation);
+	DrawSA2BModel(model->sa2bmodel);
+
+	int time = GetTimer() % 30;
+
+	if (time < 10) {
+		DrawSA2BModel(model->child->sa2bmodel);
+	}
+	else if (time < 20) {
+		DrawSA2BModel(model->child->child->sa2bmodel);
+	}
+	else {
+		DrawSA2BModel(model->child->child->child->sa2bmodel);
+	}
+
+	njPopMatrix(1u);
+}
+
+void __cdecl EFRailSign(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+
+	obj->DeleteSub = ObjectFunc_DynColDelete;
+	obj->MainSub = ClipObjectObjFunc;
+	obj->DisplaySub = EFRailSign_Display;
+
+	NJS_OBJECT* dynobj = GetFreeDynObject();
+
+	if (data->Scale.x == 1) {
+		memcpy(dynobj, EF_DIRSGNSCOL->getmodel()->child->sibling, sizeof(NJS_OBJECT));
+		obj->field_4C = EF_DIRSGNS->getmodel()->child->sibling;
+	}
+	else {
+		memcpy(dynobj, EF_DIRSGNSCOL->getmodel()->child, sizeof(NJS_OBJECT));
+		obj->field_4C = EF_DIRSGNS->getmodel()->child;
+	}
+	
+	dynobj->pos[0] = data->Position.x;
+	dynobj->pos[1] = data->Position.y;
+	dynobj->pos[2] = data->Position.z;
+	dynobj->ang[0] = data->Rotation.x;
+	dynobj->ang[1] = data->Rotation.y;
+	dynobj->ang[2] = data->Rotation.z;
+	dynobj->evalflags = 0xFFFFFFF8;
+
+	DynCol_Add(0x1, obj, dynobj);
+
+	obj->EntityData2 = (UnknownData2*)dynobj;
 }
 
 void __cdecl EFMissilePods(ObjectMaster* obj) {
@@ -418,7 +592,7 @@ ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)SKULL },
 	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1), ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)EmeraldPiece_Load },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, GoalRing_Main },
-	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)ORI },
+	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA), ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Switch_Main },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 560000, CONTCHAO },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Stage, DistObj_UseDist, 1360000, DashHoop },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, ItemBoxBalloon },
@@ -462,7 +636,7 @@ ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, EFShipDoor }, //50
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5060000, EFShipConveyor },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, EFAntenna },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, EFRailSign },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, EFRailSign },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, EFMissilePods },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, EFHelice }, //55
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, EFBarrier },
@@ -520,8 +694,11 @@ void EggFleet_Load() {
 	EF_ENDRAIL = LoadMDL("EF_ENDRAIL", ModelFormat_SA2B);
 	EF_PIPLINE = LoadMDL("EF_PIPLINE", ModelFormat_SA2B);
 	EF_PLTFRMS = LoadMDL("EF_PLTFRMS", ModelFormat_SA2B);
+	EF_DIRSGNS = LoadMDL("EF_DIRSGNS", ModelFormat_SA2B);
+	EF_OBJDOOR = LoadMDL("EF_OBJDOOR", ModelFormat_SA2B);
 	EF_EBIGFANCOL = LoadMDL("EF_EBIGFAN", ModelFormat_Basic);
 	EF_PIPLINECOL = LoadMDL("EF_PIPLINE", ModelFormat_Basic);
+	EF_DIRSGNSCOL = LoadMDL("EF_DIRSGNS", ModelFormat_Basic);
 
 	SetPropellerModel(EF_PROPPLR->getmodel());
 }
@@ -536,8 +713,11 @@ void EggFleetDelete() {
 	FreeMDL(EF_ENDRAIL);
 	FreeMDL(EF_PIPLINE);
 	FreeMDL(EF_PLTFRMS);
+	FreeMDL(EF_DIRSGNS);
+	FreeMDL(EF_OBJDOOR);
 	FreeMDL(EF_EBIGFANCOL);
 	FreeMDL(EF_PIPLINECOL);
+	FreeMDL(EF_DIRSGNSCOL);
 
 	CommonLevelDelete();
 }

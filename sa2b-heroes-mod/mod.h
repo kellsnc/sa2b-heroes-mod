@@ -349,3 +349,5 @@ FunctionPointer(Float, GetGroundHeight, (float x, float y, float z, Rotation* ro
 ThiscallFunctionPointer(void, njSetTexlist, (NJS_TEXLIST* texlist), 0x42ED20);
 FastcallFunctionPointer(void, njSetTexture, (int id), 0x42ED30);
 FunctionPointer(void, SetDrawingPlanes, (Float _min, Float _max), 0x77E700);
+DataArray(bool, SwitchPressedStates, 0x1DE94C0, 8);
+DataArray(bool, EnemySwitchStates, 0x1DE94C0, 255);
