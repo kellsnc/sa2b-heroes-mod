@@ -88,7 +88,7 @@ void OPWater_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-	RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
+	njSetTexlist((NJS_TEXLIST*)&HeroesWater_TexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);

@@ -7,9 +7,30 @@ ModelInfo* EF_SKYMDLS;
 ModelInfo* EF_PROPPLR;
 ModelInfo* EF_EHELICE;
 ModelInfo* EF_EBIGFAN;
+ModelInfo* EF_ANTENNA;
+ModelInfo* EF_BARRIER;
+ModelInfo* EF_ENDRAIL;
+ModelInfo* EF_PIPLINE;
+ModelInfo* EF_PLTFRMS;
 ModelInfo* EF_EBIGFANCOL;
+ModelInfo* EF_PIPLINECOL;
 
 NJS_TEXLIST_ eggfleet_texlist = { arrayptrandlength(eggfleet_texname) };
+
+CollisionData_ AntennaCol = { 0, CollisionShape_Sphere, 0x77, 0, 0, {0, 50.0f, 0}, 25.0f, 0, 0, 0, { 0 } };
+CollisionData_ EFBarrier_Col = { 0, CollisionShape_Cube2, 0x77, 0, 0x800400, {0, 6, 0}, 15.0f, 15.0f, 2.0f, 0, { 0 } };
+
+CollisionData_ EFPlatforms_Col[] = {
+	{ 0, CollisionShape_Cube1, 0x77, 0, 0x800400, {0, -10.0f, 0}, 70.0f, 10.0f, 70.0f, 0, { 0 } },
+	{ 0, CollisionShape_Cube1, 0x77, 0, 0x800400, {0, -50.0f, 0}, 150.0f, 50.0f, 40.0f, 0, { 0 } },
+	{ 0, CollisionShape_Cube2, 0x77, 0, 0x800400, {0, 15.0f, -41.0f}, 150.0f, 15.0f, 1.0f, 0, { 0 } }
+};
+
+enum EFPlatformsActs {
+	EFPlatformAct_Move,
+	EFPlatformAct_Reach,
+	EFPlatformAct_Still
+};
 
 bool Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center, float radius, float height);
 
@@ -22,13 +43,8 @@ void __cdecl EFBigFan_Display(ObjectMaster* obj) {
 	njTranslateEx(&data->Position);
 	njRotateY_(data->Rotation.y);
 	DrawSA2BModel(model->sa2bmodel);
-
-	njPopMatrix(0);
 	njRotateY_(data->Scale.z);
 	DrawSA2BModel(model->child->sa2bmodel);
-	njPopMatrix(1);
-
-	DrawSA2BModel(model->child->child->sa2bmodel);
 	njPopMatrix(1u);
 }
 
@@ -119,12 +135,135 @@ void __cdecl EFCannon(ObjectMaster* obj) {
 
 }
 
-void __cdecl EFPlatforms(ObjectMaster* obj) {
+void EFPlatforms_Move(EntityData1* data) {
+	NJS_VECTOR vec = { 0, 20 - (40 * (1.0 - powf(njSin(data->field_6), 2))), 0 };
+	data->field_6 += 50;
 
+	njPushUnitMatrix();
+	njTranslateEx(&data->Scale);
+	njRotateZXY(&data->Rotation);
+	njCalcPoint(_nj_current_matrix_ptr_, &data->Position, &vec, false);
+	njPopMatrix(1u);
+}
+
+void EFPlatforms_Reach(EntityData1* data) {
+	if (data->NextAction == 0) {
+		float sin = 1.0f - powf(njSin(data->field_6), 2);
+		data->field_6 += 1;
+
+		NJS_VECTOR vec = { 0, 100 * sin, 0 };
+
+		if (sin >= 1.0f) {
+			vec.y = 40;
+			data->NextAction = 1;
+		}
+
+		njPushUnitMatrix();
+		njTranslateEx(&data->Scale);
+		njRotateZXY(&data->Rotation);
+		njCalcPoint(_nj_current_matrix_ptr_, &data->Position, &vec, false);
+		njPopMatrix(1u);
+	}
+}
+
+void __cdecl EFPlatforms_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+
+	njSetTexlist(CurrentLevelTexList);
+	njPushMatrix(0);
+	njTranslateEx(&data->Position);
+	njRotateZXY(&data->Rotation);
+	DrawSA2BModel(model->sa2bmodel);
+	njPopMatrix(1u);
+}
+
+void __cdecl EFPlatforms_Main(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		EntityData1* data = obj->Data1.Entity;
+		
+		switch (data->Action) {
+		case EFPlatformAct_Move:
+			EFPlatforms_Move(data);
+			break;
+		case EFPlatformAct_Reach:
+			EFPlatforms_Move(data);
+			break;
+		}
+
+		AddToCollisionList(obj);
+	}
+}
+
+void __cdecl EFPlatforms(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+
+	obj->DisplaySub = EFPlatforms_Display;
+	obj->MainSub = EFPlatforms_Main;
+
+	if (data->Scale.x == 0) {
+		obj->field_4C = EF_PLTFRMS->getmodel();
+		InitCollision(obj, (CollisionData*)&EFPlatforms_Col[0], 1, 4);
+		data->Action = EFPlatformAct_Move;
+	}
+	else {
+		obj->field_4C = EF_PLTFRMS->getmodel()->child;
+		InitCollision(obj, (CollisionData*)&EFPlatforms_Col[1], 2, 4);
+		data->Action = EFPlatformAct_Reach;
+	}
+
+	if (data->Scale.y == 1) {
+		data->Action = EFPlatformAct_Still;
+	}
+	
+	data->field_6 = rand() % 0xFFFF;
+	data->Scale = data->Position;
+}
+
+void __cdecl EFPipeline_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+
+	njSetTexlist(CurrentLevelTexList);
+	njPushMatrix(0);
+	njTranslateEx(&data->Position);
+	njRotateZXY(&data->Rotation);
+	DrawSA2BModel(model->sa2bmodel);
+	DrawSA2BModel(model->child->sa2bmodel);
+	njPopMatrix(1u);
+}
+
+void __cdecl EFPipeline_Main(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		EntityData1* data = obj->Data1.Entity;
+
+		// UV Stuff to figure out
+	}
 }
 
 void __cdecl EFPipeline(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
 
+	obj->DeleteSub = ObjectFunc_DynColDelete;
+	obj->MainSub = EFPipeline_Main;
+	obj->DisplaySub = EFPipeline_Display;
+
+	NJS_OBJECT* dynobj = GetFreeDynObject();
+
+	memcpy(dynobj, EF_PIPLINECOL->getmodel(), sizeof(NJS_OBJECT));
+
+	dynobj->pos[0] = data->Position.x;
+	dynobj->pos[1] = data->Position.y;
+	dynobj->pos[2] = data->Position.z;
+	dynobj->ang[0] = data->Rotation.x;
+	dynobj->ang[1] = data->Rotation.y;
+	dynobj->ang[2] = data->Rotation.z;
+	dynobj->evalflags = 0xFFFFFFF8;
+
+	DynCol_Add(0x1, obj, dynobj);
+
+	obj->EntityData2 = (UnknownData2*)dynobj;
+	obj->field_4C = EF_PIPLINE->getmodel();
 }
 
 void __cdecl EFShipDoor(ObjectMaster* obj) {
@@ -135,8 +274,41 @@ void __cdecl EFShipConveyor(ObjectMaster* obj) {
 
 }
 
-void __cdecl EFAntenna(ObjectMaster* obj) {
+void __cdecl EFAntenna_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
+	njSetTexlist(CurrentLevelTexList);
+	njPushMatrix(0);
+	njTranslateEx(&data->Position);
+	njRotateY_(data->Rotation.y);
+
+	if (data->Scale.x == 0) {
+		njRotateY_(data->Scale.y);
+		DrawSA2BModel(model->sa2bmodel);
+	}
+	else {
+		DrawSA2BModel(model->child->sa2bmodel);
+		njRotateY_(data->Scale.y);
+		DrawSA2BModel(model->child->child->sa2bmodel);
+	}
+	
+	njPopMatrix(1);
+}
+
+void __cdecl EFAntenna_Main(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		EntityData1* data = obj->Data1.Entity;
+
+		data->Scale.y += 200;
+	}
+}
+
+void __cdecl EFAntenna(ObjectMaster* obj) {
+	obj->MainSub = EFAntenna_Main;
+	obj->DisplaySub = EFAntenna_Display;
+	obj->field_4C = EF_ANTENNA->getmodel();
+	InitCollision(obj, (CollisionData*)&AntennaCol, 1, 4);
 }
 
 void __cdecl EFRailSign(ObjectMaster* obj) {
@@ -180,8 +352,60 @@ void __cdecl EFHelice(ObjectMaster* obj) {
 	obj->field_4C = EF_EHELICE->getmodel();
 }
 
-void __cdecl ECBarrier(ObjectMaster* obj) {
+void __cdecl EFBarrier_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
+	njSetTexlist(CurrentLevelTexList);
+	njPushMatrix(0);
+	njTranslateEx(&data->Position);
+	njRotateZXY(&data->Rotation);
+	DrawSA2BModel(model->sa2bmodel);
+	njPopMatrix(1);
+}
+
+void __cdecl EFBarrier_Main(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) {
+		EntityData1* data = obj->Data1.Entity;
+		ObjectMaster* player = GetCollidingPlayer(obj);
+
+		if (player && player->Data1.Entity->Status & Status_Attack) {
+			NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+			model = model->child;
+
+			LoadBreaker(&data->Position, &data->Rotation, model, 0.0f, 15.0f, 0.0f, 60);
+			Play3DSound_Vector(4112, &data->Position, 0, 0, 70);
+			UpdateSetDateAndDelete(obj);
+		}
+
+		AddToCollisionList(obj);
+	}
+}
+
+void __cdecl EFBarrier(ObjectMaster* obj) {
+	obj->MainSub = EFBarrier_Main;
+	obj->DisplaySub = EFBarrier_Display;
+	obj->field_4C = EF_BARRIER->getmodel();
+	InitCollision(obj, (CollisionData*)&EFBarrier_Col, 1, 2);
+}
+
+void __cdecl EFEndRail_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+
+	njSetTexlist(CurrentLevelTexList);
+	njPushMatrix(0);
+	njTranslateEx(&data->Position);
+	njRotateZXY(&data->Rotation);
+	DrawSA2BModel(model->sa2bmodel);
+	DrawSA2BModel(model->child->sa2bmodel);
+	njPopMatrix(1);
+}
+
+void __cdecl EFEndRail(ObjectMaster* obj) {
+	obj->DisplaySub = EFEndRail_Display;
+	obj->MainSub = ClipObjectObjFunc;
+	obj->field_4C = EF_ENDRAIL->getmodel();
 }
 
 ObjectListEntry EggFleetObjectList_list[] = {
@@ -241,11 +465,12 @@ ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, EFRailSign },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, EFMissilePods },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, EFHelice }, //55
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, ECBarrier },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, EFBarrier },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, e2000_Init },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 10000000, Flyer_Init },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, Flyer_Trigger },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, Laserdoor }
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, Laserdoor },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, EFEndRail }
 };
 
 ObjectListHead EggFleetObjectList = { arraylengthandptr(EggFleetObjectList_list) };
@@ -290,7 +515,13 @@ void EggFleet_Load() {
 	EF_PROPPLR = LoadMDL("EF_PROPPLR", ModelFormat_SA2B);
 	EF_EHELICE = LoadMDL("EF_EHELICE", ModelFormat_SA2B);
 	EF_EBIGFAN = LoadMDL("EF_EBIGFAN", ModelFormat_SA2B);
+	EF_ANTENNA = LoadMDL("EF_ANTENNA", ModelFormat_SA2B);
+	EF_BARRIER = LoadMDL("EF_BARRIER", ModelFormat_SA2B);
+	EF_ENDRAIL = LoadMDL("EF_ENDRAIL", ModelFormat_SA2B);
+	EF_PIPLINE = LoadMDL("EF_PIPLINE", ModelFormat_SA2B);
+	EF_PLTFRMS = LoadMDL("EF_PLTFRMS", ModelFormat_SA2B);
 	EF_EBIGFANCOL = LoadMDL("EF_EBIGFAN", ModelFormat_Basic);
+	EF_PIPLINECOL = LoadMDL("EF_PIPLINE", ModelFormat_Basic);
 
 	SetPropellerModel(EF_PROPPLR->getmodel());
 }
@@ -300,7 +531,13 @@ void EggFleetDelete() {
 	FreeMDL(EF_PROPPLR);
 	FreeMDL(EF_EHELICE);
 	FreeMDL(EF_EBIGFAN);
+	FreeMDL(EF_ANTENNA);
+	FreeMDL(EF_BARRIER);
+	FreeMDL(EF_ENDRAIL);
+	FreeMDL(EF_PIPLINE);
+	FreeMDL(EF_PLTFRMS);
 	FreeMDL(EF_EBIGFANCOL);
+	FreeMDL(EF_PIPLINECOL);
 
 	CommonLevelDelete();
 }

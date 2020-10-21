@@ -9,6 +9,35 @@ extern HelperFunctions HelperFunctionsGlobal;
 
 Uint32 GetTimer();
 
+enum IndexObj : Sint8 {
+	ObjIndex_NoDisplay = 0,
+	ObjIndex_1 = 0x1,
+	ObjIndex_Common = 0x2,
+	ObjIndex_Stage = 0x3,
+	ObjIndex_4 = 0x4,
+	ObjIndex_5 = 0x5,
+	ObjIndex_6 = 0x6,
+	ObjIndex_RunFirst = 0x7
+};
+
+enum DistObj : Sint16 {
+	DistObj_Default = 0,
+	DistObj_UseDist = 0x1,
+	DistObj_NoDistCheck = 0x2,
+	DistObj_Unknown3 = 0x3,
+	DistObj_Unknown4 = 0x4,
+	DistObj_Unknown5 = 0x5
+};
+
+enum CollisionShapes : Uint8 {
+	CollisionShape_Sphere,
+	CollisionShape_Cyl1,
+	CollisionShape_Cyl2,
+	CollisionShape_Cube1,
+	CollisionShape_Cube2,
+	CollisionShape_Wall = 0x9
+};
+
 #pragma pack(push, 1)
 
 typedef struct {
@@ -70,27 +99,22 @@ struct PathControl
 	LoopHead* loophead;
 };
 
+struct CollisionData_
+{
+	char kind;
+	CollisionShapes form;
+	char push;
+	char damage;
+	unsigned int attr;
+	NJS_VECTOR center;
+	Float param1;
+	Float param2;
+	Float param3;
+	Float param4;
+	Rotation rotation;
+};
+
 #pragma pack(pop)
-
-enum IndexObj : Sint8 {
-	ObjIndex_NoDisplay = 0,
-	ObjIndex_1 = 0x1,
-	ObjIndex_Common = 0x2,
-	ObjIndex_Stage = 0x3,
-	ObjIndex_4 = 0x4,
-	ObjIndex_5 = 0x5,
-	ObjIndex_6 = 0x6,
-	ObjIndex_RunFirst = 0x7
-};
-
-enum DistObj : Sint16 {
-	DistObj_Default = 0,
-	DistObj_UseDist = 0x1,
-	DistObj_NoDistCheck = 0x2,
-	DistObj_Unknown3 = 0x3,
-	DistObj_Unknown4 = 0x4,
-	DistObj_Unknown5 = 0x5
-};
 
 static const void* const AddToCollisionListPtr = (void*)0x47E750;
 static inline void AddToCollisionList(ObjectMaster* a1)

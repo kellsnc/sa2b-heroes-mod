@@ -41,7 +41,7 @@ void SHWaterfallLarge_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
 
-	RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
+	njSetTexlist((NJS_TEXLIST*)&HeroesWater_TexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -66,7 +66,7 @@ void SHWaterfallSmall_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
 
-	RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
+	njSetTexlist((NJS_TEXLIST*)&HeroesWater_TexList);
 	njPushMatrix(0);
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
@@ -138,7 +138,7 @@ void SHMovingPltfrms_Display(ObjectMaster* obj) {
 	}
 
 	if (data->field_2 == 1) {
-		RenderInfo->CurrentTexlist = (NJS_TEXLIST*)&HeroesWater_TexList;
+		njSetTexlist((NJS_TEXLIST*)&HeroesWater_TexList);
 
 		DrawSA2BModel(model->child->sibling->sa2bmodel);
 	}
