@@ -35,7 +35,7 @@ LoopPoint OPPath0_Entries[]{
         { 0, 0, 0, { 740.131470, 800.050903, -2374.736084,  } }
 };
 
-LoopHead OPPath0 = { 1, LengthOfArray<int16_t>(OPPath0_Entries), 1756.051147, OPPath0_Entries, AutoLoop };
+LoopHead OPPath0 = { 1, LengthOfArray<int16_t>(OPPath0_Entries), 1756.051147, OPPath0_Entries, LoopPath };
 
 LoopPoint OPPath1_Entries[]{
         { 0, 0, 60.4057, { 904.622681, 1002.825012, -4128.433105,  } },
@@ -65,7 +65,7 @@ LoopPoint OPPath1_Entries[]{
         { 0, 0, 0, { 766.802185, 955.190796, -4493.763184,  } }
 };
 
-LoopHead OPPath1 = { 1, LengthOfArray<int16_t>(OPPath1_Entries), 1340.474731, OPPath1_Entries, AutoLoop };
+LoopHead OPPath1 = { 1, LengthOfArray<int16_t>(OPPath1_Entries), 1340.474731, OPPath1_Entries, LoopPath };
 
 LoopPoint OPPath2_Entries[]{
         { 0, 0, 48.2997, { 703.999878, 1010.000000, -4500.000000,  } },
@@ -98,7 +98,7 @@ LoopPoint OPPath2_Entries[]{
         { 0, 0, 0, { 622.898987, 1085.052002, -4570.889160,  } }
 };
 
-LoopHead OPPath2 = { 1, LengthOfArray<int16_t>(OPPath2_Entries), 1601.020996, OPPath2_Entries, AutoLoop };
+LoopHead OPPath2 = { 1, LengthOfArray<int16_t>(OPPath2_Entries), 1601.020996, OPPath2_Entries, LoopPath };
 
 LoopPoint OPPath3_Entries[]{
         { 0, 0, 48.2997, { 2364.000000, 410.000000, -22300.000000,  } },
@@ -131,7 +131,7 @@ LoopPoint OPPath3_Entries[]{
         { 0, 0, 0, { 2282.898926, 485.051605, -22370.890625,  } }
 };
 
-LoopHead OPPath3 = { 1, LengthOfArray<int16_t>(OPPath3_Entries), 1601.023682, OPPath3_Entries, AutoLoop };
+LoopHead OPPath3 = { 1, LengthOfArray<int16_t>(OPPath3_Entries), 1601.023682, OPPath3_Entries, LoopPath };
 
 LoopPoint OPPath4_Entries[]{
         { 0, 0, 60.4064, { 2564.623047, 402.825409, -21928.429688,  } },
@@ -161,7 +161,7 @@ LoopPoint OPPath4_Entries[]{
         { 0, 0, 0, { 2426.802002, 355.190796, -22293.759766,  } }
 };
 
-LoopHead OPPath4 = { 1, LengthOfArray<int16_t>(OPPath4_Entries), 1340.470581, OPPath4_Entries, AutoLoop };
+LoopHead OPPath4 = { 1, LengthOfArray<int16_t>(OPPath4_Entries), 1340.470581, OPPath4_Entries, LoopPath };
 
 LoopPoint OPPath5_Entries[]{
         { 0, 0, 52.4281, { 661.513123, 1206.838989, -38620.859375,  } },
@@ -196,7 +196,7 @@ LoopPoint OPPath5_Entries[]{
         { 0, 0, 0, { 804.300415, 1103.688965, -38723.691406,  } }
 };
 
-LoopHead OPPath5 = { 1, LengthOfArray<int16_t>(OPPath5_Entries), 1651.375854, OPPath5_Entries, AutoLoop };
+LoopHead OPPath5 = { 1, LengthOfArray<int16_t>(OPPath5_Entries), 1651.375854, OPPath5_Entries, LoopPath };
 
 LoopHead* OceanPalacePathList[] = {
         &OPPath0,

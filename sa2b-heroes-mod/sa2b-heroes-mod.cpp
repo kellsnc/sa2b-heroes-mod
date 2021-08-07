@@ -105,7 +105,7 @@ void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* st
 
 void FixCamera(int player) {
 	if (MainCharObj2[player] && MainCharObj2[player]->Speed.x > 0.5f) {
-		CameraScreenArray[player]->pos.y += 0.7f;
+		CameraScreensInfoArray[player]->pos.y += 0.7f;
 	}
 }
 

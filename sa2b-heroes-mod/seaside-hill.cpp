@@ -3,183 +3,220 @@
 #include "seaside-hill-paths.h"
 #include "seaside-hill.h"
 
-ModelInfo * SH_PLATFOR;
-ModelInfo * SH_MORUINS;
-ModelInfo * SH_POLFLAG;
-ModelInfo * SH_WATERFS;
-ModelInfo * SH_FLOWERS;
-ModelInfo * SH_BRBLOCK;
+static ModelInfo * SH_PLATFOR;
+static ModelInfo * SH_MORUINS;
+static ModelInfo * SH_POLFLAG;
+static ModelInfo * SH_WATERFS;
+static ModelInfo * SH_FLOWERS;
+static ModelInfo * SH_BRBLOCK;
 
-NJS_TEXLIST_ seasidehill_texlist = { arrayptrandlength(seasidehill_texname) };
+static NJS_TEXLIST_ seasidehill_texlist = { arrayptrandlength(seasidehill_texname) };
 
 static int ruin = 0;
 static int flagtimer = 0;
 
-void SHFlowers_Display(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+static void __cdecl SHFlowers_Display(ObjectMaster* obj)
+{
+	auto data = obj->Data1.Entity;
+	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
-	njPushMatrix(0);
+	njSetTexture(CurrentLandTable->TextureList);
+	njPushMatrixEx();
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njScalef(data->Scale.y);
 	DrawSA2BModel(model->sa2bmodel);
-	njPopMatrix(1u);
+	njPopMatrixEx();
 }
 
-void SHFlowers(ObjectMaster* obj) {
+static void __cdecl SHFlowers(ObjectMaster* obj)
+{
 	EntityData1* data = obj->Data1.Entity;
 
-	obj->field_4C = (UnknownData2*)GetSiblingModelByIndex(SH_FLOWERS->getmodel()->child, static_cast<int>(data->Scale.x));
+	obj->field_4C = reinterpret_cast<void*>(GetSiblingModelByIndex(SH_FLOWERS->getmodel()->child, static_cast<int>(data->Scale.x)));
 
 	obj->MainSub = ClipObjectObjFunc;
 	obj->DisplaySub = SHFlowers_Display;
 }
 
-void SHWaterfallLarge_Display(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
+static void __cdecl SHWaterfallLarge_Display(ObjectMaster* obj)
+{
+	auto data = obj->Data1.Entity;
+	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
-	njSetTexlist((NJS_TEXLIST*)&HeroesWater_TexList);
-	njPushMatrix(0);
+	njSetTexture(reinterpret_cast<NJS_TEXLIST*>(&HeroesWater_TexList));
+	njPushMatrixEx();
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njScalef(data->Scale.x);
 	DrawSA2BModel(model->sa2bmodel);
-	njPopMatrix(1u);
+	njPopMatrixEx();
 }
 
-void SHWaterfallLarge(ObjectMaster* obj) {
-	NJS_OBJECT* model = SH_WATERFS->getmodel()->child->child->child;
-	obj->EntityData2 = (UnknownData2*)model;
+static void __cdecl SHWaterfallLarge(ObjectMaster* obj)
+{
+	auto model = SH_WATERFS->getmodel()->child->child->child;
+	obj->field_4C = reinterpret_cast<void*>(model);
 	model->sa2bmodel->Radius = 100000.0f;
 
 	Play3DSound_EntityPosBank(obj->Data1.Entity, 7, &obj->Data1.Entity->Position, 60, 7);
 
 	obj->DeleteSub = DeleteFunc_ResetVars;
 	obj->MainSub = ClipObjectObjFunc;
-	obj->DisplaySub = SHWaterfallLarge_Display;
+	obj->DisplaySub_Delayed1 = SHWaterfallLarge_Display;
 }
 
-void SHWaterfallSmall_Display(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* model = (NJS_OBJECT*)obj->EntityData2;
+static void __cdecl SHWaterfallSmall_Display(ObjectMaster* obj)
+{
+	auto data = obj->Data1.Entity;
+	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
-	njSetTexlist((NJS_TEXLIST*)&HeroesWater_TexList);
-	njPushMatrix(0);
+	njSetTexture((NJS_TEXLIST*)&HeroesWater_TexList);
+	njPushMatrixEx();
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njScalef(data->Scale.y);
 	DrawSA2BModel(model->sa2bmodel);
-	njPopMatrix(1u);
+	njPopMatrixEx();
 }
 
-void SHWaterfallSmall(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1.Entity;
+static void __cdecl SHWaterfallSmall(ObjectMaster* obj)
+{
+	auto data = obj->Data1.Entity;
 
-	obj->EntityData2 = (UnknownData2*)GetChildModelByIndex(SH_WATERFS->getmodel(), data->Scale.x);
+	obj->field_4C = reinterpret_cast<void*>(GetChildModelByIndex(SH_WATERFS->getmodel(), data->Scale.x));
 
 	Play3DSound_EntityPosBank(data, 7, &data->Position, 30, 7);
 
 	obj->DeleteSub = DeleteFunc_ResetVars;
 	obj->MainSub = ClipObjectObjFunc;
-	obj->DisplaySub = SHWaterfallSmall_Display;
+	obj->DisplaySub_Delayed1 = SHWaterfallSmall_Display;
 }
 
-void SHFlag_Display(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+static void __cdecl SHFlag_Display(ObjectMaster* obj)
+{
+	auto data = obj->Data1.Entity;
+	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
-	njPushMatrix(0);
+	njSetTexture(CurrentLandTable->TextureList);
+	njPushMatrixEx();
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njScalef(data->Scale.z);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	DrawSA2BModel(model->sa2bmodel);
-	njRotateY(_nj_current_matrix_ptr_, -data->Rotation.y);
-	njRotateY(_nj_current_matrix_ptr_, /*data->Scale.y*/ 0x2000 + (-0x500 + (0x1000 * (1 - (sin(GetTimer()) / 10)))));
-	DrawSA2BModel(model->child->sa2bmodel);
-	njPopMatrix(1u);
+	njPopMatrixEx();
 }
 
-void SHFlag_Main(ObjectMaster* obj) {
-	if (ClipSetObject(obj)) {
+static void __cdecl SHFlag_DisplayAlpha(ObjectMaster* obj)
+{
+	auto data = obj->Data1.Entity;
+	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
+
+	njSetTexture(CurrentLandTable->TextureList);
+	njPushMatrixEx();
+	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
+	njScalef(data->Scale.z);
+	njRotateY(_nj_current_matrix_ptr_, 0x2000 + (-0x500 + (0x1000 * (1 - (sin(GetTimer()) / 10)))));
+	DrawSA2BModel(model->child->sa2bmodel);
+	njPopMatrixEx();
+}
+
+static void __cdecl SHFlag_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
 		AddToCollisionList(obj);
 	}
 }
 
-void SHFlag(ObjectMaster* obj)
+static void __cdecl SHFlag(ObjectMaster* obj)
 {
 	InitCollision(obj, &Col_Pole, 1, 4);
 
-	obj->field_4C = (UnknownData2*)SH_POLFLAG->getmodel();
+	obj->field_4C = reinterpret_cast<void*>(SH_POLFLAG->getmodel());
 
 	obj->DeleteSub = DeleteFunc_ResetVars;
 	obj->MainSub = SHFlag_Main;
 	obj->DisplaySub = SHFlag_Display;
+	obj->DisplaySub_Delayed1 = SHFlag_DisplayAlpha;
 }
 
-void SHMovingPltfrms_Display(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+static void __cdecl SHMovingPltfrms_Display(ObjectMaster* obj)
+{
+	auto data = obj->Data1.Entity;
+	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexture(CurrentLandTable->TextureList);
 
-	njPushMatrix(0);
+	njPushMatrixEx();
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 
 	DrawSA2BModel(model->child->sa2bmodel);
 	DrawSA2BModel(model->child->child->sa2bmodel);
 
-	if (model->child->child->child) {
+	if (model->child->child->child)
+	{
 		DrawSA2BModel(model->child->child->child->sa2bmodel);
 	}
 
-	if (data->field_2 == 1) {
-		njSetTexlist((NJS_TEXLIST*)&HeroesWater_TexList);
+	if (data->field_2 == 1)
+	{
+		njSetTexture((NJS_TEXLIST*)&HeroesWater_TexList);
 
 		DrawSA2BModel(model->child->sibling->sa2bmodel);
 	}
 	
-	njPopMatrix(1u);
+	njPopMatrixEx();
 }
 
-void SHMovingPltfrms_Main(ObjectMaster* obj) {
-	if (ClipSetObject(obj)) {
+static void __cdecl SHMovingPltfrms_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
 		EntityData1* entity = obj->Data1.Entity;
 
 		entity->field_2 = 0;
 
-		if (ruin != 0 && ruin == static_cast<int>(entity->Scale.y)) {
-			if (entity->Position.y != entity->Scale.z) {
-				if (entity->Scale.x >= entity->Scale.z) {
-					if (entity->Position.y <= entity->Scale.z) {
+		if (ruin != 0 && ruin == static_cast<int>(entity->Scale.y))
+		{
+			if (entity->Position.y != entity->Scale.z)
+			{
+				if (entity->Scale.x >= entity->Scale.z)
+				{
+					if (entity->Position.y <= entity->Scale.z)
+					{
 						entity->Position.y = entity->Scale.z;
 					}
-					else if (entity->Position.y > entity->Scale.z) {
+					else if (entity->Position.y > entity->Scale.z)
+					{
 						entity->Position.y -= 2;
 					}
 
-					if (entity->Position.y == entity->Scale.x - 2) {
+					if (entity->Position.y == entity->Scale.x - 2)
+					{
 						Play3DSound_Vector(4100, &entity->Position, 0, 0, 100);
 					}
 				}
-				else if (entity->Scale.x <= entity->Scale.z) {
-					if (entity->Position.y >= entity->Scale.z) {
+				else if (entity->Scale.x <= entity->Scale.z)
+				{
+					if (entity->Position.y >= entity->Scale.z)
+					{
 						entity->Position.y = entity->Scale.z;
 					}
-					else if (entity->Position.y < entity->Scale.z) {
+					else if (entity->Position.y < entity->Scale.z)
+					{
 						entity->Position.y += 2;
 						entity->field_2 = 1;
 					}
 
-					if (entity->Position.y == entity->Scale.x + 2) {
+					if (entity->Position.y == entity->Scale.x + 2)
+					{
 						Play3DSound_Vector(4100, &entity->Position, 0, 0, 100);
 					}
 
-					if (entity->Position.y <= entity->Scale.z - 1 && entity->Position.y >= entity->Scale.z - 3) {
+					if (entity->Position.y <= entity->Scale.z - 1 && entity->Position.y >= entity->Scale.z - 3)
+					{
 						Play3DSound_Vector(4100, &entity->Position, 0, 0, 100);
 					}
 				}
@@ -190,13 +227,15 @@ void SHMovingPltfrms_Main(ObjectMaster* obj) {
 	}
 }
 
-void SHMovingPltfrms(ObjectMaster* obj) {
-	EntityData1* entity = obj->Data1.Entity;
-	Uint8 id = static_cast<Uint8>(entity->Scale.x);
+static void __cdecl SHMovingPltfrms(ObjectMaster* obj)
+{
+	auto entity = obj->Data1.Entity;
+	auto id = static_cast<int>(entity->Scale.x);
 
-	obj->field_4C = GetSiblingModelByIndex(SH_MORUINS->getmodel()->child, id);
+	obj->field_4C = reinterpret_cast<void*>(GetSiblingModelByIndex(SH_MORUINS->getmodel()->child, id));
 
-	switch (id) {
+	switch (id)
+	{
 	case 0:
 		InitCollision(obj, Col_MvPltfrm1, 3, 4);
 		break;
@@ -214,80 +253,92 @@ void SHMovingPltfrms(ObjectMaster* obj) {
 	obj->DisplaySub = SHMovingPltfrms_Display;
 }
 
-void SHRuinTrigger(ObjectMaster* obj) {
-	if (ClipSetObject(obj)) {
-		EntityData1* data = obj->Data1.Entity;
+static void __cdecl SHRuinTrigger(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
+		auto data = obj->Data1.Entity;
 
-		if (ruin != data->Scale.x) {
-			if (IsPlayerInsideSphere(&data->Position, data->Scale.y * 3)) {
+		if (ruin != data->Scale.x)
+		{
+			if (IsPlayerInsideSphere(&data->Position, data->Scale.y * 3))
+			{
 				ruin = static_cast<int>(data->Scale.x);
 			}
 		}
 	}
 }
 
-void SHPlatforms_Display(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+static void __cdecl SHPlatforms_Display(ObjectMaster* obj)
+{
+	auto data = obj->Data1.Entity;
+	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
-	njPushMatrix(0);
+	njSetTexture(CurrentLandTable->TextureList);
+	njPushMatrixEx();
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
-	njScale(data->Scale.x, data->Scale.y, data->Scale.z);
+	njScale_(data->Scale.x, data->Scale.y, data->Scale.z);
 	DrawSA2BModel(model->sa2bmodel);
-	njPopMatrix(1u);
+	njPopMatrixEx();
 }
 
-void SHPlatforms(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1.Entity;
+static void __cdecl SHPlatforms(ObjectMaster* obj)
+{
+	auto data = obj->Data1.Entity;
+
 	InitCollision(obj, &Col_Platform, 1, 4);
 
 	obj->field_4C = SH_PLATFOR->getmodel();
-	data->Collision->CollisionArray[0].anonymous_1 *= data->Scale.x;
-	data->Collision->CollisionArray[0].anonymous_2 *= data->Scale.y;
-	data->Collision->CollisionArray[0].anonymous_3 *= data->Scale.z;
+	data->Collision->CollisionArray[0].param1 *= data->Scale.x;
+	data->Collision->CollisionArray[0].param2 *= data->Scale.y;
+	data->Collision->CollisionArray[0].param3 *= data->Scale.z;
 
 	obj->MainSub = MainSub_Collision;
 	obj->DisplaySub = SHPlatforms_Display;
 }
 
-void SHBreakableBlock_Display(ObjectMaster* obj) {
+static void __cdecl SHBreakableBlock_Display(ObjectMaster* obj)
+{
 	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+	NJS_OBJECT* model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
-	njPushMatrix(0);
+	njSetTexture(CurrentLandTable->TextureList);
+	njPushMatrixEx();
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateZ(_nj_current_matrix_ptr_, data->Rotation.z);
 	njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	DrawSA2BModel(model->child->sa2bmodel);
-	njPopMatrix(1u);
+	njPopMatrixEx();
 }
 
-void SHBreakableBlock_Main(ObjectMaster* obj) {
-	if (ClipSetObject(obj)) {
-		EntityData1* entity = obj->Data1.Entity;
-		ObjectMaster* player = GetCollidingPlayer(obj);
+static void __cdecl SHBreakableBlock_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
+		auto entity = obj->Data1.Entity;
+		auto player = GetCollidingPlayer(obj);
 
-		if (player && player->Data1.Entity->Status & Status_Attack && player->Data1.Entity->Position.y < entity->Position.y + 30) {
+		if (player && player->Data1.Entity->Status & Status_Attack && player->Data1.Entity->Position.y < entity->Position.y + 30)
+		{
 			NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 			model = model->child->sibling->child;
 
 			LoadBreaker(&entity->Position, &entity->Rotation, model, 0.0f, 15.0f, 0.0f, 60);
 			Play3DSound_Vector(4100, &entity->Position, 0, 0, 70);
-			UpdateSetDateAndDelete(obj);
+			UpdateSetDataAndDelete(obj);
 		}
 
 		AddToCollisionList(obj);
 	}
 }
 
-void SHBreakableBlock(ObjectMaster* obj) {
-	EntityData1* entity = obj->Data1.Entity;
+static void __cdecl SHBreakableBlock(ObjectMaster* obj)
+{
+	auto entity = obj->Data1.Entity;
 
-	obj->field_4C = (ObjectFuncPtr)SH_BRBLOCK->getmodel();
+	obj->field_4C = reinterpret_cast<void*>(SH_BRBLOCK->getmodel());
 
 	obj->DeleteSub = DeleteFunc_ResetVars;
 	obj->MainSub = SHBreakableBlock_Main;
@@ -295,11 +346,12 @@ void SHBreakableBlock(ObjectMaster* obj) {
 
 	InitCollision(obj, &Col_BreakBlock, 1, 4);
 
-	entity->Collision->CollisionArray[0].field_24 = entity->Rotation.x;
-	entity->Collision->CollisionArray[0].field_2C = entity->Rotation.z;
+	entity->Collision->CollisionArray[0].rotation.x = entity->Rotation.x;
+	entity->Collision->CollisionArray[0].rotation.z = entity->Rotation.z;
 }
 
-ObjectListEntry SeasideHillObjectList_list[] = {
+static ObjectListEntry SeasideHillObjectList_list[]
+{
 	{ LoadObj_Data1, ObjIndex_Common, 0x10, 0.0, RingMain },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1360000, (ObjectFuncPtr)SpringA_Main },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1360000, SpringB_Main },
@@ -365,25 +417,30 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Attack },
 };
 
-ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList_list) };
+static ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList_list) };
 
-void SeasideHill_Main(ObjectMaster* obj) {
+static void __cdecl SeasideHill_Main(ObjectMaster* obj)
+{
 	AnimateTexlist(&HeroesWater_TexList, 2, (Uint32*)&obj->Data1.Entity->Scale.x, (void**)&obj->field_4C);
 
 	// Temporary camera for SH
-	for (Uint8 i = 0; i < 2; ++i) {
-		camera_screen* s = CameraScreenArray[i];
-		EntityData1* d = MainCharObj1[i];
+	for (int i = 0; i < 2; ++i)
+	{
+		auto cam = CameraScreensInfoArray[i];
+		auto player = MainCharObj1[i];
 
-		if (d && s) {
-			if (d->Position.z < -31317 && d->Position.z > -32873) {
-				s->pos = { 1295, 2300, -32873 };
+		if (player && cam)
+		{
+			if (player->Position.z < -31317.0f && player->Position.z > -32873.0f)
+			{
+				cam->pos = { 1295.0f, 2300.0f, -32873.0f };
 			}
 		}
 	}
 }
 
-void SeasideHill_Load() {
+static void __cdecl SeasideHill_Load()
+{
 	CurrentHeroesLevel = HeroesLevelIDs::SeasideHill;
 
 	CommonLevelInit();
@@ -404,29 +461,32 @@ void SeasideHill_Load() {
 
 	LoadTextureList("s01w", (NJS_TEXLIST*)&HeroesWater_TexList);
 	
-	SH_FLOWERS = LoadMDL("SH_FLOWERS", ModelFormat_SA2B);
-	SH_WATERFS = LoadMDL("SH_WATERFS", ModelFormat_SA2B);
-	SH_POLFLAG = LoadMDL("SH_POLFLAG", ModelFormat_SA2B);
-	SH_MORUINS = LoadMDL("SH_MORUINS", ModelFormat_SA2B);
-	SH_PLATFOR = LoadMDL("SH_PLATFOR", ModelFormat_SA2B);
-	SH_BRBLOCK = LoadMDL("SH_BRBLOCK", ModelFormat_SA2B);
+	LoadMDL(&SH_FLOWERS, "SH_FLOWERS", ModelFormat_SA2B);
+	LoadMDL(&SH_WATERFS, "SH_WATERFS", ModelFormat_SA2B);
+	LoadMDL(&SH_POLFLAG, "SH_POLFLAG", ModelFormat_SA2B);
+	LoadMDL(&SH_MORUINS, "SH_MORUINS", ModelFormat_SA2B);
+	LoadMDL(&SH_PLATFOR, "SH_PLATFOR", ModelFormat_SA2B);
+	LoadMDL(&SH_BRBLOCK, "SH_BRBLOCK", ModelFormat_SA2B);
 }
 
-void SeasideHill_Delete() {
-	FreeMDL(SH_MORUINS);
-	FreeMDL(SH_FLOWERS);
-	FreeMDL(SH_WATERFS);
-	FreeMDL(SH_POLFLAG);
-	FreeMDL(SH_PLATFOR);
-	FreeMDL(SH_BRBLOCK);
+static void __cdecl SeasideHill_Delete()
+{
+	FreeMDL(&SH_MORUINS);
+	FreeMDL(&SH_FLOWERS);
+	FreeMDL(&SH_WATERFS);
+	FreeMDL(&SH_POLFLAG);
+	FreeMDL(&SH_PLATFOR);
+	FreeMDL(&SH_BRBLOCK);
 
 	FreeTexList((NJS_TEXLIST*)&HeroesWater_TexList);
 	CommonLevelDelete();
 }
 
-void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) {
+void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions)
+{
 	CityEscapeHeader.Init = SeasideHill_Load;
 	CityEscapeHeader.subprgmanager = SeasideHill_Main;
-	CityEscapeHeader.anonymous_2 = SeasideHill_Delete;
+	CityEscapeHeader.Free = SeasideHill_Delete;
+
 	SetStartEndPoints(helperFunctions, &sh_startpos, &sh_2pintro, &sh_endpos, &sh_endpos23);
 }

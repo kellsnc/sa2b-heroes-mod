@@ -9,82 +9,98 @@ const char* ModelFormatStrings[]{
 	"battle"
 };
 
+const char* mdlformatfiletypes[] = {
+	".sa1mdl",
+	".sa2mdl",
+	".sa2bmdl"
+};
+
 //Load Object File
-ModelInfo* LoadMDL(const char *name, ModelFormat format) {
+void LoadMDL(ModelInfo** info, const char *name, ModelFormat format)
+{
 	std::string fullPath;
 
-	if (format == ModelFormat_Basic) {
+	if (format == ModelFormat_Basic)
+	{
 		fullPath = "resource\\gd_PC\\COLLISIONS\\";
 	}
-	else {
+	else
+	{
 		fullPath = "resource\\gd_PC\\MODELS\\";
 	}
 
-	fullPath += name;
-	
-	switch (format) {
-	case ModelFormat_Basic:
-		fullPath += ".sa1mdl";
-		break;
-	case ModelFormat_Chunk:
-		fullPath += ".sa2mdl";
-		break;
-	case ModelFormat_SA2B:
-		fullPath += ".sa2bmdl";
-		break;
-	}
+	fullPath += static_cast<std::string>(name) + static_cast<std::string>(mdlformatfiletypes[format - 1]);
 	
 	const char *foo = fullPath.c_str();
 
 	ModelInfo * temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
 
-	if (temp->getformat() == format) {
-		PrintDebug("[Heroes Mod] Loaded %s model: %s.", ModelFormatStrings[(int)format - 1], name);
-	}
-	else {
+	if (temp->getformat() == format)
+	{
 		PrintDebug("[Heroes Mod] Failed loading %s model: %s.", ModelFormatStrings[(int)format - 1], name);
+		*info = temp;
 	}
-
-	return temp;
+	else
+	{
+		PrintDebug("[Heroes Mod] Loaded %s model: %s.", ModelFormatStrings[(int)format - 1], name);
+		delete temp;
+		*info = nullptr;
+	}
 }
 
-AnimationFile* LoadAnim(const char* name) {
-	std::string fullPath = "resource\\gd_PC\\ANIMATIONS\\";
+void LoadAnim(AnimationFile** info, const char* name)
+{
+	std::string fullPath = "resource\\gd_PC\\ANIMATIONS\\" + static_cast<std::string>(name) + static_cast<std::string>(".saanim");
 
-	fullPath = fullPath + name + ".saanim";
+	AnimationFile* temp = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
 
-	AnimationFile* file = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
-
-	if (file->getmotion() != nullptr) {
-		PrintDebug("[Heroes Mod] Loaded animation: %s.", name);
+	if (temp->getmotion() != nullptr)
+	{
+		PrintDebug("[Heroes Mod] Failed loading animation: %s.", name);
+		*info = temp;
 	}
 	else {
-		PrintDebug("[Heroes Mod] Failed loading animation: %s.", name);
+		PrintDebug("[Heroes Mod] Loaded animation: %s.", name);
+		delete temp;
+		*info = nullptr;
 	}
-
-	return file;
 }
 
 //Free Object File
-void FreeMDL(ModelInfo * pointer) {
-	if (pointer) delete(pointer);
+void FreeMDL(ModelInfo** info)
+{
+	if (*info)
+	{
+		delete* info;
+		info = nullptr;
+	}
 }
 
-void FreeAnim(AnimationFile* pointer) {
-	if (pointer) delete pointer;
+void FreeAnim(AnimationFile** info)
+{
+	if (*info)
+	{
+		delete* info;
+		info = nullptr;
+	}
 }
 
 // Math stuff
-float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
+float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest)
+{
 	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
 }
 
-int IsPlayerInsideSphere(Float x, Float y, Float z, Float radius) {
-	for (uint8_t player = 0; player < 2; ++player) {
+int IsPlayerInsideSphere(Float x, Float y, Float z, Float radius)
+{
+	for (int player = 0; player < 2; ++player)
+	{
 		if (!MainCharObj1[player]) continue;
 
-		NJS_VECTOR* pos = &MainCharObj1[player]->Position;
-		if ((powf(pos->x - x, 2) + pow(pos->y - y, 2) + pow(pos->z - z, 2)) <= pow(radius, 2)) {
+		auto pos = &MainCharObj1[player]->Position;
+
+		if ((powf(pos->x - x, 2) + pow(pos->y - y, 2) + pow(pos->z - z, 2)) <= pow(radius, 2))
+		{
 			return player + 1;
 		}
 	}
@@ -92,23 +108,27 @@ int IsPlayerInsideSphere(Float x, Float y, Float z, Float radius) {
 	return 0;
 }
 
-int IsPlayerInsideSphere(NJS_VECTOR *center, Float radius) {
+int IsPlayerInsideSphere(NJS_VECTOR *center, Float radius)
+{
 	return IsPlayerInsideSphere(center->x, center->y, center->z, radius);
 }
 
-bool IsPlayerIDInsideSphere(Float x, Float y, Float z, Float radius, Uint8 PlayerID) {
+bool IsPlayerIDInsideSphere(Float x, Float y, Float z, Float radius, Uint8 PlayerID)
+{
 	if (!MainCharObj1[PlayerID]) return false;
 
-	NJS_VECTOR* pos = &MainCharObj1[PlayerID]->Position;
+	auto pos = &MainCharObj1[PlayerID]->Position;
 
-	if ((powf(pos->x - x, 2) + pow(pos->y - y, 2) + pow(pos->z - z, 2)) <= pow(radius, 2)) {
+	if ((powf(pos->x - x, 2) + pow(pos->y - y, 2) + pow(pos->z - z, 2)) <= pow(radius, 2))
+	{
 		return true;
 	}
 
 	return false;
 }
 
-NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state) {
+NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state)
+{
 	NJS_VECTOR result;
 
 	result.x = (dest->x - orig->x) * state + orig->x;
@@ -118,21 +138,8 @@ NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state) {
 	return result;
 }
 
-bool ClipSetObject(ObjectMaster *obj) {
-	if (obj->SETData == nullptr) {
-		return 1;
-	}
-
-	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, sqrtf(obj->SETData->field_C))) {
-		return 1;
-	}
-	else {
-		DeleteObject_(obj);
-		return 0;
-	}
-}
-
-Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point) {
+Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point)
+{
 	NJS_VECTOR dist;
 	Rotation result;
 
@@ -147,13 +154,15 @@ Rotation fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point) {
 	return result;
 }
 
-void TransformSpline(NJS_VECTOR* pos, NJS_VECTOR* orig, NJS_VECTOR* dest, float state) {
+void TransformSpline(NJS_VECTOR* pos, NJS_VECTOR* orig, NJS_VECTOR* dest, float state)
+{
 	pos->x = (dest->x - orig->x) * state + orig->x;
 	pos->y = (dest->y - orig->y) * state + orig->y;
 	pos->z = (dest->z - orig->z) * state + orig->z;
 }
 
-NJS_OBJECT* GetChildModelByIndex(NJS_OBJECT* object, int index) {
+NJS_OBJECT* GetChildModelByIndex(NJS_OBJECT* object, int index)
+{
 	int i = 0;
 	NJS_OBJECT* child = object;
 	
@@ -169,7 +178,8 @@ NJS_OBJECT* GetChildModelByIndex(NJS_OBJECT* object, int index) {
 	return nullptr;
 }
 
-NJS_OBJECT* GetSiblingModelByIndex(NJS_OBJECT* object, int index) {
+NJS_OBJECT* GetSiblingModelByIndex(NJS_OBJECT* object, int index)
+{
 	int i = 0;
 	NJS_OBJECT* sibling = object;
 
@@ -185,125 +195,150 @@ NJS_OBJECT* GetSiblingModelByIndex(NJS_OBJECT* object, int index) {
 	return nullptr;
 }
 
-void MainSub_Collision(ObjectMaster* obj) {
-	if (ClipSetObject(obj)) {
+void MainSub_Collision(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
 		AddToCollisionList(obj);
 	}
 }
 
-// Ninja stuff
-float* njPushUnitMatrix() {
-	float *v8 = _nj_current_matrix_ptr_;
-	float *v9 = _nj_current_matrix_ptr_ + 12;
-	v8 = _nj_current_matrix_ptr_ + 12;
-	memcpy(v9, _nj_current_matrix_ptr_, 0x30u);
-	_nj_current_matrix_ptr_ = v9;
-	memset(v8, 0, 0x30u);
-	*v8 = 1.0;
-	v8[5] = 1.0;
-	v8[10] = 1.0;
-	return v8;
+void njScalef(Float f)
+{
+	njScale_(f, f, f);
 }
 
-void njTranslateV(float* matrix, NJS_VECTOR* pos) {
-	njTranslate(matrix, pos->x, pos->y, pos->z);
-}
-
-void njScalef(Float f) {
-	njScale(f, f, f);
-}
-
-void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs) {
+void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs)
+{
 	vd->x += vs->x;
 	vd->y += vs->y;
 	vd->z += vs->z;
 }
 
-void njTranslateEx(NJS_VECTOR* v) {
-	njTranslate(_nj_current_matrix_ptr_, v->x, v->y, v->z);
-}
-
-void njTranslateEx(Float x, Float y, Float z) {
+void njTranslateXYZ(Float x, Float y, Float z)
+{
 	njTranslate(_nj_current_matrix_ptr_, x, y, z);
 }
 
-void njTranslateX(Float f) {
+void njTranslateX(Float f)
+{
 	njTranslate(_nj_current_matrix_ptr_, f, 0, 0);
 }
 
-void njTranslateY(Float f) {
+void njTranslateY(Float f)
+{
 	njTranslate(_nj_current_matrix_ptr_, 0, f, 0);
 }
 
-void njTranslateZ(Float f) {
+void njTranslateZ(Float f)
+{
 	njTranslate(_nj_current_matrix_ptr_, 0, 0, f);
 }
 
-void njRotateX_(Angle x) {
-	if (x) {
+void njRotateX_(Angle x)
+{
+	if (x != 0)
+	{
 		njRotateX(_nj_current_matrix_ptr_, x);
 	}
 }
 
-void njRotateY_(Angle y) {
-	if (y) {
+void njRotateY_(Angle y)
+{
+	if (y != 0)
+	{
 		njRotateY(_nj_current_matrix_ptr_, y);
 	}
 }
 
-void njRotateZ_(Angle z) {
-	if (z) {
+void njRotateZ_(Angle z)
+{
+	if (z != 0)
+	{
 		njRotateZ(_nj_current_matrix_ptr_, z);
 	}
 }
 
-void njRotateZXY(Angle x, Angle y, Angle z) {
+void njRotateZXY(Angle x, Angle y, Angle z)
+{
 	njRotateZ_(z);
 	njRotateX_(x);
 	njRotateY_(y);
 }
 
-void njRotateZXY(Rotation* rot) {
+void njRotateZXY(Rotation* rot)
+{
 	njRotateZ_(rot->z);
 	njRotateX_(rot->x);
 	njRotateY_(rot->y);
 }
 
-void DrawChunkModel(NJS_MODEL* model) {
+void njRotateXYZ(Rotation* rot)
+{
+	njRotateX_(rot->x);
+	njRotateY_(rot->y);
+	njRotateZ_(rot->z);
+}
+
+void DrawChunkModel(NJS_MODEL* model)
+{
 	ResetRenderSpace();
 	ProcessChunkModel((NJS_CNK_MODEL*)model);
 }
 
-void njCnkAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame) {
+void njCnkAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame)
+{
 	*(int*)0x25EFE54 = 0x25EFE60;
 	njSetMotion(mot, frame);
-	MotionDrawCallback = DrawChunkModel;
+	MotionDrawCallback = reinterpret_cast<ObjectFuncPtr>(DrawChunkModel);
 	DrawObjMotion(obj);
 }
 
-void njSA2BAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame) {
+void njSA2BAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame)
+{
 	*(int*)0x25EFE54 = 0x25EFE60;
 	njSetMotion(mot, frame);
-	MotionDrawCallback = DrawSA2BModel;
+	MotionDrawCallback = reinterpret_cast<ObjectFuncPtr>(DrawSA2BModel);
 	DrawObjMotion(obj);
 }
 
-void DrawObject(NJS_OBJECT* obj, ModelFormat format) {
-	if (obj->model) {
-		njPushMatrix(0);
+void DrawObject(NJS_OBJECT* obj, ModelFormat format)
+{
+	njPushMatrixEx();
+
+	if (!(obj->evalflags & NJD_EVAL_UNIT_POS))
+	{
 		njTranslate(_nj_current_matrix_ptr_, obj->pos[0], obj->pos[1], obj->pos[2]);
-		njRotateX(_nj_current_matrix_ptr_, obj->ang[0]);
-		njRotateY(_nj_current_matrix_ptr_, obj->ang[1]);
-		njRotateZ(_nj_current_matrix_ptr_, obj->ang[2]);
-		njScale(obj->scl[0], obj->scl[1], obj->scl[2]);
-		format == ModelFormat_Chunk ? DrawChunkModel(obj->basicmodel) : DrawSA2BModel(obj->sa2bmodel);
-		
-		if (obj->child) {
-			DrawObject(obj->child, format);
-		}
-		
-		njPopMatrix(1);
 	}
+	
+	if (!(obj->evalflags & NJD_EVAL_UNIT_ANG))
+	{
+		njRotateXYZ(reinterpret_cast<Rotation*>(&obj->ang));
+	}
+
+	if (!(obj->evalflags & NJD_EVAL_UNIT_SCL))
+	{
+		njScale_(obj->scl[0], obj->scl[1], obj->scl[2]);
+	}
+
+	if (obj->model)
+	{
+		switch (format)
+		{
+		case ModelFormat_Chunk:
+			DrawChunkModel(obj->basicmodel);
+			break;
+		case ModelFormat_SA2B:
+			DrawSA2BModel(obj->sa2bmodel);
+			break;
+		}
+	}
+	
+	if (obj->child) {
+		DrawObject(obj->child, format);
+	}
+
+	njPopMatrixEx();
 	
 	if (obj->sibling) {
 		DrawObject(obj->sibling, format);

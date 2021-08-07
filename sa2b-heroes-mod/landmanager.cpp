@@ -2,10 +2,13 @@
 
 LandTableInfo* CurrentHeroesLandTable;
 
-//Change the sadx col flags to similar sa2 ones
-void FixColFlags(LandTable* land) {
-	for (int i = 0; i < land->COLCount; ++i) {
-		switch (land->COLList[i].Flags) {
+// Change the sadx col flags to similar sa2 ones
+static void FixColFlags(LandTable* land)
+{
+	for (int i = 0; i < land->COLCount; ++i)
+	{
+		switch (land->COLList[i].Flags)
+		{
 		case 0x80000000:
 			break;
 		case 0x2:
@@ -19,14 +22,16 @@ void FixColFlags(LandTable* land) {
 }
 
 void UnloadLandTable() {
-	if (CurrentHeroesLandTable) {
+	if (CurrentHeroesLandTable)
+	{
 		delete CurrentHeroesLandTable;
 		CurrentHeroesLandTable = nullptr;
 		CurrentLandTable = nullptr;
 	}
 }
 
-void LoadLandTable(const char* path, LandTableFormat format) {
+void LoadLandTable(const char* path, LandTableFormat format)
+{
 	CurrentHeroesLandTable = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(path));
 	LoadLandManager(CurrentHeroesLandTable->getlandtable());
 	FixColFlags(CurrentHeroesLandTable->getlandtable());

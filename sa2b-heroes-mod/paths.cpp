@@ -3,7 +3,7 @@
 
 NJS_OBJECT* PropellerModel = nullptr;
 
-CollisionData Prop_col = { 0, 0xE077, 0, { 0, 0, 0 }, 1, 1, 1 };
+CollisionData Prop_col = { 0, CollisionShape_Sphere, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 1.0f, 1.0f, 1.0f };
 
 enum PropellerActions {
 	PropellerAction_CheckForPlayer,
@@ -22,16 +22,17 @@ struct PropellerData {
 	Angle RotOffset;
 };
 
-NJS_VECTOR Propeller_GetHandlePoint(EntityData1* data, CharObj2Base* co2) {
-	NJS_VECTOR point = { 0, -co2->PhysData.CollisionSize + data->Scale.y, 0 };
+NJS_VECTOR Propeller_GetHandlePoint(EntityData1* data, CharObj2Base* co2)
+{
+	NJS_VECTOR point = { 0, -co2->PhysData.Height + data->Scale.y, 0 };
 
 	njPushUnitMatrix();
 	njTranslateEx(&data->Position);
 	njRotateY(0, -data->Rotation.y + 0x4000);
 	njRotateZ(0, data->Rotation.z);
 	njRotateX(0, data->Rotation.x);
-	njCalcPoint(_nj_current_matrix_ptr_, &point, &point, false);
-	njPopMatrix(1u);
+	njCalcVector(_nj_current_matrix_ptr_, &point, &point, false);
+	njPopMatrixEx();
 	return point;
 }
 
@@ -58,8 +59,8 @@ void Propeller_Display(ObjectMaster* obj) {
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
 	if (data->Action || pdata->field_6 != 0) {
-		njSetTexlist(CurrentLevelTexList);
-		njPushMatrix(0);
+		njSetTexture(CurrentLevelTexList);
+		njPushMatrixEx();
 		njTranslateEx(&data->Position);
 		njRotateY(0, -data->Rotation.y - 0x4000);
 		njRotateZ(0, data->Rotation.z);
@@ -68,7 +69,7 @@ void Propeller_Display(ObjectMaster* obj) {
 		DrawSA2BModel(model->sa2bmodel);
 		njRotateY_(data->Status);
 		DrawSA2BModel(model->child->sa2bmodel);
-		njPopMatrix(1);
+		njPopMatrixEx();
 	}
 }
 
@@ -190,14 +191,14 @@ void PropellerPath_Display(ObjectMaster* obj) {
 	if (data->field_6 != 0) {
 		NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-		njSetTexlist(CurrentLevelTexList);
-		njPushMatrix(0);
+		njSetTexture(CurrentLevelTexList);
+		njPushMatrixEx();
 		njTranslateEx(&data->Position);
 		njRotateY(0, -data->Rotation.y - 0x4000);
 		njRotateZ(0, data->Rotation.z);
 		njRotateX(0, data->Rotation.x);
 		DrawSA2BModel(model->sa2bmodel);
-		njPopMatrix(1);
+		njPopMatrixEx();
 	}
 }
 

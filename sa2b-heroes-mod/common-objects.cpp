@@ -3,47 +3,57 @@
 NJS_TEXNAME heroescmn_texname[91];
 NJS_TEXLIST heroescmn_texlist = { arrayptrandlengthT(heroescmn_texname, Uint32) };
 
-ModelInfo * CO_DSHHOOP;
-ModelInfo * CO_COMNFAN;
-ModelInfo * CO_COMNFANCOL;
+static ModelInfo* CO_DSHHOOP;
+static ModelInfo* CO_COMNFAN;
+static ModelInfo* CO_COMNFANCOL;
 
-void DashHoop_Display(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+static void __cdecl DashHoop_Display(ObjectMaster* obj)
+{
+	auto data = obj->Data1.Entity;
+	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
-	RenderInfo->CurrentTexlist = &heroescmn_texlist;
-	njPushMatrix(0);
+	njSetTexture(&heroescmn_texlist);
+	njPushMatrixEx();
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	DrawSA2BModel(model->sa2bmodel);
 	DrawSA2BModel(model->child->sa2bmodel);
 	DrawSA2BModel(model->child->sibling->sa2bmodel);
-	njPopMatrix(1u);
+	njPopMatrixEx();
 }
 
-void DashHoop_Perform(ObjectMaster *a1) {
-	EntityData1* entity = a1->Data1.Entity;
-	EntityData1* player = MainCharObj1[entity->Index];
+static void __cdecl DashHoop_Perform(ObjectMaster *obj)
+{
+	auto entity = obj->Data1.Entity;
+	auto player = MainCharObj1[entity->Index];
 	
 	entity->Rotation.z += 1;
 	float s = (float)(entity->Rotation.z * 0.025f);
 
-	if (s >= 1) {
-		DeleteObject_(a1);
+	if (s >= 1)
+	{
+		DeleteObject_(obj);
 		return;
 	}
 	
 	TransformSpline(&player->Position, &entity->Position, &entity->Scale, s);
 }
 
-void DashHoop_Main(ObjectMaster* a1) {
-	if (ClipSetObject(a1)) {
-		if (!a1->Data1.Entity->Action) {
-			uint8_t id = IsPlayerInsideSphere(&a1->Data1.Entity->Position, 60);
-			if (id) {
+static void __cdecl DashHoop_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
+		auto data = obj->Data1.Entity;
+
+		if (data->Action == 0)
+		{
+			int id = IsPlayerInsideSphere(&data->Position, 60);
+
+			if (id)
+			{
 				PlaySoundProbably(4099, 0, 0, 0);
-				a1->Data1.Entity->Action = 30;
+				data->Action = 30;
 
 				MainCharObj2[id - 1]->Speed.x /= 2;
 				MainCharObj2[id - 1]->Speed.y = 0;
@@ -53,92 +63,104 @@ void DashHoop_Main(ObjectMaster* a1) {
 
 				ObjectMaster * obj = LoadObject(4, "DashHoop_Perform", DashHoop_Perform, LoadObj_Data1);
 				obj->Data1.Entity->Index = id - 1;
-				obj->Data1.Entity->Position = a1->Data1.Entity->Position;
-				obj->Data1.Entity->Scale = a1->Data1.Entity->Scale;
+				obj->Data1.Entity->Position = data->Position;
+				obj->Data1.Entity->Scale = data->Scale;
 			}
 		}
-		else {
-			--a1->Data1.Entity->Action;
+		else
+		{
+			--data->Action;
 		}
 	}
 }
 
-void DashHoop(ObjectMaster* obj) {
+void __cdecl DashHoop(ObjectMaster* obj)
+{
 	obj->Data1.Entity->Rotation = fPositionToRotation(&obj->Data1.Entity->Position, &obj->Data1.Entity->Scale);
 	obj->DisplaySub = DashHoop_Display;
 	obj->MainSub = DashHoop_Main;
 
-	obj->field_4C = CO_DSHHOOP->getmodel();
+	obj->field_4C = reinterpret_cast<void*>(CO_DSHHOOP->getmodel());
 }
 
-bool Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center, float radius, float height) {
-	NJS_VECTOR* pos = &entity->Position;
+bool Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center, float radius, float height)
+{
+	auto pos = &entity->Position;
 
 	if ((powf(pos->x - center->x, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2) &&
-		pos->y > center->y && pos->y < center->y + height * 40) {
+		pos->y > center->y && pos->y < center->y + height * 40)
+	{
 		return true;
 	}
 
 	return false;
 }
 
-void ObjFan_Display(ObjectMaster *obj)
+static void __cdecl ObjFan_Display(ObjectMaster *obj)
 {
-	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
+	auto data = obj->Data1.Entity;
+	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
-	RenderInfo->CurrentTexlist = &heroescmn_texlist;
-	njPushMatrix(0);
+	njSetTexture(&heroescmn_texlist);
+	njPushMatrixEx();
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y + 0x4000);
 	DrawSA2BModel(CO_COMNFAN->getmodel()->sa2bmodel);
 	njRotateY(_nj_current_matrix_ptr_, data->Scale.z);
 	DrawSA2BModel(CO_COMNFAN->getmodel()->child->sa2bmodel);
-	njPopMatrix(1u);
+	njPopMatrixEx();
 }
 
-void ObjFan_Main(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1.Entity;
+static void __cdecl ObjFan_Main(ObjectMaster* obj)
+{
+	auto data = obj->Data1.Entity;
 
-	if (ClipSetObject(obj)) {
+	if (!ClipSetObject(obj))
+	{
 		data->Scale.z += data->Scale.y;
 
-		if (MainCharObj1[0]) {
-			if (Fans_IsSpecificPlayerInCylinder(MainCharObj1[0], &data->Position, 45.5f, data->Scale.x)) {
+		if (MainCharObj1[0])
+		{
+			if (Fans_IsSpecificPlayerInCylinder(MainCharObj1[0], &data->Position, 45.5f, data->Scale.x))
+			{
 				data->Index = 20;
 			}
 
-			if (data->Index != 0) {
-				MainCharObj2[0]->Speed.y = 0.3f;
+			if (data->Index != 0)
+			{
+				MainCharObj2[0]->Speed.y = 2.5f;
 				MainCharObj1[0]->Status |= 0x1000;
 				MainCharObj1[0]->NextAction = 8;
-				MainCharObj1[0]->Position.y += 2.0f;
 				data->Index -= 1;
 			}
 		}
 
-		if (MainCharObj1[1]) {
-			if (Fans_IsSpecificPlayerInCylinder(MainCharObj1[1], &data->Position, 45.5f, data->Scale.x)) {
+		if (MainCharObj1[1])
+		{
+			if (Fans_IsSpecificPlayerInCylinder(MainCharObj1[1], &data->Position, 45.5f, data->Scale.x))
+			{
 				data->field_2 = 20;
 			}
-			else {
+			else
+			{
 				data->field_2 = 0;
 			}
 
-			if (data->field_2 != 0) {
-				MainCharObj2[1]->Speed.y = 0.3f;
+			if (data->field_2 != 0)
+			{
+				MainCharObj2[1]->Speed.y = 2.5f;
 				MainCharObj1[1]->Status |= 0x1000;
 				MainCharObj1[1]->NextAction = 8;
-				MainCharObj1[1]->Position.y += 2.0f;
 				data->field_2 -= 1;
 			}
 		}
 	}
 }
 
-void ObjFan(ObjectMaster *obj) {
-	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* dynobj = GetFreeDynObject();
+void __cdecl ObjFan(ObjectMaster *obj)
+{
+	auto data = obj->Data1.Entity;
+	auto dynobj = GetFreeDyncolObjectEntry();
 
 	memcpy(dynobj, CO_COMNFANCOL->getmodel(), sizeof(NJS_OBJECT));
 
@@ -148,19 +170,22 @@ void ObjFan(ObjectMaster *obj) {
 	dynobj->ang[1] = data->Rotation.y;
 	dynobj->evalflags = 0xFFFFFFF8;
 
-	DynCol_Add(0x1, obj, dynobj);
+	DynCol_Add(SurfaceFlag_Solid, obj, dynobj);
 
-	obj->EntityData2 = (UnknownData2*)dynobj;
-	obj->field_4C = (void*)CO_COMNFAN->getmodel();
+	obj->EntityData2 = reinterpret_cast<UnknownData2*>(dynobj);
+	obj->field_4C = reinterpret_cast<void*>(CO_COMNFAN->getmodel());
 
 	obj->DeleteSub = ObjectFunc_DynColDelete;
 	obj->MainSub = ObjFan_Main;
 	obj->DisplaySub = ObjFan_Display;
 }
 
-void RingGroup(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1.Entity;
-	if (data->Scale.z) {
+void __cdecl RingGroup(ObjectMaster* obj)
+{
+	auto data = obj->Data1.Entity;
+
+	if (data->Scale.z)
+	{
 		ClipSetObject(obj);
 		return;
 	}
@@ -172,67 +197,76 @@ void RingGroup(ObjectMaster* obj) {
 
 	NJS_VECTOR dir = { 0, 0, 20 * data->Scale.y };
 
-	float* matrix = njPushUnitMatrix();
+	njPushUnitMatrix();
 	NJS_VECTOR* pos = &data->Position;
-	njTranslateV(matrix, pos);
-	njRotateZ(matrix, data->Rotation.z);
-	njRotateY(matrix, data->Rotation.y);
-	njRotateX(matrix, data->Rotation.x);
-	njCalcPoint(matrix, &data->Position, &dir, false);
-	njPopMatrix(1u);
+	njTranslateV(_nj_current_matrix_ptr_, pos);
+	njRotateZ(_nj_current_matrix_ptr_, data->Rotation.z);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
+	njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
+	njCalcVector(_nj_current_matrix_ptr_, &data->Position, &dir, false);
+	njPopMatrixEx();
 
-	obj->MainSub = (ObjectFuncPtr)RingLinearMain;
+	obj->MainSub = reinterpret_cast<ObjectFuncPtr>(RingLinearMain);
 	obj->MainSub(obj);
 }
 
-void DashRampAdjust(ObjectMaster* obj) {
+void __cdecl DashRampAdjust(ObjectMaster* obj)
+{
 	obj->Data1.Entity->Scale.x /= 2;
 	obj->Data1.Entity->Scale.y /= 1.5f;
 
-	obj->MainSub = (ObjectFuncPtr)DashRamp_Main;
+	obj->MainSub = reinterpret_cast<ObjectFuncPtr>(DashRamp_Main);
 	obj->MainSub(obj);
 }
 
-void Beetle_Stationary(ObjectMaster* a1) {
-	EntityData1* entity = a1->Data1.Entity;
+void __cdecl Beetle_Stationary(ObjectMaster* obj)
+{
+	auto entity = obj->Data1.Entity;
 	entity->Rotation.x = 0;
 	entity->Rotation.z = 0xC1;
 	entity->Scale = { 0.10, 3.50, 51 };
-	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
+	obj->MainSub = (ObjectFuncPtr)Beetle_Main;
 }
 
-void Beetle_Attack(ObjectMaster* a1) {
-	EntityData1* entity = a1->Data1.Entity;
+void __cdecl Beetle_Attack(ObjectMaster* obj)
+{
+	auto entity = obj->Data1.Entity;
 	entity->Rotation.x = 0x1;
 	entity->Rotation.z = 0x1C0;
 	entity->Scale = { 4, 1, 150 };
-	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
+	obj->MainSub = (ObjectFuncPtr)Beetle_Main;
 }
 
-void Beetle_Electric(ObjectMaster* a1) {
-	EntityData1* entity = a1->Data1.Entity;
+void __cdecl Beetle_Electric(ObjectMaster* obj)
+{
+	auto entity = obj->Data1.Entity;
 	entity->Rotation.x = 0;
 	entity->Rotation.z = 0x101;
 	entity->Scale = { 0.10, 3.50, 51 };
-	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
+	obj->MainSub = (ObjectFuncPtr)Beetle_Main;
 }
 
-void Robots(ObjectMaster* obj) {
-	if (ClipSetObject(obj)) {
-		EntityData1* entity = obj->Data1.Entity;
-		Float height = GetGroundHeight(entity->Position.x, entity->Position.y + 10.0f, entity->Position.z, &entity->Rotation);
+void __cdecl Robots(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
+		auto entity = obj->Data1.Entity;
+		auto height = GetGroundHeight(entity->Position.x, entity->Position.y + 10.0f, entity->Position.z, &entity->Rotation);
 
-		if (height > -999999.0f) {
+		if (height > -999999.0f)
+		{
 			entity->Position.y = height;
 			entity->Rotation.x = 0x1;
 			entity->Rotation.z = 0x100;
 			entity->Scale = { 0, 1, 126 };
 			obj->MainSub = (ObjectFuncPtr)E_AI;
 
-			if (MainCharObj1[1] && GetDistance(&entity->Position, &MainCharObj1[0]->Position) > GetDistance(&entity->Position, &MainCharObj1[1]->Position)) {
+			if (MainCharObj1[1] && GetDistance(&entity->Position, &MainCharObj1[0]->Position) > GetDistance(&entity->Position, &MainCharObj1[1]->Position))
+			{
 				entity->Rotation.y = fPositionToRotation(&entity->Position, &MainCharObj1[1]->Position).y + 0x4000;
 			}
-			else {
+			else
+			{
 				entity->Rotation.y = fPositionToRotation(&entity->Position, &MainCharObj1[0]->Position).y + 0x4000;
 			}
 		}
@@ -249,28 +283,31 @@ struct breakerData1
 	Float Zoff;
 };
 
-void Breaker_GetPoint(NJS_VECTOR* orig, Rotation* rot, NJS_VECTOR* dir) {
+void Breaker_GetPoint(NJS_VECTOR* orig, Rotation* rot, NJS_VECTOR* dir)
+{
 	njPushUnitMatrix();
 	njRotateZ(_nj_current_matrix_ptr_, rot->z);
 	njRotateX(_nj_current_matrix_ptr_, rot->x);
 	njRotateY(_nj_current_matrix_ptr_, rot->y);
-	njCalcPoint(_nj_current_matrix_ptr_, dir, dir, true);
+	njCalcVector(_nj_current_matrix_ptr_, dir, dir, true);
 	njAddVector(dir, orig);
-	njPopMatrix(1u);
+	njPopMatrixEx();
 }
 
-void ObjectBreaker_Delete(ObjectMaster* obj) {
+static void __cdecl ObjectBreaker_Delete(ObjectMaster* obj)
+{
 	obj->Data1.Entity->Collision = nullptr;
 }
 
-void ObjectBreaker_Display(ObjectMaster* obj) {
+static void __cdecl ObjectBreaker_Display(ObjectMaster* obj)
+{
 	EntityData1* pdata = obj->Parent->Data1.Entity;
 	breakerData1* data = (breakerData1*)obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-	RenderInfo->CurrentTexlist = CurrentLandTable->TextureList;
+	njSetTexture(CurrentLandTable->TextureList);
 
-	njPushMatrix(0);
+	njPushMatrixEx();
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	
 	njRotateZ(_nj_current_matrix_ptr_, pdata->Rotation.z);
@@ -286,10 +323,11 @@ void ObjectBreaker_Display(ObjectMaster* obj) {
 
 	njScalef(pdata->Scale.x);
 	DrawSA2BModel(model->sa2bmodel);
-	njPopMatrix(1);
+	njPopMatrixEx();
 }
 
-void ObjectBreaker_Main(ObjectMaster* obj) {
+static void __cdecl ObjectBreaker_Main(ObjectMaster* obj)
+{
 	EntityData1* pdata = obj->Parent->Data1.Entity;
 	breakerData1* data = (breakerData1*)obj->Data1.Entity;
 
@@ -300,7 +338,8 @@ void ObjectBreaker_Main(ObjectMaster* obj) {
 	data->Position = GetPathPosition(&pdata->Position, &data->Scale, 1.0f + pdata->Scale.z / 10);
 }
 
-void ObjBreaker(ObjectMaster* obj) {
+void __cdecl ObjBreaker(ObjectMaster* obj)
+{
 	EntityData1* data = obj->Data1.Entity;
 
 	data->Scale.z += 1;
@@ -311,7 +350,8 @@ void ObjBreaker(ObjectMaster* obj) {
 	}
 }
 
-void LoadBreaker(NJS_VECTOR* pos, Rotation* rot, NJS_OBJECT* object, Float Xoff, Float Yoff, Float Zoff, Float time) {
+void LoadBreaker(NJS_VECTOR* pos, Rotation* rot, NJS_OBJECT* object, Float Xoff, Float Yoff, Float Zoff, Float time)
+{
 	ObjectMaster* obj = LoadObject(5, "OBJ_BRK", ObjBreaker, LoadObj_Data1);
 	EntityData1* data = obj->Data1.Entity;
 
@@ -341,41 +381,48 @@ void LoadBreaker(NJS_VECTOR* pos, Rotation* rot, NJS_OBJECT* object, Float Xoff,
 	}
 }
 
-void __cdecl ObjCannon(ObjectMaster* obj) {
+void __cdecl ObjCannon(ObjectMaster* obj)
+{
 
 }
 
-void __cdecl OBJCASE(ObjectMaster* obj) {
+void __cdecl OBJCASE(ObjectMaster* obj)
+{
 
 }
 
-void __cdecl e2000_Init(ObjectMaster* obj) {
+void __cdecl e2000_Init(ObjectMaster* obj)
+{
 
 }
 
-void __cdecl Flyer_Init(ObjectMaster* obj) {
+void __cdecl Flyer_Init(ObjectMaster* obj)
+{
 
 }
 
-void __cdecl Flyer_Trigger(ObjectMaster* obj) {
+void __cdecl Flyer_Trigger(ObjectMaster* obj)
+{
 
 }
 
-void __cdecl Laserdoor(ObjectMaster* obj) {
+void __cdecl Laserdoor(ObjectMaster* obj)
+{
 
 }
 
-void CommonObjects_LoadModels() {
+void CommonObjects_LoadModels()
+{
 	LoadTextureList((char*)"heroescmn", &heroescmn_texlist);	
-	CO_DSHHOOP = LoadMDL("CO_DSHHOOP", ModelFormat_SA2B);
-	CO_COMNFAN = LoadMDL("CO_COMNFAN", ModelFormat_SA2B);
-	CO_COMNFANCOL = LoadMDL("CO_COMNFAN", ModelFormat_Basic);
+	LoadMDL(&CO_DSHHOOP, "CO_DSHHOOP", ModelFormat_SA2B);
+	LoadMDL(&CO_COMNFAN, "CO_COMNFAN", ModelFormat_SA2B);
+	LoadMDL(&CO_COMNFANCOL, "CO_COMNFAN", ModelFormat_Basic);
 }
 
 void CommonObjects_FreeModels() {
 	FreeTexList(&heroescmn_texlist);
 
-	FreeMDL(CO_DSHHOOP);
-	FreeMDL(CO_COMNFAN);
-	FreeMDL(CO_COMNFANCOL);
+	FreeMDL(&CO_DSHHOOP);
+	FreeMDL(&CO_COMNFAN);
+	FreeMDL(&CO_COMNFANCOL);
 }

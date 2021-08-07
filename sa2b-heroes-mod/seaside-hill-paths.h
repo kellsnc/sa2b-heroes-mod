@@ -29,7 +29,7 @@ LoopPoint SHPath0_Entries[]{
         { 0, 0, 0, { -20.018049, 30.000000, -5050.000000,  } }
 };
 
-LoopHead SHPath0 = { 1, LengthOfArray<int16_t>(SHPath0_Entries), 1090.638794, SHPath0_Entries, AutoLoop };
+LoopHead SHPath0 = { 1, LengthOfArray<int16_t>(SHPath0_Entries), 1090.638794, SHPath0_Entries, LoopPath };
 
 LoopPoint SHPath1_Entries[]{
         { 0, 0, 44.2935, { 132.033600, 31.679260, -5305.585938,  } },
@@ -63,7 +63,7 @@ LoopPoint SHPath1_Entries[]{
         { 0, 0, 0, { 2.500001, 30.000000, -5050.000000,  } }
 };
 
-LoopHead SHPath1 = { 1, LengthOfArray<int16_t>(SHPath1_Entries), 1191.691895, SHPath1_Entries, AutoLoop };
+LoopHead SHPath1 = { 1, LengthOfArray<int16_t>(SHPath1_Entries), 1191.691895, SHPath1_Entries, LoopPath };
 
 LoopPoint SHPath2_Entries[]{
         { 0, 0, 44.2553, { 164.497696, 31.677790, -5305.670898,  } },
@@ -99,7 +99,7 @@ LoopPoint SHPath2_Entries[]{
         { 0, 0, 0, { 22.486990, 30.000000, -5050.000000,  } }
 };
 
-LoopHead SHPath2 = { 1, LengthOfArray<int16_t>(SHPath2_Entries), 1313.511841, SHPath2_Entries, AutoLoop };
+LoopHead SHPath2 = { 1, LengthOfArray<int16_t>(SHPath2_Entries), 1313.511841, SHPath2_Entries, LoopPath };
 
 LoopPoint SHPath3_Entries[]{
         { 0, 0, 46.6365, { -4541.111816, 28.767059, -7617.125000,  } },
@@ -139,7 +139,7 @@ LoopPoint SHPath3_Entries[]{
         { 0, 0, 0, { -4545.020996, 29.975590, -8050.000000,  } }
 };
 
-LoopHead SHPath3 = { 1, LengthOfArray<int16_t>(SHPath3_Entries), 1567.076538, SHPath3_Entries, AutoLoop };
+LoopHead SHPath3 = { 1, LengthOfArray<int16_t>(SHPath3_Entries), 1567.076538, SHPath3_Entries, LoopPath };
 
 LoopPoint SHPath4_Entries[]{
         { 0, 0, 47.1198, { -4510.000000, 29.989990, -8003.182129,  } },
@@ -181,7 +181,7 @@ LoopPoint SHPath4_Entries[]{
         { 0, 0, 0, { -4510.000000, 30.000000, -7570.000000,  } }
 };
 
-LoopHead SHPath4 = { 1, LengthOfArray<int16_t>(SHPath4_Entries), 1739.602783, SHPath4_Entries, AutoLoop };
+LoopHead SHPath4 = { 1, LengthOfArray<int16_t>(SHPath4_Entries), 1739.602783, SHPath4_Entries, LoopPath };
 
 LoopPoint SHPath5_Entries[]{
         { 0, 0, 47.1213, { -4474.926758, 29.989990, -8003.180176,  } },
@@ -221,7 +221,7 @@ LoopPoint SHPath5_Entries[]{
         { 0, 0, 0, { -4487.441895, 30.000000, -7570.000000,  } }
 };
 
-LoopHead SHPath5 = { 1, LengthOfArray<int16_t>(SHPath5_Entries), 1568.222534, SHPath5_Entries, AutoLoop };
+LoopHead SHPath5 = { 1, LengthOfArray<int16_t>(SHPath5_Entries), 1568.222534, SHPath5_Entries, LoopPath };
 
 LoopPoint SHPath6_Entries[]{
         { 0, 0, 44.3296, { 866.447876, 201.680893, -26655.490234,  } },
@@ -252,7 +252,7 @@ LoopPoint SHPath6_Entries[]{
         { 0, 0, 0, { 749.841614, 200.000000, -26400.000000,  } }
 };
 
-LoopHead SHPath6 = { 1, LengthOfArray<int16_t>(SHPath6_Entries), 1090.585327, SHPath6_Entries, AutoLoop };
+LoopHead SHPath6 = { 1, LengthOfArray<int16_t>(SHPath6_Entries), 1090.585327, SHPath6_Entries, LoopPath };
 
 LoopPoint SHPath7_Entries[]{
         { 0, 0, 44.2944, { 902.033630, 201.679306, -26655.589844,  } },
@@ -286,7 +286,7 @@ LoopPoint SHPath7_Entries[]{
         { 0, 0, 0, { 772.500000, 200.000000, -26400.000000,  } }
 };
 
-LoopHead SHPath7 = { 1, LengthOfArray<int16_t>(SHPath7_Entries), 1191.697266, SHPath7_Entries, AutoLoop };
+LoopHead SHPath7 = { 1, LengthOfArray<int16_t>(SHPath7_Entries), 1191.697266, SHPath7_Entries, LoopPath };
 
 LoopPoint SHPath8_Entries[]{
         { 0, 0, 44.2676, { 801.455872, 201.812607, -26444.089844,  } },
@@ -322,7 +322,7 @@ LoopPoint SHPath8_Entries[]{
         { 0, 0, 0, { 933.138123, 199.989700, -26700.000000,  } }
 };
 
-LoopHead SHPath8 = { 1, LengthOfArray<int16_t>(SHPath8_Entries), 1312.612305, SHPath8_Entries, AutoLoop };
+LoopHead SHPath8 = { 1, LengthOfArray<int16_t>(SHPath8_Entries), 1312.612305, SHPath8_Entries, LoopPath };
 
 LoopPoint SHPath9_Entries[]{
         { 0, 0, 110.019, { -608.739685, 350.323486, -40964.671875,  } },
@@ -358,7 +358,7 @@ LoopPoint SHPath9_Entries[]{
         { 0, 0, 0, { 0.000000, 150.000000, -40829.480469,  } }
 };
 
-LoopHead SHPath9 = { 1, LengthOfArray<int16_t>(SHPath9_Entries), 3280.608887, SHPath9_Entries, AutoLoop };
+LoopHead SHPath9 = { 1, LengthOfArray<int16_t>(SHPath9_Entries), 3280.608887, SHPath9_Entries, LoopPath };
 
 LoopPoint SHPath10_Entries[]{
         { 0, 0, 115.878, { -116.060501, 158.309799, -40850.019531,  } },
@@ -394,7 +394,7 @@ LoopPoint SHPath10_Entries[]{
         { 0, 0, 0, { -720.000000, 350.000000, -41000.000000,  } }
 };
 
-LoopHead SHPath10 = { 1, LengthOfArray<int16_t>(SHPath10_Entries), 3465.406738, SHPath10_Entries, AutoLoop };
+LoopHead SHPath10 = { 1, LengthOfArray<int16_t>(SHPath10_Entries), 3465.406738, SHPath10_Entries, LoopPath };
 
 LoopPoint SHPath11_Entries[]{
         { 0, 0, 106.513, { -106.085197, 154.061905, -40890.011719,  } },
@@ -430,7 +430,7 @@ LoopPoint SHPath11_Entries[]{
         { 0, 0, 0, { -720.000000, 350.000000, -41033.128906,  } }
 };
 
-LoopHead SHPath11 = { 1, LengthOfArray<int16_t>(SHPath11_Entries), 3147.837158, SHPath11_Entries, AutoLoop };
+LoopHead SHPath11 = { 1, LengthOfArray<int16_t>(SHPath11_Entries), 3147.837158, SHPath11_Entries, LoopPath };
 
 LoopPoint SHPath12_Entries[]{
         { 0, 0, 123.909, { -796.255615, 409.396393, -43304.960938,  } },
@@ -471,7 +471,7 @@ LoopPoint SHPath12_Entries[]{
         { 0, 0, 0, { 80.000000, 470.000000, -42805.000000,  } }
 };
 
-LoopHead SHPath12 = { 1, LengthOfArray<int16_t>(SHPath12_Entries), 5955.740723, SHPath12_Entries, AutoLoop };
+LoopHead SHPath12 = { 1, LengthOfArray<int16_t>(SHPath12_Entries), 5955.740723, SHPath12_Entries, LoopPath };
 
 LoopPoint SHPath13_Entries[]{
         { 0, 0, 117.943, { 3792.258057, 471.797089, -44088.570313,  } },
@@ -483,7 +483,7 @@ LoopPoint SHPath13_Entries[]{
         { 0, 0, 0, { 3868.668945, 1303.172974, -44132.691406,  } }
 };
 
-LoopHead SHPath13 = { 1, LengthOfArray<int16_t>(SHPath13_Entries), 846.026245, SHPath13_Entries, AutoLoop };
+LoopHead SHPath13 = { 1, LengthOfArray<int16_t>(SHPath13_Entries), 846.026245, SHPath13_Entries, LoopPath };
 
 LoopPoint SHPath14_Entries[]{
         { 0, 0, 34.4744, { -2059.455078, 430.416504, -6421.018066,  } },
@@ -499,7 +499,7 @@ LoopPoint SHPath14_Entries[]{
         { 0, 0, 0, { -2094.158936, 101.267998, -6421.018066,  } }
 };
 
-LoopHead SHPath14 = { 1, LengthOfArray<int16_t>(SHPath14_Entries), 488.849915, SHPath14_Entries, AutoLoop };
+LoopHead SHPath14 = { 1, LengthOfArray<int16_t>(SHPath14_Entries), 488.849915, SHPath14_Entries, LoopPath };
 
 LoopHead* SeasideHillPathList[] = {
         &SHPath0,

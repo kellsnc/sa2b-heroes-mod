@@ -2,18 +2,14 @@
 
 extern NJS_TEXLIST_ HeroesWater_TexList;
 
-ModelInfo* LoadMDL(const char* name, ModelFormat format);
-AnimationFile* LoadAnim(const char* name);
-void FreeMDL(ModelInfo* pointer);
-void FreeAnim(AnimationFile* pointer);
+void LoadMDL(ModelInfo** info, const char* name, ModelFormat format);
+void LoadAnim(AnimationFile** info, const char* name);
+void FreeMDL(ModelInfo** pointer);
+void FreeAnim(AnimationFile** pointer);
 
-bool ClipSetObject(ObjectMaster* a1);
-float* njPushUnitMatrix();
-void njTranslateV(float* matrix, NJS_VECTOR* pos);
 void njScalef(Float f);
 void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs);
-void njTranslateEx(NJS_VECTOR* v);
-void njTranslateEx(Float x, Float y, Float z);
+void njTranslateXYZ(Float x, Float y, Float z);
 void njTranslateX(Float f);
 void njTranslateY(Float f);
 void njTranslateZ(Float f);
@@ -41,15 +37,16 @@ void MainSub_Collision(ObjectMaster* obj);
 void CommonObjects_LoadModels();
 void CommonObjects_FreeModels();
 
-void DashHoop(ObjectMaster* a1);
-void ObjFan(ObjectMaster* obj);
-void RingGroup(ObjectMaster* obj);
-void DashRampAdjust(ObjectMaster* obj);
-void Boxes(ObjectMaster* a1);
-void Robots(ObjectMaster* a1);
-void Beetle_Stationary(ObjectMaster* a1);
-void Beetle_Attack(ObjectMaster* a1);
-void Beetle_Electric(ObjectMaster* a1);
+bool Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center, float radius, float height);
+void __cdecl DashHoop(ObjectMaster* a1);
+void __cdecl ObjFan(ObjectMaster* obj);
+void __cdecl RingGroup(ObjectMaster* obj);
+void __cdecl DashRampAdjust(ObjectMaster* obj);
+void __cdecl Boxes(ObjectMaster* obj);
+void __cdecl Robots(ObjectMaster* obj);
+void __cdecl Beetle_Stationary(ObjectMaster* obj);
+void __cdecl Beetle_Attack(ObjectMaster* obj);
+void __cdecl Beetle_Electric(ObjectMaster* obj);
 void __cdecl ObjCannon(ObjectMaster* obj);
 void __cdecl OBJCASE(ObjectMaster* obj);
 void __cdecl e2000_Init(ObjectMaster* obj);

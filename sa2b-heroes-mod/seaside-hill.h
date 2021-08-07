@@ -6,17 +6,17 @@ StartPosition sh_endpos = { LevelIDs_CityEscape, 0x4000, 0, 0, { 1400.0f, 1075.0
 LevelEndPosition sh_2pintro = { LevelIDs_CityEscape, 0, 0, 0, { 0.0f, 310.0f, -2000.0f }, { 0.0f, 310.0f, -2000.0f } };
 LevelEndPosition sh_endpos23 = { LevelIDs_CityEscape, 0, 0x4000, 0, { -4530.0f, 100.0f, -12200 }, { -4530.0f, 100.0f, -12200 } };
 
-CollisionData Col_Pole = { 0x100, 0xE077, 0, { 0, 0, 0 }, 10, 80, 10, 0, 0, 0, 0 };
-CollisionData Col_Platform = { 0x300, 0xE077, 0, { 0, 0, 0 }, 25, 15, 25, 0, 0, 0, 0 };
-CollisionData Col_BreakBlock = { 0x300, 0xE077, 0, { 0, 17.5f, 0 }, 25.0f, 35.0f, 25.0f, 0, 0, 0, 0 };
+CollisionData Col_Pole = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 10.0f, 80.0f, 10.0f };
+CollisionData Col_Platform = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 25.0f, 15.0f, 25.0f };
+CollisionData Col_BreakBlock = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 17.5f, 0.0f }, 25.0f, 35.0f, 25.0f };
 
-CollisionData Col_MvPltfrm3 = { 0x300, 0xE077, 0, { 0, 0, 0 }, 24, 200, 24, 0, 0, 0, 0 };
-CollisionData Col_MvPltfrm2 = { 0x300, 0xE077, 0, { 0, 0, 0 }, 75, 200, 75, 0, 0, 0, 0 };
+CollisionData Col_MvPltfrm3 = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 24.0f, 200.0f, 24.0f };
+CollisionData Col_MvPltfrm2 = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 75.0f, 200.0f, 75.0f };
 
 CollisionData Col_MvPltfrm1[] = {
-	{ 0x300, 0xE077, 0, { 0, 0, 0 }, 150, 300, 250, 0, 0, 0, 0 },
-	{ 0x300, 0xE077, 0, { 133, 300, 0 }, 15, 80, 250, 0, 0, 0, 0 },
-	{ 0x300, 0xE077, 0, { -133, 300, 0 }, 15, 80, 250, 0, 0, 0, 0 }
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 150, 300, 250, 0, 0, 0, 0 },
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 133.0f, 300.0f, 0.0f }, 15, 80, 250, 0, 0, 0, 0 },
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { -133.0f, 300.0f, 0.0f }, 15, 80, 250, 0, 0, 0, 0 }
 };
 
 NJS_TEXNAME_ seasidehill_texname[]{
