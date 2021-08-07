@@ -1,21 +1,24 @@
 #include "stdafx.h"
 
-Uint32 Timer = 0;
+static Uint32 Timer = 0;
 HelperFunctions HelperFunctionsGlobal;
 
 HeroesLevelIDs CurrentHeroesLevel = HeroesLevelIDs::Invalid;
 NJS_TEXLIST* CurrentHeroesTexList = nullptr;
 
-NJS_TEXLIST* GetCurrentHeroesTexList() {
+NJS_TEXLIST* GetCurrentHeroesTexList()
+{
 	return CurrentHeroesTexList;
 }
 
-Uint32 GetTimer() {
+Uint32 GetTimer()
+{
 	return Timer;
 }
 
 // Load the common texpacks, and fill the many common texlists
-void CommonLevelInit() {
+void CommonLevelInit()
+{
 	DropRingsFunc_ptr = DropRings;
 	DisplayItemBoxItemFunc_ptr = DisplayItemBoxItem;
 
@@ -33,7 +36,8 @@ void CommonLevelInit() {
 }
 
 //Delete the heroes landtable at stage exit
-void CommonLevelDelete() {
+void CommonLevelDelete()
+{
 	CommonObjects_FreeModels();
 	FreeTexPacks((NJS_TEXLIST***)0x109E748, (TexPackInfo*)0x109E810);
 	
@@ -56,7 +60,8 @@ void CommonLevelDelete() {
 }
 
 //Load the current level music
-void LoadLevelMusic(char* name) {
+void LoadLevelMusic(char* name)
+{
 	char character;
 	int c = 0;
 
@@ -64,14 +69,15 @@ void LoadLevelMusic(char* name) {
 	{
 		character = name[c];
 		CurrentSongName[c++] = character;
-	} while (character);
+	}
+	while (character);
 
-	
 	PlayMusic(name);
 	ResetMusic();
 }
 
-void LoadLevelTex(NJS_TEXLIST* texlist, const char* name) {
+void LoadLevelTex(NJS_TEXLIST* texlist, const char* name)
+{
 	LoadTextureList(name, texlist);
 	CurrentHeroesTexList = texlist;
 	CurrentLevelTexList = texlist;
@@ -79,7 +85,8 @@ void LoadLevelTex(NJS_TEXLIST* texlist, const char* name) {
 	CurrentLandTable->TextureName = (char*)name;
 }
 
-void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u) {
+void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u)
+{
 	for (uint8_t i = 0; i < objlist->Count; ++i) {
 		CityEscape_ObjectArray[i] = objlist->List[i];
 	}
@@ -89,7 +96,8 @@ void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u) {
 }
 
 //Set the start and end positions
-void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* start, LevelEndPosition* start2pIntro, StartPosition* end, LevelEndPosition* missionend) {
+void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* start, LevelEndPosition* start2pIntro, StartPosition* end, LevelEndPosition* missionend)
+{
 	for (uint8_t i = 0; i < Characters_Amy; i++)
 	{
 		helperFunctions.RegisterStartPosition(i, *start);
@@ -103,8 +111,10 @@ void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* st
 	}
 }
 
-void FixCamera(int player) {
-	if (MainCharObj2[player] && MainCharObj2[player]->Speed.x > 0.5f) {
+void FixCamera(int player)
+{
+	if (MainCharObj2[player] && MainCharObj2[player]->Speed.x > 0.5f)
+	{
 		CameraScreensInfoArray[player]->pos.y += 0.7f;
 	}
 }
@@ -113,7 +123,8 @@ extern "C"
 {
 	__declspec(dllexport) void Init(const char *path, const HelperFunctions &helperFunctions)
 	{
-		if (helperFunctions.Version < 7) {
+		if (helperFunctions.Version < 7)
+		{
 			MessageBoxA(MainWindowHandle,
 				"Your copy of the Mod Loader is outdated, please update it to the latest version.",
 				"SA2B Heroes Conversion",
@@ -128,15 +139,18 @@ extern "C"
 	}
 
 	__declspec(dllexport) void OnFrame() {
-		if (GameState == GameStates_Ingame) {
+		if (GameState == GameStates_Ingame)
+		{
 			Timer += 1;
 		}
-		else if (GameState != GameStates_Pause) {
+		else if (GameState != GameStates_Pause)
+		{
 			Timer = 0;
 		}
 
 		if (GameState == GameStates_Ingame &&
-			CurrentHeroesLevel != HeroesLevelIDs::Invalid) {
+			CurrentHeroesLevel != HeroesLevelIDs::Invalid)
+		{
 			if (MainCharObj1[0]) FixCamera(0);
 			if (MainCharObj1[1]) FixCamera(1);
 		}
