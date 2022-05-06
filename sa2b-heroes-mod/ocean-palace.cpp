@@ -308,6 +308,18 @@ static void __cdecl OPLandMove_Display(ObjectMaster* obj)
 	}
 }
 
+static void __cdecl OPLandMoveCamera(CameraInfo* cam, CameraParam* param)
+{
+	CameraPos = { 2360.0f, 112.0f, -31000.0f };
+	CameraTgt = MainCharObj1[CurrentScreen]->Position;
+	CameraTargetMode = 0;
+
+	if (CameraTgt.z < -31200.0f)
+	{
+		ReleaseCamera(CurrentScreen, cam->currentCameraSlot);
+	}
+}
+
 static void __cdecl OPLandMove_Main(ObjectMaster* obj)
 {
 	auto data = obj->Data1.Entity;
@@ -332,6 +344,8 @@ static void __cdecl OPLandMove_Main(ObjectMaster* obj)
 	{
 		if (IsPlayerIDInsideSphere(2100.0f, 280.0f, -30300.0f, 100.0f, playerid))
 		{
+			RegisterEventCameraFunc(playerid, OPLandMoveCamera);
+			SetAdjustMode(playerid, GetCurrentCameraSlot(playerid), CameraAdjust_None);
 			data->Action = 2;
 		}
 
@@ -339,10 +353,6 @@ static void __cdecl OPLandMove_Main(ObjectMaster* obj)
 		{
 			data->Scale.y += 2.5f;
 		}
-	}
-	else
-	{
-		pCameraLocations[playerid]->pos = { 2360.0f, 112.0f, -31000.0f };
 	}
 }
 
@@ -393,7 +403,7 @@ static void __cdecl BoulderPath(ObjectMaster *obj)
 				if (data->Scale.x > 1) { data->Scale.x = 0; data->Timer++; }
 				data->Rotation.x += 1500;
 
-				data->Status = IsPlayerInsideSphere(&data->Position, 130.0f);
+				data->Status = IsPlayerInsideSphere(&data->Position, 120.0f);
 
 				if (data->Status)
 				{
@@ -502,53 +512,73 @@ static void __cdecl OPBoulders(ObjectMaster *obj)
 	}
 }
 
-NJS_VECTOR pos;
+struct BoulderCamWk
+{
+	NJS_VECTOR pos;
+	NJS_VECTOR pos2;
+	int point;
+	float dist;
+};
+
+static void __cdecl BoulderCamera(CameraInfo* cam, CameraParam* param)
+{
+	auto work = (BoulderCamWk*)&param->work;
+	auto loopdata = &OP_BoulderPaths[0];
+
+	if (work->point == 79)
+	{
+		ReleaseCamera(CurrentScreen, cam->currentCameraSlot);
+		return;
+	}
+
+	float dist = GetDistance(&work->pos, &MainCharObj1[0]->Position);
+	float speed = (1 - (dist / 500)) * 24;
+	if (speed < 0) speed = 0;
+
+	work->dist += (loopdata->TotalDistance / loopdata->Points[work->point].Distance) / loopdata->TotalDistance * speed;
+
+	auto pos1 = loopdata->Points[work->point].Position;
+	auto pos2 = loopdata->Points[work->point + 1].Position;
+
+	NJS_VECTOR fixoffset = { 9000, -1.8f, 2900 };
+
+	njAddVector(&pos1, &fixoffset);
+	njAddVector(&pos2, &fixoffset);
+
+	TransformSpline(&work->pos, &pos1, &pos2, work->dist);
+	work->pos.y -= 50.0f;
+	if (work->dist > 1) { work->dist = 0; work->point++; }
+
+	CameraPos = work->pos;
+	CameraTgt = MainCharObj1[CurrentScreen]->Position;
+	CameraTargetMode = 0;
+}
 
 static void __cdecl BoulderCam(ObjectMaster* obj)
 {
 	auto data = obj->Data1.Entity;
-	
-	if (IsPlayerInsideSphere(&data->Position, data->Scale.y))
+	auto player = IsPlayerInsideSphere(&data->Position, data->Scale.y) - 1;
+
+	if (player >= 0)
 	{
-		if (data->Scale.x == 8)
+		if (data->Scale.x == 8.0f)
 		{
-			pos = OP_BoulderPaths[0].Points[10].Position;
-			data->Timer = 10;
-			data->Scale.z = 0;
-			data->Action = 1;
+			if (data->Action == 0)
+			{
+				auto param = RegisterEventCameraFunc(player, BoulderCamera);
+				auto work = (BoulderCamWk*)&param->work;
+				work->pos = OP_BoulderPaths[0].Points[10].Position;
+				work->dist = 0.0f;
+				work->point = 10;
+				SetAdjustMode(player, GetCurrentCameraSlot(player), CameraAdjust_Three1);
+				data->Action = 1;
+			}
 		}
 		else
 		{
 			data->Action = 0;
 			data->Timer = 0;
 		}
-	}
-
-	if (data->Action == 1)
-	{
-		LoopHead* loopdata = &OP_BoulderPaths[0];
-
-		if (data->Timer == 79) return;
-
-		float dist = GetDistance(&pos, &MainCharObj1[0]->Position);
-		float speed = (1 - (dist / 500)) * 24;
-		if (speed < 0) speed = 0;
-
-		data->Scale.z = data->Scale.z + (loopdata->TotalDistance / loopdata->Points[data->Timer].Distance) / loopdata->TotalDistance * speed;
-
-		auto pos1 = loopdata->Points[data->Timer].Position;
-		auto pos2 = loopdata->Points[data->Timer + 1].Position;
-
-		NJS_VECTOR fixoffset = { 9000, -1.8f, 2900 };
-
-		njAddVector(&pos1, &fixoffset);
-		njAddVector(&pos2, &fixoffset);
-		
-		TransformSpline(&CameraData->location.pos, &pos1, &pos2, data->Scale.z);
-		CameraData->location.pos.y -= 50.0f;
-		if (loopdata->Points[data->Timer].YRot != 0) data->Rotation.y = loopdata->Points[data->Timer].YRot;
-		if (data->Scale.z > 1) { data->Scale.z = 0; data->Timer++; }
-		pos = CameraData->location.pos;
 	}
 }
 
@@ -950,7 +980,7 @@ static ObjectListEntry OceanPalaceObjectList_list[]
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKET },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKETMISSILE },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, (ObjectFuncPtr)CHAOPIPE },
-	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, Minimal_Exec },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, (ObjectFuncPtr)0x48ADE0 },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 4000000, (ObjectFuncPtr)KDITEMBOX },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_Default, 0, Checkpoint_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)CWALL },

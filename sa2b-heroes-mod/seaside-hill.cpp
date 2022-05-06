@@ -369,7 +369,7 @@ static ObjectListEntry SeasideHillObjectList_list[]
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKET },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKETMISSILE },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, (ObjectFuncPtr)CHAOPIPE },
-	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, Minimal_Exec },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, (ObjectFuncPtr)0x48ADE0 },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 4000000, (ObjectFuncPtr)KDITEMBOX },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_Default, 0, Checkpoint_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)CWALL },
@@ -419,12 +419,24 @@ static ObjectListEntry SeasideHillObjectList_list[]
 
 static ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList_list) };
 
+static void __cdecl SeasideHillCam(CameraInfo* cam, CameraParam* param)
+{
+	CameraPos = { 1295.0f, 2300.0f, -32873.0f };
+	CameraTgt = MainCharObj1[CurrentScreen]->Position;
+	CameraTargetMode = 0;
+
+	if (CameraTgt.z < -32873.0f)
+	{
+		ReleaseCamera(CurrentScreen, cam->currentCameraSlot);
+	}
+}
+
 static void __cdecl SeasideHill_Main(ObjectMaster* obj)
 {
 	AnimateTexlist(&HeroesWater_TexList, 2, (Uint32*)&obj->Data1.Entity->Scale.x, (void**)&obj->field_4C);
 
 	// Temporary camera for SH
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < 4; ++i)
 	{
 		auto cam = pCameraLocations[i];
 		auto player = MainCharObj1[i];
@@ -433,7 +445,11 @@ static void __cdecl SeasideHill_Main(ObjectMaster* obj)
 		{
 			if (player->Position.z < -31317.0f && player->Position.z > -32873.0f)
 			{
-				cam->pos = { 1295.0f, 2300.0f, -32873.0f };
+				if (GetCameraMode(i, GetCurrentCameraSlot(i)) != CameraMode_User)
+				{
+					RegisterEventCameraFunc(i, SeasideHillCam);
+					SetAdjustMode(i, GetCurrentCameraSlot(i), CameraAdjust_None);
+				}
 			}
 		}
 	}
