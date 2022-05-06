@@ -24,7 +24,7 @@ bool CheckLandVisibility(Sint32 chunk, NJS_VECTOR* position)
 		return true;
 	}
 
-	for (int i = 0; i < LengthOfArray(ChunkInfos); ++i)
+	for (size_t i = 0; i < LengthOfArray(ChunkInfos); ++i)
 	{
 		if (chunk == ChunkInfos[i].ChunkID &&
 			position->x >= ChunkInfos[i].MinX && position->x <= ChunkInfos[i].MaxX &&
@@ -78,7 +78,7 @@ void LoadChunkFile(const char* path)
 	file.open(HelperFunctionsGlobal.GetReplaceablePath(path), std::ios::in | std::ios::binary);
 	file.read((char*)&ChunkInfos[0], SizeOfArray(ChunkInfos));
 
-	for (int i = 0; i < LengthOfArray(ChunkInfos); ++i)
+	for (size_t i = 0; i < LengthOfArray(ChunkInfos); ++i)
 	{
 		SWAPITSELF(ChunkInfos[i].ChunkID, bswap_S32);
 		SWAPITSELF(ChunkInfos[i].MinX, bswap_S32);

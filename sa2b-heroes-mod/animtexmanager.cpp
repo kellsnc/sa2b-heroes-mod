@@ -86,7 +86,7 @@ void LoadAnimTexManager() {
 
             NJS_TEXLIST_* texlist = (NJS_TEXLIST_*)GetCurrentHeroesTexList();
 
-            for (Uint16 tex = 0; tex < texlist->nbTexture; ++tex)
+            for (uint32_t tex = 0; tex < texlist->nbTexture; ++tex)
             {
                 std::string temp1 = texlist->textures[tex].filename;
 
@@ -94,7 +94,7 @@ void LoadAnimTexManager() {
                 if (temp1.compare(entry->FirstFrameTextureName) == 0)
                 {
                     entry->OriginalTex = texlist->textures[tex].texaddr; // Store first texture pointer
-                    entry->TextureOffset = tex;
+                    entry->TextureOffset = static_cast<Uint8>(tex);
                 }
             }
         }
@@ -143,7 +143,7 @@ void LoadTXCFile(const char* path)
             }
 
             // Add frame entries to struct
-            animtexentry.FrameEntryCount = AnimTexFrameEntriesVector.size();
+            animtexentry.FrameEntryCount = static_cast<Uint8>(AnimTexFrameEntriesVector.size());
             animtexentry.Frames = new AnimTexFrameEntry[animtexentry.FrameEntryCount]();
 
             for (Uint8 i = 0; i < animtexentry.FrameEntryCount; ++i)

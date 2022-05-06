@@ -18,18 +18,18 @@ static ModelInfo * OP_LNDFALLCOL;
 
 static NJS_TEXLIST_ oceanpalace_texlist = { arrayptrandlength(oceanpalace_texname) };
 
-static CollisionData Col_OPBreakBlock = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 10.0f, 17.5f, 0 }, 30.0f, 30.0f, 20.0f, 0, 0, 0, 0 };
-static CollisionData Col_OPBreakDoor = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0, 50.0f, -43.75f }, 40.0f, 100.0f, 10.0f, 0, 0, 0, 0 };
+static CollisionData Col_OPBreakBlock = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 10.0f, 17.5f, 0.0f }, 30.0f, 30.0f, 20.0f, 0.0f, 0, 0, 0 };
+static CollisionData Col_OPBreakDoor = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 50.0f, -43.75f }, 40.0f, 100.0f, 10.0f, 0.0f, 0, 0, 0 };
 
 static CollisionData Col_OPBlocks[] = {
-	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { -40.0f, 25.0f , 0 }, 30.0f, 30.0f, 20.0f, 0, 0, 0, 0 },
-	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 40.0f, 25.0f, 0 }, 30.0f, 30.0f, 20.0f, 0, 0, 0, 0 },
-	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0, 25.0f, 0 }, 80.0f, 30.0f, 20.0f, 0, 0, 0, 0 }
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { -40.0f, 25.0f , 0.0f }, 30.0f, 30.0f, 20.0f, 0.0f, 0, 0, 0 },
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 40.0f, 25.0f, 0.0f }, 30.0f, 30.0f, 20.0f, 0.0f, 0, 0, 0 },
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 25.0f, 0.0f }, 80.0f, 30.0f, 20.0f, 0.0f, 0, 0, 0 }
 };
 
 static CollisionData Col_OPPillar[] = {
-	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 60.0f, 32.8f, 0 }, 12.5f, 25.0f, 12.5f, 0, 0, 0, 0 },
-	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { -60.0f, 32.8f, 0 }, 12.5f, 25.0f, 12.5f, 0, 0, 0, 0 }
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 60.0f, 32.8f, 0 }, 12.5f, 25.0f, 12.5f, 0.0f, 0, 0, 0 },
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { -60.0f, 32.8f, 0 }, 12.5f, 25.0f, 12.5f, 0.0f, 0, 0, 0 }
 };
 
 extern CollisionData Col_Pole;
@@ -289,7 +289,7 @@ static void __cdecl OPLandMove_Display(ObjectMaster* obj)
 
 		njSetTexture(CurrentLevelTexList);
 		njPushMatrixEx();
-		njTranslate(_nj_current_matrix_ptr_, 2100, 0, -44000);
+		njTranslate(_nj_current_matrix_ptr_, 2100.0f, 0.0f, -44000.0f);
 		njTranslateZ(data->Scale.y);
 
 		njPushMatrixEx();
@@ -299,7 +299,7 @@ static void __cdecl OPLandMove_Display(ObjectMaster* obj)
 			njPopMatrixEx();
 		}
 
-		njTranslate(_nj_current_matrix_ptr_, -2500, 0, 29000);
+		njTranslate(_nj_current_matrix_ptr_, -2500.0f, 0.0f, 29000.0f);
 		njScalef(2.0f);
 		DrawSA2BModel(model->sibling->sa2bmodel);
 		DrawSA2BModel(model->sibling->sibling->sa2bmodel);
@@ -445,20 +445,20 @@ static void __cdecl OPBoulders_Display(ObjectMaster *obj)
 
 	njSetTexture(CurrentLevelTexList);
 	njPushMatrixEx();
-	njTranslate(_nj_current_matrix_ptr_, 9000, -1.8f, 2900);
+	njTranslate(_nj_current_matrix_ptr_, 9000.0f, -1.8f, 2900.0f);
 
 	switch (data->Action)
 	{
 	case 1:
-		njTranslate(_nj_current_matrix_ptr_, -8200.3408f, 2030, -39259.3);
+		njTranslate(_nj_current_matrix_ptr_, -8200.3408f, 2030.0f, -39259.3f);
 		njRotateY(_nj_current_matrix_ptr_, 32768);
 		break;
 	case 2:
-		njTranslate(_nj_current_matrix_ptr_, -8274.9741f, 1363, -44980.36);
+		njTranslate(_nj_current_matrix_ptr_, -8274.9741f, 1363.0f, -44980.36f);
 		njRotateY(_nj_current_matrix_ptr_, 24735);
 		break;
 	case 3:
-		njTranslate(_nj_current_matrix_ptr_, -6785.288f, 963, -46514.48);
+		njTranslate(_nj_current_matrix_ptr_, -6785.288f, 963.0f, -46514.48f);
 		njRotateY(_nj_current_matrix_ptr_, 32768);
 		break;
 	}
@@ -1029,7 +1029,7 @@ static ObjectListEntry OceanPalaceObjectList_list[]
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1560000, (ObjectFuncPtr)LIGHT_SW },
 };
 
-static ObjectListHead OceanPalaceObjectList = { arraylengthandptr(OceanPalaceObjectList_list) };
+static ObjectListHead OceanPalaceObjectList = { arraylengthandptrT(OceanPalaceObjectList_list, int) };
 
 static void __cdecl OceanPalace_SkyBox(ObjectMaster* obj)
 {

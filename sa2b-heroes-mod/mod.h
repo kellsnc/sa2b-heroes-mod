@@ -88,8 +88,10 @@ static inline char Play3DSound_Vector(int id, NJS_VECTOR* pos, int unk, char ban
 	char result;
 	__asm
 	{
-		push[volume]
-		push[bank]
+		movzx eax, [volume]
+		push eax
+		movzx eax, [bank]
+		push eax
 		push[unk]
 		mov esi, [pos]
 		mov edi, [id]

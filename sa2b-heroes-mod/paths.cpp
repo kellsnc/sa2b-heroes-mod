@@ -3,7 +3,7 @@
 
 NJS_OBJECT* PropellerModel = nullptr;
 
-CollisionData Prop_col = { 0, CollisionShape_Sphere, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 1.0f, 1.0f, 1.0f };
+CollisionData Prop_col = { 0, CollisionShape_Sphere, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 1.0f, 1.0f, 1.0f, 0.0f, 0, 0, 0 };
 
 enum PropellerActions {
 	PropellerAction_CheckForPlayer,
@@ -135,7 +135,7 @@ void Propeller_CheckForPlayer(ObjectMaster* obj, PathControl* ctrl, EntityData1*
 	if (player && !((1 << (player - 1)) & ctrl->Player)) {
 		data->Action = PropellerAction_Run;
 		data->field_2 = player - 1;
-		ctrl->Player |= 1 << player - 1;
+		ctrl->Player |= 1 << (player - 1);
 
 		Propeller_SetAnimation(MainCharObj1[player - 1], MainCharObj2[player - 1]);
 	}
@@ -216,7 +216,7 @@ void PropellerPath_Main(ObjectMaster* obj) {
 
 		// When the ground is found, place the propeller more precisely
 		if (data->field_2 == 0 && GetTimer() % 60 == 0) {
-			Float height = GetGroundHeight(ctrl->loophead->Points[0].Position.x, ctrl->loophead->Points[0].Position.y, ctrl->loophead->Points[0].Position.z, &data->Rotation);
+			float height = (float)GetGroundHeight(ctrl->loophead->Points[0].Position.x, ctrl->loophead->Points[0].Position.y, ctrl->loophead->Points[0].Position.z, &data->Rotation);
 
 			if (height > -999999) {
 				data->Position.y = height;

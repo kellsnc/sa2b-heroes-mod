@@ -58,7 +58,7 @@ static void __cdecl EFBigFan_Display(ObjectMaster* obj)
 	njTranslateEx(&data->Position);
 	njRotateY_(data->Rotation.y);
 	DrawSA2BModel(model->sa2bmodel);
-	njRotateY_(data->Scale.z);
+	njRotateY_(static_cast<Angle>(data->Scale.z));
 	DrawSA2BModel(model->child->sa2bmodel);
 	njPopMatrixEx();
 }
@@ -165,7 +165,7 @@ static void __cdecl EFCannon(ObjectMaster* obj)
 
 static void EFPlatforms_Move(EntityData1* data)
 {
-	NJS_VECTOR vec = { 0, 20 - (40 * (1.0 - powf(njSin(data->Timer), 2))), 0 };
+	NJS_VECTOR vec = { 0.0f, 20.0f - (40.0f * (1.0f - powf(njSin(data->Timer), 2.0f))), 0.0f };
 	data->Timer += 50;
 
 	njPushUnitMatrix();
@@ -456,13 +456,13 @@ static void __cdecl EFAntenna_Display(ObjectMaster* obj)
 
 	if (data->Scale.x == 0)
 	{
-		njRotateY_(data->Scale.y);
+		njRotateY_(static_cast<Angle>(data->Scale.y));
 		DrawSA2BModel(model->sa2bmodel);
 	}
 	else
 	{
 		DrawSA2BModel(model->child->sa2bmodel);
-		njRotateY_(data->Scale.y);
+		njRotateY_(static_cast<Angle>(data->Scale.y));
 		DrawSA2BModel(model->child->child->sa2bmodel);
 	}
 
@@ -566,7 +566,7 @@ static void __cdecl EFHelice_Display(ObjectMaster* obj)
 	njRotateY_(data->Rotation.y);
 	njRotateX_(data->Rotation.x);
 	DrawSA2BModel(model->sa2bmodel);
-	njRotateZ_(data->Scale.z);
+	njRotateZ_(static_cast<Angle>(data->Scale.z));
 	DrawSA2BModel(model->child->sa2bmodel);
 	DrawSA2BModel(model->child->child->sa2bmodel);
 	njPopMatrixEx();
@@ -719,7 +719,7 @@ static ObjectListEntry EggFleetObjectList_list[]
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, EFEndRail }
 };
 
-static ObjectListHead EggFleetObjectList = { arraylengthandptr(EggFleetObjectList_list) };
+static ObjectListHead EggFleetObjectList = { arraylengthandptrT(EggFleetObjectList_list, int) };
 
 static void __cdecl EggFleet_SkyBox(ObjectMaster* obj)
 {

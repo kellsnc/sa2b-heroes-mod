@@ -103,10 +103,10 @@ static void __cdecl ObjFan_Display(ObjectMaster *obj)
 
 	njSetTexture(&heroescmn_texlist);
 	njPushMatrixEx();
-	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
-	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y + 0x4000);
+	njTranslateEx(&data->Position);
+	njRotateY_(data->Rotation.y + 0x4000);
 	DrawSA2BModel(CO_COMNFAN->getmodel()->sa2bmodel);
-	njRotateY(_nj_current_matrix_ptr_, data->Scale.z);
+	njRotateY_(static_cast<Angle>(data->Scale.z));
 	DrawSA2BModel(CO_COMNFAN->getmodel()->child->sa2bmodel);
 	njPopMatrixEx();
 }
@@ -224,7 +224,7 @@ void __cdecl Beetle_Stationary(ObjectMaster* obj)
 	auto entity = obj->Data1.Entity;
 	entity->Rotation.x = 0;
 	entity->Rotation.z = 0xC1;
-	entity->Scale = { 0.10, 3.50, 51 };
+	entity->Scale = { 0.10f, 3.5f, 51.0f };
 	obj->MainSub = (ObjectFuncPtr)Beetle_Main;
 }
 
@@ -242,7 +242,7 @@ void __cdecl Beetle_Electric(ObjectMaster* obj)
 	auto entity = obj->Data1.Entity;
 	entity->Rotation.x = 0;
 	entity->Rotation.z = 0x101;
-	entity->Scale = { 0.10, 3.50, 51 };
+	entity->Scale = { 0.10f, 3.50f, 51.0f };
 	obj->MainSub = (ObjectFuncPtr)Beetle_Main;
 }
 
@@ -251,7 +251,7 @@ void __cdecl Robots(ObjectMaster* obj)
 	if (!ClipSetObject(obj))
 	{
 		auto entity = obj->Data1.Entity;
-		auto height = GetGroundHeight(entity->Position.x, entity->Position.y + 10.0f, entity->Position.z, &entity->Rotation);
+		float height = (float)GetGroundHeight(entity->Position.x, entity->Position.y + 10.0f, entity->Position.z, &entity->Rotation);
 
 		if (height > -999999.0f)
 		{

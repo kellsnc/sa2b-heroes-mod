@@ -2,21 +2,21 @@
 
 //StartPosition sh_startpos = { LevelIDs_CityEscape, 0xBFFF, 0xBFFF, 0xBFFF, { 0.0f, 20.0f , 2960.0f }, { -50.0f, 140.0f, 850.0f }, { 50.0f, 140.0f, 850.0f } }; for the 2P version
 StartPosition sh_startpos = { LevelIDs_CityEscape, 0xBFFF, 0xBFFF, 0xBFFF, { 0.0f, 20.0f , 2960.0f }, { -10.0f, 20.0f , 2960.0f }, { 10.0f, 20.0f, 2960.0f } };
-StartPosition sh_endpos = { LevelIDs_CityEscape, 0x4000, 0, 0, { 1400.0f, 1075.0f, -42710.0f }, { -4530.0f, 100.0f, -12200 }, { -4530.0f, 100.0f, -12200 } };
+StartPosition sh_endpos = { LevelIDs_CityEscape, 0x4000, 0, 0, { 1400.0f, 1075.0f, -42710.0f }, { -4530.0f, 100.0f, -12200.0f }, { -4530.0f, 100.0f, -12200.0f } };
 LevelEndPosition sh_2pintro = { LevelIDs_CityEscape, 0, 0, 0, { 0.0f, 310.0f, -2000.0f }, { 0.0f, 310.0f, -2000.0f } };
-LevelEndPosition sh_endpos23 = { LevelIDs_CityEscape, 0, 0x4000, 0, { -4530.0f, 100.0f, -12200 }, { -4530.0f, 100.0f, -12200 } };
+LevelEndPosition sh_endpos23 = { LevelIDs_CityEscape, 0, 0x4000, 0, { -4530.0f, 100.0f, -12200.0f }, { -4530.0f, 100.0f, -12200.0f } };
 
-CollisionData Col_Pole = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 10.0f, 80.0f, 10.0f };
-CollisionData Col_Platform = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 25.0f, 15.0f, 25.0f };
-CollisionData Col_BreakBlock = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 17.5f, 0.0f }, 25.0f, 35.0f, 25.0f };
+CollisionData Col_Pole = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 10.0f, 80.0f, 10.0f, 0.0f, 0, 0, 0 };
+CollisionData Col_Platform = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 25.0f, 15.0f, 25.0f, 0.0f, 0, 0, 0 };
+CollisionData Col_BreakBlock = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 17.5f, 0.0f }, 25.0f, 35.0f, 25.0f, 0.0f, 0, 0, 0 };
 
-CollisionData Col_MvPltfrm3 = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 24.0f, 200.0f, 24.0f };
-CollisionData Col_MvPltfrm2 = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 75.0f, 200.0f, 75.0f };
+CollisionData Col_MvPltfrm3 = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 24.0f, 200.0f, 24.0f, 0.0f, 0, 0, 0 };
+CollisionData Col_MvPltfrm2 = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 75.0f, 200.0f, 75.0f, 0.0f, 0, 0, 0 };
 
 CollisionData Col_MvPltfrm1[] = {
-	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 150, 300, 250, 0, 0, 0, 0 },
-	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 133.0f, 300.0f, 0.0f }, 15, 80, 250, 0, 0, 0, 0 },
-	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { -133.0f, 300.0f, 0.0f }, 15, 80, 250, 0, 0, 0, 0 }
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 0.0f, 0.0f, 0.0f }, 150.0f, 300.0f, 250.0f, 0.0f, 0, 0, 0 },
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { 133.0f, 300.0f, 0.0f }, 15.0f, 80.0f, 250.0f, 0.0f, 0, 0, 0 },
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0, { -133.0f, 300.0f, 0.0f }, 15.0f, 80.0f, 250.0f, 0.0f, 0, 0, 0 }
 };
 
 NJS_TEXNAME_ seasidehill_texname[]{

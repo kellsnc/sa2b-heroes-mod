@@ -84,7 +84,7 @@ static void __cdecl SHWaterfallSmall(ObjectMaster* obj)
 {
 	auto data = obj->Data1.Entity;
 
-	obj->field_4C = reinterpret_cast<void*>(GetChildModelByIndex(SH_WATERFS->getmodel(), data->Scale.x));
+	obj->field_4C = reinterpret_cast<void*>(GetChildModelByIndex(SH_WATERFS->getmodel(), static_cast<int>(data->Scale.x)));
 
 	Play3DSound_EntityPosBank(data, 7, &data->Position, 30, 7);
 
@@ -116,7 +116,7 @@ static void __cdecl SHFlag_DisplayAlpha(ObjectMaster* obj)
 	njPushMatrixEx();
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njScalef(data->Scale.z);
-	njRotateY(_nj_current_matrix_ptr_, 0x2000 + (-0x500 + (0x1000 * (1 - (sin(GetTimer()) / 10)))));
+	njRotateY_(0x2000 + (-0x500 + (0x1000 * (Angle)(1.0f - (sin(GetTimer()) / 10.0f)))));
 	DrawSA2BModel(model->child->sa2bmodel);
 	njPopMatrixEx();
 }
@@ -417,7 +417,7 @@ static ObjectListEntry SeasideHillObjectList_list[]
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Attack },
 };
 
-static ObjectListHead SeasideHillObjectList = { arraylengthandptr(SeasideHillObjectList_list) };
+static ObjectListHead SeasideHillObjectList = { arraylengthandptrT(SeasideHillObjectList_list, int) };
 
 static void __cdecl SeasideHillCam(CameraInfo* cam, CameraParam* param)
 {
