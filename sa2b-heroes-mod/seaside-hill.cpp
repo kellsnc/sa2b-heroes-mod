@@ -398,7 +398,7 @@ static ObjectListEntry SeasideHillObjectList_list[]
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2460000, SHBreakableBlock }, // 43
 	{ (LoadObj)0 },
 	{ (LoadObj)0 },
-	{ (LoadObj)0 },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1560000, (ObjectFuncPtr)LIGHT_SW },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)Big_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, WoodenCrate_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, IronCrate_Main },

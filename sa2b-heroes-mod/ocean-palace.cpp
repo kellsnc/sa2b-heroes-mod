@@ -996,6 +996,7 @@ static ObjectListEntry OceanPalaceObjectList_list[]
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Stationary },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Electric },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, Beetle_Attack },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 1560000, (ObjectFuncPtr)LIGHT_SW },
 };
 
 static ObjectListHead OceanPalaceObjectList = { arraylengthandptr(OceanPalaceObjectList_list) };
