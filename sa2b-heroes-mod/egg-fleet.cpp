@@ -48,7 +48,8 @@ enum EFDoorActs {
 	EFDoorAction_Opened
 };
 
-static void __cdecl EFBigFan_Display(ObjectMaster* obj){
+static void __cdecl EFBigFan_Display(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
@@ -75,16 +76,21 @@ static void __cdecl EFBigFan_DisplayAlpha(ObjectMaster* obj)
 	njPopMatrixEx();
 }
 
-static void __cdecl EFBigFan_Main(ObjectMaster* obj){
-	if (!ClipSetObject(obj))	{
+static void __cdecl EFBigFan_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
 		auto data = obj->Data1.Entity;
 
-		if (MainCharObj1[0])		{
-			if (Fans_IsSpecificPlayerInCylinder(MainCharObj1[0], &data->Position, 130.0f, data->Scale.x))			{
+		if (MainCharObj1[0])
+		{
+			if (Fans_IsSpecificPlayerInCylinder(MainCharObj1[0], &data->Position, 130.0f, data->Scale.x))
+			{
 				data->Index = 20;
 			}
 
-			if (data->Index != 0)			{
+			if (data->Index != 0)
+			{
 				MainCharObj2[0]->Speed.y = 0.25f;
 				MainCharObj1[0]->Status |= 0x1000;
 				MainCharObj1[0]->NextAction = 8;
@@ -93,15 +99,19 @@ static void __cdecl EFBigFan_Main(ObjectMaster* obj){
 			}
 		}
 
-		if (MainCharObj1[1])		{
-			if (Fans_IsSpecificPlayerInCylinder(MainCharObj1[1], &data->Position, 130.0f, data->Scale.x))			{
+		if (MainCharObj1[1])
+		{
+			if (Fans_IsSpecificPlayerInCylinder(MainCharObj1[1], &data->Position, 130.0f, data->Scale.x))
+			{
 				data->field_2 = 20;
 			}
-			else			{
+			else
+			{
 				data->field_2 = 0;
 			}
 
-			if (data->field_2 != 0)			{
+			if (data->field_2 != 0)
+			{
 				MainCharObj2[1]->Speed.y = 0.25f;
 				MainCharObj1[1]->Status |= 0x1000;
 				MainCharObj1[1]->NextAction = 8;
@@ -114,10 +124,12 @@ static void __cdecl EFBigFan_Main(ObjectMaster* obj){
 	}
 }
 
-static void __cdecl EFBigFan(ObjectMaster* obj){
+static void __cdecl EFBigFan(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 
-	if (data->Scale.y != 1)	{
+	if (data->Scale.y != 1)
+	{
 		obj->MainSub = ObjFan;
 		data->Scale.y = data->Scale.x * 80.0f;
 		return;
@@ -146,29 +158,34 @@ static void __cdecl EFBigFan(ObjectMaster* obj){
 	obj->field_4C = reinterpret_cast<void*>(EF_EBIGFAN->getmodel());
 }
 
-static void __cdecl EFCannon(ObjectMaster* obj){
+static void __cdecl EFCannon(ObjectMaster* obj)
+{
 
 }
 
-static void EFPlatforms_Move(EntityData1* data){
-	NJS_VECTOR vec = { 0, 20 - (40 * (1.0 - powf(njSin(data->field_6), 2))), 0 };
-	data->field_6 += 50;
+static void EFPlatforms_Move(EntityData1* data)
+{
+	NJS_VECTOR vec = { 0, 20 - (40 * (1.0 - powf(njSin(data->Timer), 2))), 0 };
+	data->Timer += 50;
 
 	njPushUnitMatrix();
 	njTranslateEx(&data->Scale);
 	njRotateZXY(&data->Rotation);
-	njCalcVector(_nj_current_matrix_ptr_, &data->Position, &vec, false);
+	njCalcPoint(_nj_current_matrix_ptr_, &data->Position, &vec, false);
 	njPopMatrixEx();
 }
 
-static void EFPlatforms_Reach(EntityData1* data){
-	if (data->NextAction == 0)	{
-		float sin = 1.0f - powf(njSin(data->field_6), 2);
-		data->field_6 += 1;
+static void EFPlatforms_Reach(EntityData1* data)
+{
+	if (data->NextAction == 0)
+	{
+		float sin = 1.0f - powf(njSin(data->Timer), 2);
+		data->Timer += 1;
 
 		NJS_VECTOR vec = { 0, 100 * sin, 0 };
 
-		if (sin >= 1.0f)		{
+		if (sin >= 1.0f)
+		{
 			vec.y = 40;
 			data->NextAction = 1;
 		}
@@ -176,12 +193,13 @@ static void EFPlatforms_Reach(EntityData1* data){
 		njPushUnitMatrix();
 		njTranslateEx(&data->Scale);
 		njRotateZXY(&data->Rotation);
-		njCalcVector(_nj_current_matrix_ptr_, &data->Position, &vec, false);
+		njCalcPoint(_nj_current_matrix_ptr_, &data->Position, &vec, false);
 		njPopMatrixEx();
 	}
 }
 
-static void __cdecl EFPlatforms_Display(ObjectMaster* obj){
+static void __cdecl EFPlatforms_Display(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
@@ -193,11 +211,14 @@ static void __cdecl EFPlatforms_Display(ObjectMaster* obj){
 	njPopMatrixEx();
 }
 
-static void __cdecl EFPlatforms_Main(ObjectMaster* obj){
-	if (!ClipSetObject(obj))	{
+static void __cdecl EFPlatforms_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
 		auto data = obj->Data1.Entity;
 
-		switch (data->Action)		{
+		switch (data->Action)
+		{
 		case EFPlatformAct_Move:
 			EFPlatforms_Move(data);
 			break;
@@ -210,32 +231,37 @@ static void __cdecl EFPlatforms_Main(ObjectMaster* obj){
 	}
 }
 
-static void __cdecl EFPlatforms(ObjectMaster* obj){
+static void __cdecl EFPlatforms(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 
 	obj->DisplaySub = EFPlatforms_Display;
 	obj->MainSub = EFPlatforms_Main;
 
-	if (data->Scale.x == 0)	{
+	if (data->Scale.x == 0)
+	{
 		obj->field_4C = EF_PLTFRMS->getmodel();
 		InitCollision(obj, (CollisionData*)&EFPlatforms_Col[0], 1, 4);
 		data->Action = EFPlatformAct_Move;
 	}
-	else	{
+	else
+	{
 		obj->field_4C = EF_PLTFRMS->getmodel()->child;
 		InitCollision(obj, (CollisionData*)&EFPlatforms_Col[1], 2, 4);
 		data->Action = EFPlatformAct_Reach;
 	}
 
-	if (data->Scale.y == 1)	{
+	if (data->Scale.y == 1)
+	{
 		data->Action = EFPlatformAct_Still;
 	}
 
-	data->field_6 = rand() % 0xFFFF;
+	data->Timer = rand() % 0xFFFF;
 	data->Scale = data->Position;
 }
 
-static void __cdecl EFPipeline_Display(ObjectMaster* obj){
+static void __cdecl EFPipeline_Display(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
@@ -248,13 +274,16 @@ static void __cdecl EFPipeline_Display(ObjectMaster* obj){
 	njPopMatrixEx();
 }
 
-static void __cdecl EFPipeline_Main(ObjectMaster* obj){
-	if (!ClipSetObject(obj))	{
+static void __cdecl EFPipeline_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
 		// UV Stuff to figure out
 	}
 }
 
-static void __cdecl EFPipeline(ObjectMaster* obj){
+static void __cdecl EFPipeline(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 
 	obj->DeleteSub = ObjectFunc_DynColDelete;
@@ -279,18 +308,22 @@ static void __cdecl EFPipeline(ObjectMaster* obj){
 	obj->field_4C = reinterpret_cast<void*>(EF_PIPLINE->getmodel());
 }
 
-static inline bool EFShip_IsDoorOpened(int id){
+static inline bool EFShip_IsDoorOpened(int id)
+{
 	return (SwitchPressedStates[id % 9] == true || EnemySwitchStates[id] || Action_Held[0]);
 }
 
-static inline void EFShip_UpdateCollision(EntityData1* data){
+static inline void EFShip_UpdateCollision(EntityData1* data)
+{
 	auto col = &data->Collision->CollisionArray[2];
 
 	col->center.y = EFDoor_Col[2].center.y - data->Scale.y;
 }
 
-static inline void SetCollisionInfoRotations(CollisionInfo* colinfo, Rotation* rotation){
-	for (int i = 0; i < colinfo->Count; ++i)	{
+static inline void SetCollisionInfoRotations(CollisionInfo* colinfo, Rotation* rotation)
+{
+	for (int i = 0; i < colinfo->Count; ++i)
+	{
 		auto col = &colinfo->CollisionArray[i];
 
 		col->rotation.x = rotation->x;
@@ -298,7 +331,8 @@ static inline void SetCollisionInfoRotations(CollisionInfo* colinfo, Rotation* r
 	}
 }
 
-static void __cdecl EFShipDoor_Display(ObjectMaster* obj){
+static void __cdecl EFShipDoor_Display(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
@@ -312,28 +346,36 @@ static void __cdecl EFShipDoor_Display(ObjectMaster* obj){
 	njPopMatrixEx();
 }
 
-static void __cdecl EFShipDoor_Main(ObjectMaster* obj){
-	if (!ClipSetObject(obj))	{
+static void __cdecl EFShipDoor_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
 		auto data = obj->Data1.Entity;
 		auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 		auto id = static_cast<int>(data->Scale.x);
 
-		switch (data->Action)		{
+		switch (data->Action)
+		{
 		case EFDoorAction_CloseDoor:
-			if (data->NextAction == 0)			{
-				if (IsPlayerInsideSphere(&data->Position, 800) != 0)				{
+			if (data->NextAction == 0)
+			{
+				if (IsPlayerInsideSphere(&data->Position, 800) != 0)
+				{
 					data->NextAction = 1;
 					//PlaySound
 				}
-				else				{
+				else
+				{
 					break;
 				}
 			}
 
-			if (data->Scale.y < 0)			{
+			if (data->Scale.y < 0)
+			{
 				data->Scale.y += 3;
 			}
-			else			{
+			else
+			{
 				data->Action = EFDoorAction_Closed;
 				data->Scale.y = 0;
 			}
@@ -342,21 +384,25 @@ static void __cdecl EFShipDoor_Main(ObjectMaster* obj){
 
 			break;
 		case EFDoorAction_Closed:
-			if (EFShip_IsDoorOpened(id))			{
+			if (EFShip_IsDoorOpened(id))
+			{
 				data->Action = EFDoorAction_OpenDoor;
 				//PlaySound
 
-				if (obj->SETData)				{
+				if (obj->SETData)
+				{
 					obj->SETData->Flags |= 0x100;
 				}
 			}
 
 			break;
 		case EFDoorAction_OpenDoor:
-			if (data->Scale.y > model->child->pos[1])			{
+			if (data->Scale.y > model->child->pos[1])
+			{
 				data->Scale.y -= 3;
 			}
-			else			{
+			else
+			{
 				data->Action = EFDoorAction_Opened;
 				data->Scale.y = model->child->pos[1];
 			}
@@ -370,7 +416,8 @@ static void __cdecl EFShipDoor_Main(ObjectMaster* obj){
 	}
 }
 
-static void __cdecl EFShipDoor(ObjectMaster* obj){
+static void __cdecl EFShipDoor(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 	auto id = static_cast<int>(data->Scale.x);
 
@@ -386,16 +433,19 @@ static void __cdecl EFShipDoor(ObjectMaster* obj){
 	SetCollisionInfoRotations(data->Collision, &data->Rotation);
 	EFShip_UpdateCollision(data);
 
-	if (EFShip_IsDoorOpened(id) || (obj->SETData && obj->SETData->Flags & 0x100))	{
+	if (EFShip_IsDoorOpened(id) || (obj->SETData && obj->SETData->Flags & 0x100))
+	{
 		data->Action = EFDoorAction_Opened;
 	}
 }
 
-static void __cdecl EFShipConveyor(ObjectMaster* obj){
+static void __cdecl EFShipConveyor(ObjectMaster* obj)
+{
 
 }
 
-static void __cdecl EFAntenna_Display(ObjectMaster* obj){
+static void __cdecl EFAntenna_Display(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
@@ -404,11 +454,13 @@ static void __cdecl EFAntenna_Display(ObjectMaster* obj){
 	njTranslateEx(&data->Position);
 	njRotateY_(data->Rotation.y);
 
-	if (data->Scale.x == 0)	{
+	if (data->Scale.x == 0)
+	{
 		njRotateY_(data->Scale.y);
 		DrawSA2BModel(model->sa2bmodel);
 	}
-	else	{
+	else
+	{
 		DrawSA2BModel(model->child->sa2bmodel);
 		njRotateY_(data->Scale.y);
 		DrawSA2BModel(model->child->child->sa2bmodel);
@@ -417,22 +469,26 @@ static void __cdecl EFAntenna_Display(ObjectMaster* obj){
 	njPopMatrixEx();
 }
 
-static void __cdecl EFAntenna_Main(ObjectMaster* obj){
-	if (!ClipSetObject(obj))	{
+static void __cdecl EFAntenna_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
 		auto data = obj->Data1.Entity;
 
 		data->Scale.y += 200;
 	}
 }
 
-static void __cdecl EFAntenna(ObjectMaster* obj){
+static void __cdecl EFAntenna(ObjectMaster* obj)
+{
 	obj->MainSub = EFAntenna_Main;
 	obj->DisplaySub = EFAntenna_Display;
 	obj->field_4C = reinterpret_cast<void*>(EF_ANTENNA->getmodel());
 	InitCollision(obj, (CollisionData*)&AntennaCol, 1, 4);
 }
 
-static void __cdecl EFRailSign_Display(ObjectMaster* obj){
+static void __cdecl EFRailSign_Display(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
@@ -444,20 +500,24 @@ static void __cdecl EFRailSign_Display(ObjectMaster* obj){
 
 	int time = GetTimer() % 30;
 
-	if (time < 10)	{
+	if (time < 10)
+	{
 		DrawSA2BModel(model->child->sa2bmodel);
 	}
-	else if (time < 20)	{
+	else if (time < 20)
+	{
 		DrawSA2BModel(model->child->child->sa2bmodel);
 	}
-	else	{
+	else
+	{
 		DrawSA2BModel(model->child->child->child->sa2bmodel);
 	}
 
 	njPopMatrixEx();
 }
 
-static void __cdecl EFRailSign(ObjectMaster* obj){
+static void __cdecl EFRailSign(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 
 	obj->DeleteSub = ObjectFunc_DynColDelete;
@@ -466,11 +526,13 @@ static void __cdecl EFRailSign(ObjectMaster* obj){
 
 	auto dynobj = GetFreeDyncolObjectEntry();
 
-	if (data->Scale.x == 1)	{
+	if (data->Scale.x == 1)
+	{
 		memcpy(dynobj, EF_DIRSGNSCOL->getmodel()->child->sibling, sizeof(NJS_OBJECT));
 		obj->field_4C = EF_DIRSGNS->getmodel()->child->sibling;
 	}
-	else	{
+	else
+	{
 		memcpy(dynobj, EF_DIRSGNSCOL->getmodel()->child, sizeof(NJS_OBJECT));
 		obj->field_4C = EF_DIRSGNS->getmodel()->child;
 	}
@@ -488,11 +550,13 @@ static void __cdecl EFRailSign(ObjectMaster* obj){
 	obj->EntityData2 = (UnknownData2*)dynobj;
 }
 
-static void __cdecl EFMissilePods(ObjectMaster* obj){
+static void __cdecl EFMissilePods(ObjectMaster* obj)
+{
 
 }
 
-static void __cdecl EFHelice_Display(ObjectMaster* obj){
+static void __cdecl EFHelice_Display(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
@@ -508,13 +572,16 @@ static void __cdecl EFHelice_Display(ObjectMaster* obj){
 	njPopMatrixEx();
 }
 
-static void __cdecl EFHelice_Main(ObjectMaster* obj){
-	if (!ClipSetObject(obj))	{
+static void __cdecl EFHelice_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
 		obj->Data1.Entity->Scale.z -= 1200.0f;
 	}
 }
 
-static void __cdecl EFHelice(ObjectMaster* obj){
+static void __cdecl EFHelice(ObjectMaster* obj)
+{
 	obj->MainSub = EFHelice_Main;
 	obj->DisplaySub = EFHelice_Display;
 
@@ -523,7 +590,8 @@ static void __cdecl EFHelice(ObjectMaster* obj){
 	obj->field_4C = reinterpret_cast<void*>(EF_EHELICE->getmodel());
 }
 
-static void __cdecl EFBarrier_Display(ObjectMaster* obj){
+static void __cdecl EFBarrier_Display(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
@@ -535,12 +603,15 @@ static void __cdecl EFBarrier_Display(ObjectMaster* obj){
 	njPopMatrixEx();
 }
 
-static void __cdecl EFBarrier_Main(ObjectMaster* obj){
-	if (!ClipSetObject(obj))	{
+static void __cdecl EFBarrier_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
 		auto data = obj->Data1.Entity;
 		auto player = GetCollidingPlayer(obj);
 
-		if (player && player->Data1.Entity->Status & Status_Attack)		{
+		if (player && player->Data1.Entity->Status & Status_Attack)
+		{
 			auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 			model = model->child;
 
@@ -553,14 +624,16 @@ static void __cdecl EFBarrier_Main(ObjectMaster* obj){
 	}
 }
 
-static void __cdecl EFBarrier(ObjectMaster* obj){
+static void __cdecl EFBarrier(ObjectMaster* obj)
+{
 	obj->MainSub = EFBarrier_Main;
 	obj->DisplaySub = EFBarrier_Display;
 	obj->field_4C = reinterpret_cast<void*>(EF_BARRIER->getmodel());
 	InitCollision(obj, (CollisionData*)&EFBarrier_Col, 1, 2);
 }
 
-static void __cdecl EFEndRail_Display(ObjectMaster* obj){
+static void __cdecl EFEndRail_Display(ObjectMaster* obj)
+{
 	auto data = obj->Data1.Entity;
 	auto model = reinterpret_cast<NJS_OBJECT*>(obj->field_4C);
 
@@ -573,7 +646,8 @@ static void __cdecl EFEndRail_Display(ObjectMaster* obj){
 	njPopMatrixEx();
 }
 
-static void __cdecl EFEndRail(ObjectMaster* obj){
+static void __cdecl EFEndRail(ObjectMaster* obj)
+{
 	obj->DisplaySub = EFEndRail_Display;
 	obj->MainSub = ClipObjectObjFunc;
 	obj->field_4C = reinterpret_cast<void*>(EF_ENDRAIL->getmodel());
@@ -598,7 +672,7 @@ static ObjectListEntry EggFleetObjectList_list[]
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKET },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKETMISSILE },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, (ObjectFuncPtr)CHAOPIPE },
-	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, (ObjectFuncPtr)MINIMAL },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, Minimal_Exec },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, (ObjectFuncPtr)E_GOLD},
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_Default, 0, Checkpoint_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)CWALL },
@@ -649,7 +723,7 @@ static ObjectListHead EggFleetObjectList = { arraylengthandptr(EggFleetObjectLis
 
 static void __cdecl EggFleet_SkyBox(ObjectMaster* obj)
 {
-	auto position = &CameraScreensInfoArray[CurrentScreen]->pos;
+	auto position = &pCameraLocations[CurrentScreen]->pos;
 	
 	njPushMatrixEx();
 	njSetTexture(CurrentLevelTexList);

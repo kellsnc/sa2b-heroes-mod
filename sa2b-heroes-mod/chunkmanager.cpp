@@ -44,7 +44,7 @@ static void __cdecl ListGroundForDrawing_r()
 {
 	if (CurrentHeroesLevel != HeroesLevelIDs::Invalid)
 	{
-		auto position = &CameraScreensInfoArray[CurrentScreen]->pos;
+		auto position = &pCameraLocations[CurrentScreen]->pos;
 		Uint16 current = 0;
 
 		for (int i = 0; i < CurrentLandTable->COLCount; ++i)

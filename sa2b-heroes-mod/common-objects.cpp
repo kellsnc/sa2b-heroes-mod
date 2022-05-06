@@ -203,7 +203,7 @@ void __cdecl RingGroup(ObjectMaster* obj)
 	njRotateZ(_nj_current_matrix_ptr_, data->Rotation.z);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
-	njCalcVector(_nj_current_matrix_ptr_, &data->Position, &dir, false);
+	njCalcPoint(_nj_current_matrix_ptr_, &data->Position, &dir, false);
 	njPopMatrixEx();
 
 	obj->MainSub = reinterpret_cast<ObjectFuncPtr>(RingLinearMain);
@@ -289,7 +289,7 @@ void Breaker_GetPoint(NJS_VECTOR* orig, Rotation* rot, NJS_VECTOR* dir)
 	njRotateZ(_nj_current_matrix_ptr_, rot->z);
 	njRotateX(_nj_current_matrix_ptr_, rot->x);
 	njRotateY(_nj_current_matrix_ptr_, rot->y);
-	njCalcVector(_nj_current_matrix_ptr_, dir, dir, true);
+	njCalcPoint(_nj_current_matrix_ptr_, dir, dir, true);
 	njAddVector(dir, orig);
 	njPopMatrixEx();
 }

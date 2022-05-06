@@ -369,7 +369,7 @@ static ObjectListEntry SeasideHillObjectList_list[]
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKET },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKETMISSILE },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, (ObjectFuncPtr)CHAOPIPE },
-	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, (ObjectFuncPtr)MINIMAL },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, Minimal_Exec },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 4000000, (ObjectFuncPtr)KDITEMBOX },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_Default, 0, Checkpoint_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)CWALL },
@@ -426,7 +426,7 @@ static void __cdecl SeasideHill_Main(ObjectMaster* obj)
 	// Temporary camera for SH
 	for (int i = 0; i < 2; ++i)
 	{
-		auto cam = CameraScreensInfoArray[i];
+		auto cam = pCameraLocations[i];
 		auto player = MainCharObj1[i];
 
 		if (player && cam)

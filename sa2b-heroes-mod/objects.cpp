@@ -280,7 +280,7 @@ void njRotateXYZ(Rotation* rot)
 	njRotateZ_(rot->z);
 }
 
-void DrawChunkModel(NJS_MODEL* model)
+void DrawChunkModel__(NJS_MODEL* model)
 {
 	ResetRenderSpace();
 	ProcessChunkModel((NJS_CNK_MODEL*)model);
@@ -290,7 +290,7 @@ void njCnkAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame)
 {
 	*(int*)0x25EFE54 = 0x25EFE60;
 	njSetMotion(mot, frame);
-	MotionDrawCallback = reinterpret_cast<ObjectFuncPtr>(DrawChunkModel);
+	MotionDrawCallback = reinterpret_cast<ObjectFuncPtr>(DrawChunkModel__);
 	DrawObjMotion(obj);
 }
 
@@ -302,7 +302,7 @@ void njSA2BAction(NJS_OBJECT* obj, NJS_MOTION* mot, float frame)
 	DrawObjMotion(obj);
 }
 
-void DrawObject(NJS_OBJECT* obj, ModelFormat format)
+void DrawObject_(NJS_OBJECT* obj, ModelFormat format)
 {
 	njPushMatrixEx();
 
@@ -326,7 +326,7 @@ void DrawObject(NJS_OBJECT* obj, ModelFormat format)
 		switch (format)
 		{
 		case ModelFormat_Chunk:
-			DrawChunkModel(obj->basicmodel);
+			DrawChunkModel__(obj->basicmodel);
 			break;
 		case ModelFormat_SA2B:
 			DrawSA2BModel(obj->sa2bmodel);
@@ -335,12 +335,12 @@ void DrawObject(NJS_OBJECT* obj, ModelFormat format)
 	}
 	
 	if (obj->child) {
-		DrawObject(obj->child, format);
+		DrawObject_(obj->child, format);
 	}
 
 	njPopMatrixEx();
 	
 	if (obj->sibling) {
-		DrawObject(obj->sibling, format);
+		DrawObject_(obj->sibling, format);
 	}
 }

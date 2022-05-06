@@ -31,7 +31,7 @@ NJS_VECTOR Propeller_GetHandlePoint(EntityData1* data, CharObj2Base* co2)
 	njRotateY(0, -data->Rotation.y + 0x4000);
 	njRotateZ(0, data->Rotation.z);
 	njRotateX(0, data->Rotation.x);
-	njCalcVector(_nj_current_matrix_ptr_, &point, &point, false);
+	njCalcPoint(_nj_current_matrix_ptr_, &point, &point, false);
 	njPopMatrixEx();
 	return point;
 }
@@ -58,7 +58,7 @@ void Propeller_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
-	if (data->Action || pdata->field_6 != 0) {
+	if (data->Action || pdata->Timer != 0) {
 		njSetTexture(CurrentLevelTexList);
 		njPushMatrixEx();
 		njTranslateEx(&data->Position);
@@ -77,11 +77,11 @@ void Propeller_Run(EntityData1* data, LoopHead* path) {
 	EntityData1* PlayerData = MainCharObj1[data->field_2];
 	CharObj2Base* co2 = MainCharObj2[data->field_2];
 
-	if (data->field_6 < path->Count - 2) {
-		if (data->Scale.x > 1) { data->Scale.x = 0; data->field_6++; };
-		data->Scale.x = data->Scale.x + (path->TotalDistance / path->Points[data->field_6].Distance) / path->TotalDistance * 8.0f;
-		TransformSpline(&data->Position, &path->Points[data->field_6].Position, &path->Points[data->field_6 + 1].Position, data->Scale.x);
-		data->Rotation.y = fPositionToRotation(&path->Points[data->field_6].Position, &path->Points[data->field_6 + 1].Position).y;
+	if (data->Timer < path->Count - 2) {
+		if (data->Scale.x > 1) { data->Scale.x = 0; data->Timer++; };
+		data->Scale.x = data->Scale.x + (path->TotalDistance / path->Points[data->Timer].Distance) / path->TotalDistance * 8.0f;
+		TransformSpline(&data->Position, &path->Points[data->Timer].Position, &path->Points[data->Timer + 1].Position, data->Scale.x);
+		data->Rotation.y = fPositionToRotation(&path->Points[data->Timer].Position, &path->Points[data->Timer + 1].Position).y;
 
 		PlayerData->Position = Propeller_GetHandlePoint(data, co2);
 		PlayerData->Rotation = data->Rotation;
@@ -148,7 +148,7 @@ void Propeller_Main(ObjectMaster* obj) {
 	EntityData1* pdata = (EntityData1*)ctrl;
 	EntityData1* data = obj->Data1.Entity;
 
-	if (data->Action || pdata->field_6 != 0) {
+	if (data->Action || pdata->Timer != 0) {
 		switch (data->Action) {
 		case PropellerAction_CheckForPlayer:
 			Propeller_CheckForPlayer(obj, ctrl, pdata, data, (NJS_OBJECT*)obj->field_4C);
@@ -188,7 +188,7 @@ void PropellerPath_Display(ObjectMaster* obj) {
 	PathControl* ctrl = (PathControl*)obj->Data2.Undefined;
 	EntityData1* data = (EntityData1*)ctrl;
 
-	if (data->field_6 != 0) {
+	if (data->Timer != 0) {
 		NJS_OBJECT* model = (NJS_OBJECT*)obj->field_4C;
 
 		njSetTexture(CurrentLevelTexList);
@@ -207,7 +207,7 @@ void PropellerPath_Main(ObjectMaster* obj) {
 	EntityData1* data = (EntityData1*)ctrl;
 
 	if (IsPlayerInsideSphere(&data->Position, 3000.0f)) {
-		data->field_6 = 1; // visible
+		data->Timer = 1; // visible
 
 		if (GameState != GameStates_Ingame && GameState != GameStates_Pause) {
 			DeleteChildObjects(obj);
@@ -232,7 +232,7 @@ void PropellerPath_Main(ObjectMaster* obj) {
 		}
 	}
 	else {
-		data->field_6 = 0; // not visible
+		data->Timer = 0; // not visible
 	}
 }
 

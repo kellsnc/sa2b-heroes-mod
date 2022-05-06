@@ -23,8 +23,8 @@ void CommonLevelInit()
 	DisplayItemBoxItemFunc_ptr = DisplayItemBoxItem;
 
 	CommonObjects_LoadModels();
-
-	SetDrawingPlanes(-3.0f, -65535.0f);
+	
+	___njClipZ(-3.0f, -65535.0f);
 
 	//Chaos Drive Function Pointers
 	dword_1DE4680 = (void*)0x6B6C20;
@@ -111,14 +111,6 @@ void SetStartEndPoints(const HelperFunctions &helperFunctions, StartPosition* st
 	}
 }
 
-void FixCamera(int player)
-{
-	if (MainCharObj2[player] && MainCharObj2[player]->Speed.x > 0.5f)
-	{
-		CameraScreensInfoArray[player]->pos.y += 0.7f;
-	}
-}
-
 extern "C"
 {
 	__declspec(dllexport) void Init(const char *path, const HelperFunctions &helperFunctions)
@@ -138,7 +130,8 @@ extern "C"
 		EggFleet_Init(path, helperFunctions);
 	}
 
-	__declspec(dllexport) void OnFrame() {
+	__declspec(dllexport) void OnFrame()
+	{
 		if (GameState == GameStates_Ingame)
 		{
 			Timer += 1;
@@ -146,13 +139,6 @@ extern "C"
 		else if (GameState != GameStates_Pause)
 		{
 			Timer = 0;
-		}
-
-		if (GameState == GameStates_Ingame &&
-			CurrentHeroesLevel != HeroesLevelIDs::Invalid)
-		{
-			if (MainCharObj1[0]) FixCamera(0);
-			if (MainCharObj1[1]) FixCamera(1);
 		}
 	}
 

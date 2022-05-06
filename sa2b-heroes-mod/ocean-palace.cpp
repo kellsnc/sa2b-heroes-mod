@@ -123,7 +123,7 @@ static void __cdecl OPFallingStructure_Display(ObjectMaster* obj)
 	njPushMatrixEx();
 	njTranslateV(_nj_current_matrix_ptr_, &data->Position);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
-	DrawObject(model, ModelFormat_SA2B);
+	DrawObject_(model, ModelFormat_SA2B);
 	njPopMatrixEx();
 }
 
@@ -233,7 +233,7 @@ static void __cdecl OPFins_Main(ObjectMaster* obj)
 	
 	if (!ClipSetObject(obj))
 	{
-		data->field_6++;
+		data->Timer++;
 
 		if (data->Action == 0)
 		{
@@ -342,7 +342,7 @@ static void __cdecl OPLandMove_Main(ObjectMaster* obj)
 	}
 	else
 	{
-		CameraScreensInfoArray[playerid]->pos = { 2360.0f, 112.0f, -31000.0f };
+		pCameraLocations[playerid]->pos = { 2360.0f, 112.0f, -31000.0f };
 	}
 }
 
@@ -374,14 +374,14 @@ static void __cdecl BoulderPath(ObjectMaster *obj)
 	}
 	else 
 	{
-		if (data->field_6 < loopdata->Count)
+		if (data->Timer < loopdata->Count)
 		{
 			if (GameState != GameStates_Pause)
 			{
-				data->Scale.x = data->Scale.x + (loopdata->TotalDistance / loopdata->Points[data->field_6].Distance) / loopdata->TotalDistance * 7;
+				data->Scale.x = data->Scale.x + (loopdata->TotalDistance / loopdata->Points[data->Timer].Distance) / loopdata->TotalDistance * 7;
 
-				auto pos1 = loopdata->Points[data->field_6].Position;
-				auto pos2 = loopdata->Points[data->field_6 + 1].Position;
+				auto pos1 = loopdata->Points[data->Timer].Position;
+				auto pos2 = loopdata->Points[data->Timer + 1].Position;
 
 				NJS_VECTOR fixoffset = { 9000, -1.8f, 2900 };
 
@@ -389,8 +389,8 @@ static void __cdecl BoulderPath(ObjectMaster *obj)
 				njAddVector(&pos2, &fixoffset);
 
 				TransformSpline(&data->Position, &pos1, &pos2, data->Scale.x);
-				if (loopdata->Points[data->field_6].YRot != 0) data->Rotation.y = loopdata->Points[data->field_6].YRot;
-				if (data->Scale.x > 1) { data->Scale.x = 0; data->field_6++; }
+				if (loopdata->Points[data->Timer].YRot != 0) data->Rotation.y = loopdata->Points[data->Timer].YRot;
+				if (data->Scale.x > 1) { data->Scale.x = 0; data->Timer++; }
 				data->Rotation.x += 1500;
 
 				data->Status = IsPlayerInsideSphere(&data->Position, 130.0f);
@@ -513,14 +513,14 @@ static void __cdecl BoulderCam(ObjectMaster* obj)
 		if (data->Scale.x == 8)
 		{
 			pos = OP_BoulderPaths[0].Points[10].Position;
-			data->field_6 = 10;
+			data->Timer = 10;
 			data->Scale.z = 0;
 			data->Action = 1;
 		}
 		else
 		{
 			data->Action = 0;
-			data->field_6 = 0;
+			data->Timer = 0;
 		}
 	}
 
@@ -528,27 +528,27 @@ static void __cdecl BoulderCam(ObjectMaster* obj)
 	{
 		LoopHead* loopdata = &OP_BoulderPaths[0];
 
-		if (data->field_6 == 79) return;
+		if (data->Timer == 79) return;
 
 		float dist = GetDistance(&pos, &MainCharObj1[0]->Position);
 		float speed = (1 - (dist / 500)) * 24;
 		if (speed < 0) speed = 0;
 
-		data->Scale.z = data->Scale.z + (loopdata->TotalDistance / loopdata->Points[data->field_6].Distance) / loopdata->TotalDistance * speed;
+		data->Scale.z = data->Scale.z + (loopdata->TotalDistance / loopdata->Points[data->Timer].Distance) / loopdata->TotalDistance * speed;
 
-		auto pos1 = loopdata->Points[data->field_6].Position;
-		auto pos2 = loopdata->Points[data->field_6 + 1].Position;
+		auto pos1 = loopdata->Points[data->Timer].Position;
+		auto pos2 = loopdata->Points[data->Timer + 1].Position;
 
 		NJS_VECTOR fixoffset = { 9000, -1.8f, 2900 };
 
 		njAddVector(&pos1, &fixoffset);
 		njAddVector(&pos2, &fixoffset);
 		
-		TransformSpline(&CameraData.Position, &pos1, &pos2, data->Scale.z);
-		CameraData.Position.y -= 50;
-		if (loopdata->Points[data->field_6].YRot != 0) data->Rotation.y = loopdata->Points[data->field_6].YRot;
-		if (data->Scale.z > 1) { data->Scale.z = 0; data->field_6++; }
-		pos = CameraData.Position;
+		TransformSpline(&CameraData->location.pos, &pos1, &pos2, data->Scale.z);
+		CameraData->location.pos.y -= 50.0f;
+		if (loopdata->Points[data->Timer].YRot != 0) data->Rotation.y = loopdata->Points[data->Timer].YRot;
+		if (data->Scale.z > 1) { data->Scale.z = 0; data->Timer++; }
+		pos = CameraData->location.pos;
 	}
 }
 
@@ -836,12 +836,12 @@ static void __cdecl OPDoor_Display(ObjectMaster* obj)
 	{
 		njPushMatrixEx();
 		njTranslate(_nj_current_matrix_ptr_, model->sibling->child->pos[0], 0, model->sibling->child->pos[2]);
-		njRotateY(_nj_current_matrix_ptr_, data->field_6);
+		njRotateY(_nj_current_matrix_ptr_, data->Timer);
 		DrawSA2BModel(model->sibling->child->sa2bmodel);
 		njPopMatrixEx();
 
 		njTranslate(_nj_current_matrix_ptr_, model->sibling->child->sibling->pos[0], 0, model->sibling->child->sibling->pos[2]);
-		njRotateY(_nj_current_matrix_ptr_, -data->field_6);
+		njRotateY(_nj_current_matrix_ptr_, -data->Timer);
 		DrawSA2BModel(model->sibling->child->sibling->sa2bmodel);
 	}
 	
@@ -904,13 +904,13 @@ static void __cdecl OPDoor_Main(ObjectMaster* obj)
 			AddToCollisionList(obj);
 			break;
 		case DOOR_OPEN:
-			if (entity->field_6 < 0x3500)
+			if (entity->Timer < 0x3500)
 			{
-				entity->field_6 += 0x300;
+				entity->Timer += 0x300;
 			}
 			else
 			{
-				entity->field_6 = 0x3500;
+				entity->Timer = 0x3500;
 				entity->Action = DOOR_END;
 			}
 
@@ -950,7 +950,7 @@ static ObjectListEntry OceanPalaceObjectList_list[]
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKET },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_UseDist, 360000, (ObjectFuncPtr)ROCKETMISSILE },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, (ObjectFuncPtr)CHAOPIPE },
-	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, (ObjectFuncPtr)MINIMAL },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_Default, 0, Minimal_Exec },
 	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 4000000, (ObjectFuncPtr)KDITEMBOX },
 	{ (LoadObj)(LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), ObjIndex_Common, DistObj_Default, 0, Checkpoint_Main },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, (ObjectFuncPtr)CWALL },
@@ -1003,7 +1003,7 @@ static ObjectListHead OceanPalaceObjectList = { arraylengthandptr(OceanPalaceObj
 
 static void __cdecl OceanPalace_SkyBox(ObjectMaster* obj)
 {
-	auto position = &CameraScreensInfoArray[CurrentScreen]->pos;
+	auto position = &pCameraLocations[CurrentScreen]->pos;
 
 	njSetTexture(CurrentLevelTexList);
 	njPushMatrixEx();
